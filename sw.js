@@ -1,4 +1,4 @@
-const CACHE = 'soat-v3';
+const CACHE = 'soat-v3.5';
 const ASSETS = [
   '/test-soat/',
   '/test-soat/index.html'
