@@ -391,7 +391,12 @@ body.dark .card::after {
 }
 
 /* glass-card alias */
-.glass-card { }
+.glass-card {
+  background: rgba(255,255,255,.55); border: 1px solid var(--g-b);
+  border-radius: var(--r3); padding: 16px 16px 13px; margin-bottom: 10px;
+  box-shadow: var(--s1); transition: box-shadow var(--d);
+}
+body.dark .glass-card { background: rgba(255,255,255,.05); border-color: var(--g-b); color: var(--t1); }
 
 /* noise texture */
 .noise {
