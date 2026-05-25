@@ -76,7 +76,8 @@ body.dark {
 }
 
 /* ── Reset ── */
-*, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+*, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+input, textarea { -webkit-user-select: text !important; user-select: text !important; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
@@ -1448,8 +1449,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   document.getElementById('resContainer').innerHTML = resHtml;
   
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && localStorage.getItem('dm') === null) {
     document.body.classList.add('dark');
+    const i=document.getElementById('darkIcon'),l=document.getElementById('darkLabel');
+    if(i) i.textContent='light_mode'; if(l) l.textContent='โหมดกลางวัน';
   }
   // แสดงคำแนะนำการติดตั้งหลังจากโหลดหน้า 2 วินาที
   setTimeout(showPwaPrompt, 2000);
@@ -1720,11 +1723,11 @@ function renderJobs() {
   }
 
   if(CURRENT_JOB_VIEW === 'my') {
-    baseJobs = baseJobs.filter(j => j.owner.trim() === CURRENT_USER.name.trim());
+    baseJobs = baseJobs.filter(j => (j.owner || '').trim() === CURRENT_USER.name.trim());
   } else if(CURRENT_JOB_VIEW === 'all' && CURRENT_USER.role === 'admin') {
     const staffFilter = document.getElementById('adminStaffFilter').value;
     if(staffFilter !== 'all') {
-      baseJobs = baseJobs.filter(j => j.owner.trim() === staffFilter.trim());
+      baseJobs = baseJobs.filter(j => (j.owner || '').trim() === staffFilter.trim());
     }
   }
 
@@ -1974,8 +1977,8 @@ function clearForm() {
     var el = document.getElementById(id); if(el) el.value = '';
   });
   // ล้าง flatpickr
-  var op = document.querySelector('#orderDateInput')._flatpickr;
-  var np = document.querySelector('#needDateInput')._flatpickr;
+  var op = document.querySelector('#orderDateInput')?._flatpickr;
+  var np = document.querySelector('#needDateInput')?._flatpickr;
   if(op) op.clear();
   if(np) np.clear();
   // ล้างไฟล์และ error
