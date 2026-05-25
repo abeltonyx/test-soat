@@ -393,11 +393,20 @@ body.dark .card::after {
 
 /* glass-card alias */
 .glass-card {
-  background: rgba(255,255,255,.55); border: 1px solid var(--g-b);
+  background: rgba(255,255,255,.08);
+  backdrop-filter: blur(32px) saturate(220%);
+  -webkit-backdrop-filter: blur(32px) saturate(220%);
+  border: 1px solid rgba(255,255,255,.55);
   border-radius: var(--r3); padding: 16px 16px 13px; margin-bottom: 10px;
-  box-shadow: var(--s1); transition: box-shadow var(--d);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.85), var(--s1);
+  transition: box-shadow var(--d);
 }
-body.dark .glass-card { background: rgba(255,255,255,.05); border-color: var(--g-b); color: var(--t1); }
+body.dark .glass-card {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.12);
+  color: var(--t1);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.10), var(--s1);
+}
 
 /* noise texture */
 .noise {
@@ -1150,7 +1159,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       <div class="help-section-head">สำหรับเจ้าหน้าที่</div>
 
       <div class="help-step-row">
-        <div class="help-num">1</div>
+        <div class="help-num">5</div>
         <div class="help-phone">
           <div style="text-align:center;margin-bottom:5px;">
             <div style="width:20px;height:20px;border-radius:6px;border:0.5px solid var(--p);margin:0 auto 3px;display:flex;align-items:center;justify-content:center;">
@@ -1169,7 +1178,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       </div>
 
       <div class="help-step-row">
-        <div class="help-num">2</div>
+        <div class="help-num">6</div>
         <div class="help-phone">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
             <div style="font-size:7px;font-weight:600;color:var(--t1);">Staff</div>
@@ -1196,7 +1205,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       </div>
 
       <div class="help-step-row">
-        <div class="help-num">3</div>
+        <div class="help-num">7</div>
         <div class="help-phone">
           <div class="hp-card" style="border-left:2px solid #3b82f6;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
