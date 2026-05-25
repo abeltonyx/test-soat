@@ -10,12 +10,12 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/abeltonyx/myimg/refs/heads/main/LogoHosOrangeWhite.png",
+      "src": "https://raw.githubusercontent.com/abeltonyx/test-soat/refs/heads/main/icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://raw.githubusercontent.com/abeltonyx/myimg/refs/heads/main/LogoHosOrangeWhite.png",
+      "src": "https://raw.githubusercontent.com/abeltonyx/test-soat/refs/heads/main/icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
