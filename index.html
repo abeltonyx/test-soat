@@ -415,9 +415,11 @@ h2 {
 h2 .material-symbols-rounded { color: var(--p); margin: 0; font-size: 18px; }
 
 .section-label {
-  font-size: 12px; font-weight: 6000; letter-spacing: .16em;
-  text-transform: uppercase; color: var(--t3); display: block; margin-bottom: 8px;
+  font-size: 13px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--t2); display: block; margin-bottom: 8px;
+  padding-left: 8px; border-left: 3px solid var(--p);
 }
+body.dark .section-label { color: var(--t2); border-color: var(--p); }
 
 .material-symbols-rounded {
   font-size: 18px; vertical-align: middle; margin-right: 6px;
@@ -490,7 +492,7 @@ body.dark input, body.dark select, body.dark textarea {
   background: rgba(255,255,255,.08); border-color: var(--g-b); color: var(--t1);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
 }
-body.dark input::placeholder, body.dark textarea::placeholder { color: var(--t3); }
+body.dark input::placeholder, body.dark textarea::placeholder { color: var(--t2); opacity: .6; }
 body.dark input:focus, body.dark select:focus, body.dark textarea:focus {
   background: rgba(255,255,255,.10); border-color: rgba(138,170,252,.45);
   box-shadow: 0 0 0 3px rgba(138,170,252,.14);
@@ -1147,7 +1149,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       <div class="help-section-head">สำหรับเจ้าหน้าที่</div>
 
       <div class="help-step-row">
-        <div class="help-num">1</div>
+        <div class="help-num">5</div>
         <div class="help-phone">
           <div style="text-align:center;margin-bottom:5px;">
             <div style="width:20px;height:20px;border-radius:6px;border:0.5px solid var(--p);margin:0 auto 3px;display:flex;align-items:center;justify-content:center;">
@@ -1166,7 +1168,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       </div>
 
       <div class="help-step-row">
-        <div class="help-num">2</div>
+        <div class="help-num">6</div>
         <div class="help-phone">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
             <div style="font-size:7px;font-weight:600;color:var(--t1);">Staff</div>
@@ -1193,7 +1195,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       </div>
 
       <div class="help-step-row">
-        <div class="help-num">3</div>
+        <div class="help-num">7</div>
         <div class="help-phone">
           <div class="hp-card" style="border-left:2px solid #3b82f6;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
