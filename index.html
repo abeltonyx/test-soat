@@ -763,7 +763,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
     <div style="margin-top:24px;text-align:center;">
       <span style="font-size:11px;color:var(--t3);opacity:.5;letter-spacing:.04em;">Developed by Abel</span>
     </div>
-     
+    
   </div>
 </div>
 
@@ -2322,8 +2322,10 @@ const _orbState = Array.from(document.querySelectorAll('.orb')).map((el,i) => ({
   speed: 0.0006 + i * 0.0002,
 }));
 
-// set initial color
+// set initial color — random palette
 _orbState.forEach(o => {
+  o.pal  = ORB_PALETTES[Math.floor(Math.random() * ORB_PALETTES.length)];
+  o.next = ORB_PALETTES[Math.floor(Math.random() * ORB_PALETTES.length)];
   o.el.style.background = `radial-gradient(circle at 38% 38%,${o.pal[0]},${o.pal[1]})`;
 });
 
