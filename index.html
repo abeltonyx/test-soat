@@ -96,9 +96,9 @@ body {
 .bg {
   position: fixed; inset: 0; z-index: 0; overflow: hidden;
   background: linear-gradient(145deg,
-    #ffecd4 0%, #ffe0f0 30%,
-    #f0d8ff 58%, #ffd4e8 78%,
-    #ddd0ff 100%);
+    #e8f0ff 0%, #f0e8ff 28%,
+    #ffe8f8 55%, #f8f0ff 80%,
+    #e8e8ff 100%);
 }
 body.dark .bg {
   background: linear-gradient(145deg,
@@ -248,7 +248,6 @@ body.dark .home-btn-primary {
     inset 1px 0 0 rgba(255,255,255,.35),
     var(--s1);
 }
-.home-btn-glass:hover { background: rgba(255,255,255,.18); }
 body.dark .home-btn-glass {
   background: rgba(255,255,255,.08);
   border-color: rgba(255,255,255,.16);
@@ -1382,6 +1381,10 @@ async function gasCall(action, payload = {}) {
 // ── PWA Service Worker ──
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
+  fetch('sw.js').then(r => r.text()).then(t => {
+    const v = t.match(/CACHE\s*=\s*['"]([^'"]+)['"]/)?.[1];
+    if (v) console.log('%c🚀 ' + v, 'color:#7c9ef8;font-size:14px;font-weight:700;letter-spacing:.05em;');
+  });
 }
 
 const DEPT_MAP = {
