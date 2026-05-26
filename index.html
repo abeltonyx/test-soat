@@ -1323,16 +1323,17 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 
 <!-- PWA Banner -->
 <div id="pwaBanner" style="display:none;position:fixed;bottom:18px;left:14px;right:14px;z-index:9998;background:rgba(240,244,255,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.72);border-radius:var(--r3);padding:14px 15px;box-shadow:var(--s3);">
-  <div style="display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:13px;line-height:1.5;flex:1;">
-      <div style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--p);margin-bottom:3px;">ติดตั้งแอป</div>
-      <span id="pwaText" style="color:var(--t2);"></span>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;margin-left:10px;">
-      <button id="pwaInstallBtn" style="display:none;background:var(--p);border:none;color:#fff;font-family:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:99px;cursor:pointer;" onclick="triggerInstall()">ติดตั้ง</button>
-      <button onclick="document.getElementById('pwaBanner').style.display='none'" style="background:none;border:none;color:var(--t3);font-size:22px;padding:0;cursor:pointer;line-height:1;">×</button>
-    </div>
+  <div style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--p);margin-bottom:6px;">ติดตั้งแอป</div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+    <span id="pwaText" style="color:var(--t2);font-size:13px;line-height:1.6;flex:1;"></span>
+    <button onclick="document.getElementById('pwaBanner').style.display='none'" style="background:none;border:none;color:var(--t3);font-size:22px;padding:0 0 0 10px;cursor:pointer;line-height:1;flex-shrink:0;">×</button>
   </div>
+  <div id="pwaOrDivider" style="display:none;align-items:center;gap:8px;margin:8px 0;font-size:11px;color:var(--t3);">
+    <div style="flex:1;height:1px;background:var(--g-b2);"></div>หรือ<div style="flex:1;height:1px;background:var(--g-b2);"></div>
+  </div>
+  <button id="pwaInstallBtn" style="display:none;width:100%;align-items:center;justify-content:center;gap:6px;margin-top:4px;background:var(--p);color:#fff;border:none;border-radius:99px;padding:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;" onclick="triggerInstall()">
+    <span class="material-symbols-rounded" style="font-size:15px;margin:0;color:#fff;">download</span> ติดตั้งเลย
+  </button>
 </div>
 
 
@@ -2068,13 +2069,10 @@ function showPwaPrompt() {
     pwaText.innerHTML = "แตะไอคอน <b>Share</b> ด้านล่าง<br>แล้วเลือก <b>Add to Home Screen</b>";
     pwaBanner.style.display = 'block';
   } else if (/android/.test(userAgent)) {
+    pwaText.innerHTML = "แตะเมนู <b>⋮</b> มุมขวาบน<br>แล้วเลือก <b>เพิ่มลงในหน้าจอหลัก</b>";
     if (deferredPrompt) {
-      // มี prompt พร้อม — แสดงปุ่มติดตั้งได้เลย
-      pwaText.innerHTML = "ติดตั้งเป็นแอปได้เลย!";
-      document.getElementById('pwaInstallBtn').style.display = 'block';
-    } else {
-      // ยังไม่มี prompt — บอกวิธีทำเอง
-      pwaText.innerHTML = "แตะเมนู <b>⋮</b> มุมขวาบน<br>แล้วเลือก <b>เพิ่มลงในหน้าจอหลัก</b>";
+      document.getElementById('pwaOrDivider').style.display = 'flex';
+      document.getElementById('pwaInstallBtn').style.display = 'flex';
     }
     pwaBanner.style.display = 'block';
   }
