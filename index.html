@@ -319,7 +319,7 @@ body.dark .home-notice { background: rgba(180,130,40,.14); border-color: rgba(20
 }
 .ptr-indicator.visible { opacity: 1; }
 .ptr-indicator .material-symbols-rounded { font-size: 20px; color: var(--p); margin: 0; transition: transform .3s; }
-.ptr-indicator.ready .material-symbols-rounded { transform: rotate(180deg); }
+.ptr-indicator.ready .material-symbols-rounded { transform: rotate(360deg); }
 .ptr-indicator.loading .material-symbols-rounded { animation: spin 1s linear infinite; }
 
 body.dark .topbar {
@@ -607,6 +607,7 @@ body.dark .jcard { background: rgba(255,255,255,.05); border-color: var(--g-b); 
 .success-svg { width: 68px; height: 68px; margin: 0 auto 14px; display: block; }
 .success-svg path { stroke-dasharray: 100; stroke-dashoffset: 100; animation: drawCheck .8s ease forwards; }
 @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
 .pg-btn {
   width: 34px; height: 34px; border-radius: 50%;
@@ -1359,7 +1360,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 </div>
 
 <div id="ptrIndicator" class="ptr-indicator">
-  <span class="material-symbols-rounded">arrow_downward</span>
+  <span class="material-symbols-rounded">sync</span>
 </div>
 
 <script>
@@ -1440,13 +1441,15 @@ let CURRENT_STATUS_FILTER = 'all';
 let fpStart, fpEnd;
 
 // Animated Loading SVG String
-const loadingHTML = `
-<div style='text-align:center; padding:30px;'>
-  <svg class="loading-svg" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="25" cy="25" r="20" fill="none" stroke="var(--p)" stroke-width="4" stroke-dasharray="80" stroke-linecap="round"></circle>
-  </svg>
-  <span style="color:var(--t2); font-weight:500;">กำลังประมวลผล...</span>
+const skeletonCard = `
+<div style="background:rgba(255,255,255,.08);backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,.55);border-radius:24px;padding:20px;margin-bottom:10px;overflow:hidden;position:relative;">
+  <div style="background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.14) 50%,rgba(255,255,255,.06) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;height:20px;width:40%;margin-bottom:10px;"></div>
+  <div style="background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.14) 50%,rgba(255,255,255,.06) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite .1s;border-radius:6px;height:14px;width:60%;margin-bottom:8px;"></div>
+  <div style="background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.14) 50%,rgba(255,255,255,.06) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite .2s;border-radius:6px;height:14px;width:80%;margin-bottom:8px;"></div>
+  <div style="background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.14) 50%,rgba(255,255,255,.06) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite .3s;border-radius:6px;height:14px;width:50%;"></div>
 </div>`;
+
+const loadingHTML = skeletonCard + skeletonCard + skeletonCard;
 
 document.addEventListener("DOMContentLoaded", () => {
   if(localStorage.getItem('dm')==='1'){
