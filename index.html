@@ -122,19 +122,19 @@ body.dark .orb { mix-blend-mode: screen; }
 
 .orb-1 {
   width: 560px; height: 560px; top: -160px; left: -160px;
-  filter: blur(72px); opacity: .72;
+  filter: blur(60px); opacity: .90;
   animation-duration: 28s;
   background: radial-gradient(circle at 40% 38%, #c4b5fd, #93c5fd);
 }
 .orb-2 {
   width: 480px; height: 480px; bottom: -140px; right: -140px;
-  filter: blur(78px); opacity: .65;
+  filter: blur(65px); opacity: .85;
   animation-duration: 36s; animation-delay: -14s;
   background: radial-gradient(circle at 55% 50%, #fbc5e8, #fda4af);
 }
 .orb-3 {
   width: 400px; height: 400px; top: 38%; left: 42%;
-  filter: blur(82px); opacity: .55;
+  filter: blur(70px); opacity: .75;
   animation-duration: 44s; animation-delay: -22s;
   background: radial-gradient(circle at 45% 45%, #a7f3d0, #7dd3fc);
 }
@@ -345,20 +345,15 @@ body.dark .topbar {
 .card {
   position: relative; overflow: hidden;
   border-radius: var(--r4); padding: 22px 20px; margin-bottom: 12px;
-  /* true liquid glass — very low fill, background bleeds through */
-  background: linear-gradient(145deg,
-    rgba(255,255,255,.08) 0%,
-    rgba(255,255,255,.04) 50%,
-    rgba(220,235,255,.04) 100%);
-  backdrop-filter: blur(32px) saturate(220%);
-  -webkit-backdrop-filter: blur(32px) saturate(220%);
-  border: 1px solid rgba(255,255,255,.55);
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(40px) saturate(260%);
+  -webkit-backdrop-filter: blur(40px) saturate(260%);
+  border: 1px solid rgba(255,255,255,.50);
   box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.90),
-    inset 0 -1px 0 rgba(180,200,255,.15),
-    inset 1px 0 0 rgba(255,255,255,.40),
-    0 8px 40px rgba(100,130,220,.10),
-    0 2px 8px rgba(0,0,0,.04);
+    inset 0 1.5px 0 rgba(255,255,255,.80),
+    inset 0 -1px 0 rgba(180,200,255,.12),
+    0 8px 40px rgba(100,130,220,.08),
+    0 2px 8px rgba(0,0,0,.03);
   isolation: isolate;
   transition: box-shadow var(--d) var(--ease);
 }
@@ -409,19 +404,19 @@ body.dark .card::after {
 
 /* glass-card alias */
 .glass-card {
-  background: rgba(255,255,255,.08);
-  backdrop-filter: blur(32px) saturate(220%);
-  -webkit-backdrop-filter: blur(32px) saturate(220%);
-  border: 1px solid rgba(255,255,255,.55);
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(40px) saturate(260%);
+  -webkit-backdrop-filter: blur(40px) saturate(260%);
+  border: 1px solid rgba(255,255,255,.50);
   border-radius: var(--r3); padding: 16px 16px 13px; margin-bottom: 10px;
-  box-shadow: inset 0 2px 0 rgba(255,255,255,.85), var(--s1);
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,.75), var(--s1);
   transition: box-shadow var(--d);
 }
 body.dark .glass-card {
-  background: rgba(255,255,255,.05);
-  border-color: rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.10);
   color: var(--t1);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.10), var(--s1);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), var(--s1);
 }
 
 /* noise texture */
@@ -678,12 +673,12 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 @media (max-width: 600px) {
   /* reduce heavy GPU effects */
   .card, .topbar, #editModal > div, #changePwModal > div {
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
   }
-  .home-btn-glass {
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
+  .home-btn-glass, .glass-card {
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
   }
   /* larger touch targets & text for elderly */
   body { font-size: 17px !important; }
