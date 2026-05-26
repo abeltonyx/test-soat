@@ -306,6 +306,21 @@ body.dark .home-notice { background: rgba(180,130,40,.14); border-color: rgba(20
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255,255,255,.6);
 }
+/* pull to refresh */
+.ptr-indicator {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  z-index: 200; pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--g-bg); border: 1px solid var(--g-b);
+  box-shadow: var(--s2); opacity: 0;
+  transition: opacity .2s, top .2s;
+}
+.ptr-indicator.visible { opacity: 1; }
+.ptr-indicator .material-symbols-rounded { font-size: 20px; color: var(--p); margin: 0; transition: transform .3s; }
+.ptr-indicator.ready .material-symbols-rounded { transform: rotate(180deg); }
+.ptr-indicator.loading .material-symbols-rounded { animation: spin 1s linear infinite; }
+
 body.dark .topbar {
   background: rgba(12,18,34,.85);
   border-color: rgba(255,255,255,.06);
@@ -763,7 +778,6 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
     <div style="margin-top:24px;text-align:center;">
       <span style="font-size:11px;color:var(--t3);opacity:.5;letter-spacing:.04em;">Developed by Abel</span>
     </div>
-    
   </div>
 </div>
 
@@ -1341,6 +1355,10 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
     <!-- scrollable content -->
     <div id="notifList" style="padding:14px 20px;overflow-y:auto;flex:1;"></div>
   </div>
+</div>
+
+<div id="ptrIndicator" class="ptr-indicator">
+  <span class="material-symbols-rounded">arrow_downward</span>
 </div>
 
 <script>
@@ -2329,8 +2347,55 @@ _orbState.forEach(o => {
   o.el.style.background = `radial-gradient(circle at 38% 38%,${o.pal[0]},${o.pal[1]})`;
 });
 
+// ── Pull to Refresh ──
+(function initPTR() {
+  let startY = 0, currentY = 0, pulling = false;
+  const THRESHOLD = 80;
+  const ind = document.getElementById('ptrIndicator');
+
+  function isAdminPage() {
+    return document.getElementById('admin').classList.contains('active');
+  }
+
+  document.addEventListener('touchstart', e => {
+    if (!isAdminPage()) return;
+    if (window.scrollY > 0) return;
+    startY = e.touches[0].clientY;
+    pulling = true;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', e => {
+    if (!pulling) return;
+    currentY = e.touches[0].clientY;
+    const diff = currentY - startY;
+    if (diff <= 0) return;
+    ind.style.top = (Math.min(diff * 0.4, 60)) + 'px';
+    ind.classList.add('visible');
+    if (diff >= THRESHOLD) ind.classList.add('ready');
+    else ind.classList.remove('ready');
+  }, { passive: true });
+
+  document.addEventListener('touchend', () => {
+    if (!pulling) return;
+    pulling = false;
+    const diff = currentY - startY;
+    if (diff >= THRESHOLD && isAdminPage()) {
+      ind.classList.remove('ready');
+      ind.classList.add('loading');
+      loadAllData();
+      setTimeout(() => {
+        ind.classList.remove('visible', 'loading');
+        ind.style.top = '0px';
+      }, 1200);
+    } else {
+      ind.classList.remove('visible', 'ready');
+      ind.style.top = '0px';
+    }
+    startY = 0; currentY = 0;
+  });
+})();
+
 setInterval(() => {
-  _orbState.forEach(o => {
     o.t += o.speed * 6; // compensate for fewer updates
     if (o.t >= 1) {
       o.t = 0;
