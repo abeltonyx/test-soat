@@ -795,7 +795,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
   <div class="wrap inner-page" style="padding-top:16px;">
     <div class="card">
       <div class="noise"></div>
-      <input id="searchInput" placeholder="เลขลำดับงาน หรือ ชื่อผู้สั่ง…">
+      <input id="searchInput" placeholder="เลขลำดับงาน หรือ ชื่อผู้สั่ง…" onkeydown="if(event.key==='Enter')doSearch()">
       <button class="btn primary" style="margin-top:12px;" onclick="doSearch()">
         <span class="material-symbols-rounded">search</span> ค้นหา
       </button>
@@ -914,8 +914,8 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
         <div style="font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--p);opacity:.85;">Staff Access</div>
       </div>
       <h2 style="justify-content:center;margin-bottom:20px;">เข้าสู่ระบบ</h2>
-      <input id="loginUser" placeholder="Username">
-      <input id="loginPass" type="password" placeholder="Password">
+      <input id="loginUser" placeholder="Username" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
+      <input id="loginPass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')login()">
       <button id="loginBtn" class="btn primary" style="margin-top:18px;" onclick="login()">
         <span class="material-symbols-rounded">login</span> เข้าสู่ระบบ
       </button>
