@@ -1,4 +1,4 @@
-const CACHE = 'soat-v6.5.2';
+const CACHE = 'soat-v7';
 
 self.addEventListener('install', e => {
   e.waitUntil(self.skipWaiting());
