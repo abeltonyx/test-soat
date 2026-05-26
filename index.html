@@ -1328,7 +1328,10 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       <div style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--p);margin-bottom:3px;">ติดตั้งแอป</div>
       <span id="pwaText" style="color:var(--t2);"></span>
     </div>
-    <button onclick="document.getElementById('pwaBanner').style.display='none'" style="background:none;border:none;color:var(--t3);font-size:22px;padding:0 0 0 10px;cursor:pointer;line-height:1;">×</button>
+    <div style="display:flex;align-items:center;gap:8px;margin-left:10px;">
+      <button id="pwaInstallBtn" style="display:none;background:var(--p);border:none;color:#fff;font-family:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:99px;cursor:pointer;" onclick="triggerInstall()">ติดตั้ง</button>
+      <button onclick="document.getElementById('pwaBanner').style.display='none'" style="background:none;border:none;color:var(--t3);font-size:22px;padding:0;cursor:pointer;line-height:1;">×</button>
+    </div>
   </div>
 </div>
 
@@ -2035,6 +2038,22 @@ function clearForm() {
   var fi = document.getElementById('fileInput'); if(fi) fi.value = '';
   var sr = document.getElementById('serviceResult'); if(sr) sr.innerText = '';
 }
+// ── PWA Install Prompt (Android) ──
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+function triggerInstall() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(() => {
+    deferredPrompt = null;
+    document.getElementById('pwaBanner').style.display = 'none';
+  });
+}
+
 function showPwaPrompt() {
   // ตรวจสอบว่าเปิดผ่านไอคอนหน้าจอไปแล้วหรือยัง
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
@@ -2049,8 +2068,14 @@ function showPwaPrompt() {
     pwaText.innerHTML = "แตะไอคอน <b>Share</b> ด้านล่าง<br>แล้วเลือก <b>Add to Home Screen</b>";
     pwaBanner.style.display = 'block';
   } else if (/android/.test(userAgent)) {
-    // สำหรับ Android
-    pwaText.innerHTML = "แตะเมนู <b>⋮</b> มุมขวาบน<br>แล้วเลือก <b>เพิ่มลงในหน้าจอหลัก</b>";
+    if (deferredPrompt) {
+      // มี prompt พร้อม — แสดงปุ่มติดตั้งได้เลย
+      pwaText.innerHTML = "ติดตั้งเป็นแอปได้เลย!";
+      document.getElementById('pwaInstallBtn').style.display = 'block';
+    } else {
+      // ยังไม่มี prompt — บอกวิธีทำเอง
+      pwaText.innerHTML = "แตะเมนู <b>⋮</b> มุมขวาบน<br>แล้วเลือก <b>เพิ่มลงในหน้าจอหลัก</b>";
+    }
     pwaBanner.style.display = 'block';
   }
 }
