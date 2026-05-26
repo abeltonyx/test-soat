@@ -96,14 +96,16 @@ body {
 .bg {
   position: fixed; inset: 0; z-index: 0; overflow: hidden;
   background: linear-gradient(145deg,
-    #dde8ff 0%, #ede8ff 20%,
-    #f8eaff 38%, #ffedf5 55%,
-    #e8f3ff 72%, #eaeeff 100%);
+    #e8d5ff 0%,
+    #ffd6e8 22%,
+    #ffecd6 42%,
+    #d6eeff 65%,
+    #d6ffe8 100%);
 }
 body.dark .bg {
   background: linear-gradient(145deg,
-    #07101e 0%, #0a1226 22%,
-    #0d1020 42%, #0b1018 68%, #080e1a 100%);
+    #1a0a2e 0%, #2e0a1a 22%,
+    #2e1a0a 42%, #0a1a2e 65%, #0a2e1a 100%);
 }
 /* subtle noise */
 .bg::after {
@@ -122,26 +124,26 @@ body.dark .orb { mix-blend-mode: screen; }
 
 .orb-1 {
   width: 560px; height: 560px; top: -160px; left: -160px;
-  filter: blur(60px); opacity: .90;
+  filter: blur(60px); opacity: .85;
   animation-duration: 28s;
-  background: radial-gradient(circle at 40% 38%, #c4b5fd, #93c5fd);
+  background: radial-gradient(circle at 40% 38%, #d4a8ff, #ffb3d4);
 }
 .orb-2 {
   width: 480px; height: 480px; bottom: -140px; right: -140px;
-  filter: blur(65px); opacity: .85;
+  filter: blur(65px); opacity: .80;
   animation-duration: 36s; animation-delay: -14s;
-  background: radial-gradient(circle at 55% 50%, #fbc5e8, #fda4af);
+  background: radial-gradient(circle at 55% 50%, #ffd4a8, #a8d4ff);
 }
 .orb-3 {
   width: 400px; height: 400px; top: 38%; left: 42%;
-  filter: blur(70px); opacity: .75;
+  filter: blur(70px); opacity: .70;
   animation-duration: 44s; animation-delay: -22s;
-  background: radial-gradient(circle at 45% 45%, #a7f3d0, #7dd3fc);
+  background: radial-gradient(circle at 45% 45%, #a8ffce, #ffa8d4);
 }
 
-body.dark .orb-1 { background: radial-gradient(circle at 40% 38%, #5540c8, #2d6ab8); }
-body.dark .orb-2 { background: radial-gradient(circle at 55% 50%, #9c2888, #c84060); }
-body.dark .orb-3 { background: radial-gradient(circle at 45% 45%, #187850, #1060b0); }
+body.dark .orb-1 { background: radial-gradient(circle at 40% 38%, #6020a0, #a02060); }
+body.dark .orb-2 { background: radial-gradient(circle at 55% 50%, #a06020, #2060a0); }
+body.dark .orb-3 { background: radial-gradient(circle at 45% 45%, #20a060, #a02060); }
 
 @keyframes orbDrift {
   0%   { transform: translate(0,0)       scale(1.00); }
@@ -2316,11 +2318,11 @@ function drawAdminChart(filteredJobs) {
    ═══════════════════════════════════════ */
 
 const ORB_PALETTES = [
-  ['#c4b5fd','#93c5fd'], ['#a5b4fc','#7dd3fc'], ['#bae6fd','#7dd3fc'],
-  ['#fbcfe8','#f9a8d4'], ['#fda4af','#f9a8d4'], ['#f0abfc','#e879f9'],
-  ['#a7f3d0','#6ee7b7'], ['#bbf7d0','#86efac'],
-  ['#fde68a','#fcd34d'], ['#fed7aa','#fdba74'],
-  ['#fecdd3','#fda4af'], ['#e9d5ff','#c4b5fd'],
+  ['#d4a8ff','#ffb3d4'], ['#ffd4a8','#a8d4ff'], ['#a8ffce','#ffa8d4'],
+  ['#ffb3a8','#a8b3ff'], ['#d4ffa8','#ffa8d4'], ['#a8d4ff','#ffd4a8'],
+  ['#ffcca8','#c8a8ff'], ['#a8ffdd','#ffa8cc'],
+  ['#f5c8ff','#ffc8a8'], ['#a8f5ff','#ffa8f5'],
+  ['#ffd4b8','#b8d4ff'], ['#c8ffa8','#ffa8c8'],
 ];
 
 function _lerp(a, b, t) {
