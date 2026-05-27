@@ -640,8 +640,12 @@ body.dark .res-group { background: rgba(255,255,255,.04); border-color: var(--g-
 /* admin nav */
 .admin-nav {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 7px; margin-bottom: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px; margin-bottom: 7px;
+}
+.admin-nav-bottom {
+  grid-template-columns: repeat(2, 1fr) !important;
+  margin-bottom: 16px;
 }
 .admin-nav .btn {
   margin: 0; padding: 10px 8px; flex: unset;
@@ -656,6 +660,9 @@ body.dark .res-group { background: rgba(255,255,255,.04); border-color: var(--g-
 @media (max-width: 500px) {
   .admin-nav {
     grid-template-columns: repeat(3, 1fr);
+  }
+  .admin-nav-bottom {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
   .admin-nav .btn {
     padding: 11px 8px; font-size: 13px;
@@ -944,16 +951,18 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
   </div>
 
   <div class="wrap inner-page" style="padding-top:14px;">
-    <div class="admin-nav">
+    <div class="admin-nav" id="adminNavTop">
       <button id="allJobBtn" class="btn secondary" onclick="showSection('job','all')">
         <span class="material-symbols-rounded">list_alt</span>ทั้งหมด
       </button>
       <button class="btn secondary" onclick="showSection('job','my')">
         <span class="material-symbols-rounded">person</span>งานของฉัน
       </button>
-      <button class="btn secondary" onclick="showSection('resource','')">
-        <span class="material-symbols-rounded">inventory_2</span>วัสดุ
+      <button id="resMenuBtn" class="btn secondary" onclick="showSection('resource','')" style="display:none;">
+        <span class="material-symbols-rounded">inventory_2</span>ทรัพยากร
       </button>
+    </div>
+    <div class="admin-nav admin-nav-bottom">
       <button id="userMenuBtn" class="btn secondary" onclick="showSection('user','')">
         <span class="material-symbols-rounded">manage_accounts</span>ผู้ใช้
       </button>
@@ -1751,6 +1760,7 @@ function login() {
       document.getElementById('adminPageTitle').innerText = res.role === 'admin' ? 'Admin' : 'Staff';
       document.getElementById('allJobBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('userMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      document.getElementById('resMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       showSection('job', res.role === 'admin' ? 'all' : 'my');
       switchPage('admin');
       loadAllData();
@@ -1932,6 +1942,7 @@ function changePage(dir) {
   const totalPages = Math.ceil((window._filteredJobs||[]).length / PAGE_SIZE);
   CURRENT_PAGE = Math.max(1, Math.min(totalPages, CURRENT_PAGE + dir));
   renderPage(window._filteredJobs);
+  document.getElementById('jobSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 let _resData = [];
@@ -2060,6 +2071,7 @@ function resChangePage(dir) {
   const totalPages = Math.ceil(total / RES_JOB_PAGE_SIZE);
   _resJobPage = Math.max(1, Math.min(totalPages, _resJobPage + dir));
   renderResJobPage(window._resJobs);
+  document.getElementById('resourceSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderUsers() {
