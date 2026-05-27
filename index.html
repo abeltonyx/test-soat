@@ -114,9 +114,10 @@ body.dark .bg {
 
 /* ── Orbs ── */
 .orb {
-  position: absolute; border-radius: 50%;
+  position: absolute; border-radius: 50%; -webkit-border-radius: 50%;
   mix-blend-mode: multiply;
   animation: orbDrift ease-in-out infinite alternate;
+  transform: translateZ(0); -webkit-transform: translateZ(0);
 }
 body.dark .orb { mix-blend-mode: screen; }
 
