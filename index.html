@@ -1345,17 +1345,14 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
     </h3>
     <div id="adminAssignPanel" style="display:none;">
       <span class="section-label">มอบหมายให้</span>
-      <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
-        <span style="font-size:10px;font-weight:500;padding:3px 8px;border-radius:99px;background:rgba(124,158,248,.15);color:var(--p);border:0.5px solid rgba(124,158,248,.3);flex-shrink:0;">หลัก</span>
-        <select id="ownerSelect" style="flex:1;margin:0;"></select>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
-        <span style="font-size:10px;font-weight:500;padding:3px 8px;border-radius:99px;background:var(--g-bg2);color:var(--t3);border:0.5px solid var(--g-b2);flex-shrink:0;">ช่วย 1</span>
-        <select id="owner2Select" style="flex:1;margin:0;"></select>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
-        <span style="font-size:10px;font-weight:500;padding:3px 8px;border-radius:99px;background:var(--g-bg2);color:var(--t3);border:0.5px solid var(--g-b2);flex-shrink:0;">ช่วย 2</span>
-        <select id="owner3Select" style="flex:1;margin:0;"></select>
+      <div id="ownerTags" style="display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 7px;min-height:28px;"></div>
+      <div style="display:flex;gap:7px;align-items:center;">
+        <select id="ownerSelect" style="flex:1;margin:0;">
+          <option value="">— เลือก Staff เพิ่ม —</option>
+        </select>
+        <button class="btn secondary" style="margin:0;width:auto;padding:10px 12px;" onclick="addOwnerTag()">
+          <span class="material-symbols-rounded" style="font-size:15px;margin:0;">add</span>
+        </button>
       </div>
     </div>
     <span class="section-label" style="margin-top:14px;display:block;">สถานะ</span>
@@ -1656,6 +1653,17 @@ function updateDept() {
   document.getElementById('departmentInput').innerHTML = '<option value="">-- หน่วยงาน --</option>' + depts.map(d => `<option value="${d}">${d}</option>`).join('');
 }
 
+function setLoading(btn, loading, originalHTML) {
+  if (loading) {
+    btn._originalHTML = btn.innerHTML;
+    btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;margin:0;font-size:16px;">sync</span>`;
+    btn.disabled = true;
+  } else {
+    btn.innerHTML = originalHTML || btn._originalHTML || btn.innerHTML;
+    btn.disabled = false;
+  }
+}
+
 function submitService() {
   const d = {
     prefix: document.getElementById('prefixInput').value,
@@ -1829,17 +1837,13 @@ function loadAllData() {
 }
 
 function updateAssignDropdown() {
-  let opts = '<option value="-">-- ยังไม่ระบุ --</option>';
-  let helperOpts = '<option value="">-- ไม่มี --</option>';
+  let opts = '<option value="">— เลือก Staff เพิ่ม —</option>';
   let filterOpts = '<option value="all">-- ดูงานทุกคน --</option>';
   ALL_USERS.filter(u => String(u.active).toUpperCase() === 'TRUE').forEach(u => {
     opts += `<option value="${u.name}">${u.name}</option>`;
-    helperOpts += `<option value="${u.name}">${u.name}</option>`;
     filterOpts += `<option value="${u.name}">${u.name}</option>`;
   });
   document.getElementById('ownerSelect').innerHTML = opts;
-  document.getElementById('owner2Select').innerHTML = helperOpts;
-  document.getElementById('owner3Select').innerHTML = helperOpts;
   document.getElementById('adminStaffFilter').innerHTML = filterOpts;
 }
 
@@ -2202,12 +2206,14 @@ function addUserFromForm() {
   const n = document.getElementById('newName').value;
   const r = document.getElementById('newRole').value;
   if(!u || !p || !n) return alert("กรุณากรอกข้อมูลให้ครบถ้วน");
-  
+  const btn = document.querySelector('#userFormBox .btn.primary');
+  setLoading(btn, true);
   gasCall('addUser', { u, p, r, n }).then(() => {
+    setLoading(btn, false);
     alert("บันทึกผู้ใช้สำเร็จ");
     toggleUserForm();
     loadAllData();
-  }).catch(e => alert(e.message));
+  }).catch(e => { setLoading(btn, false); alert(e.message); });
 }
 
 function toggleUser(user, currentStatus) {
@@ -2237,10 +2243,10 @@ function openEditModal(jobId) {
 
   if(CURRENT_USER.role === 'admin') {
     document.getElementById('adminAssignPanel').style.display = 'block';
+    const tagsEl = document.getElementById('ownerTags');
+    tagsEl.innerHTML = '';
     const owners = (job.owner || '').split(',').map(s => s.trim()).filter(Boolean);
-    document.getElementById('ownerSelect').value = owners[0] || '-';
-    document.getElementById('owner2Select').value = owners[1] || '';
-    document.getElementById('owner3Select').value = owners[2] || '';
+    owners.forEach(name => addOwnerTagWithName(name));
   } else {
     document.getElementById('adminAssignPanel').style.display = 'none';
   }
@@ -2266,8 +2272,7 @@ function closeEditModal() { document.getElementById('editModal').style.display =
 function saveEdit() {
   if(!ACTIVE_ID) return;
   const btn = document.getElementById('btnSaveJob');
-  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync</span> กำลังบันทึก...`; 
-  btn.disabled = true;
+  setLoading(btn, true);
 
   const payload = {
     id: ACTIVE_ID,
@@ -2275,10 +2280,9 @@ function saveEdit() {
     note: document.getElementById('editNote').value,
     owner: (() => {
       if (CURRENT_USER.role !== 'admin') return CURRENT_USER.name;
-      const o1 = document.getElementById('ownerSelect').value;
-      const o2 = document.getElementById('owner2Select').value;
-      const o3 = document.getElementById('owner3Select').value;
-      return [o1, o2, o3].filter(v => v && v !== '-' && v !== '').join(', ') || '-';
+      const tags = document.getElementById('ownerTags');
+      const names = tags ? Array.from(tags.querySelectorAll('[data-name]')).map(t => t.dataset.name) : [];
+      return names.length ? names.join(', ') : '-';
     })(),
     doneDate: document.getElementById('editDoneDate').value,
     resources: []
@@ -2295,11 +2299,11 @@ function saveEdit() {
     }
   }
   gasCall('updateJob', { payload }).then(() => {
-    btn.innerHTML = "บันทึก"; btn.disabled = false;
+    setLoading(btn, false);
     closeEditModal();
     loadAllData();
   }).catch(err => {
-    btn.innerHTML = "บันทึก"; btn.disabled = false;
+    setLoading(btn, false);
     alert("เกิดข้อผิดพลาด: " + err.message);
   });
 }
@@ -2427,8 +2431,11 @@ function saveChangePw() {
   if(!newPw && !newUser) { msgEl.textContent = 'ไม่มีข้อมูลที่จะเปลี่ยน'; return; }
 
   msgEl.textContent = '';
+  const btn = document.querySelector('#changePwModal .btn.primary');
+  setLoading(btn, true);
   gasCall('changeUserProfile', { user: CURRENT_USER.user, oldPw, newPw: newPw||null, newUser: newUser||null })
     .then(res => {
+      setLoading(btn, false);
       if(res.success) {
         if(newUser) CURRENT_USER.user = newUser;
         document.getElementById('pwCurrentUser').textContent = CURRENT_USER.user;
@@ -2438,7 +2445,7 @@ function saveChangePw() {
         msgEl.textContent = res.msg || 'เกิดข้อผิดพลาด';
       }
     })
-    .catch(e => { msgEl.textContent = 'ผิดพลาด: ' + e.message; });
+    .catch(e => { setLoading(btn, false); msgEl.textContent = 'ผิดพลาด: ' + e.message; });
 }
 
 function checkNewJobs(jobs) {
@@ -2554,6 +2561,8 @@ function closeNotif() {
 }
 
 function acceptJob(jobId) {
+  const btn = document.querySelector(`[onclick="acceptJob('${jobId}')"]`);
+  if (btn) setLoading(btn, true);
   const payload = {
     id: String(jobId), status: 'กำลังดำเนินการ',
     owner: CURRENT_USER.name, note: '', doneDate: '', resources: []
@@ -2563,6 +2572,25 @@ function acceptJob(jobId) {
       ALL_JOBS = data; checkNewJobs(data); renderNotifList();
     });
   });
+}
+
+function addOwnerTagWithName(name) {
+  if (!name) return;
+  const tagsEl = document.getElementById('ownerTags');
+  if (!tagsEl) return;
+  if (tagsEl.querySelector(`[data-name="${name}"]`)) return;
+  const tag = document.createElement('span');
+  tag.dataset.name = name;
+  tag.style.cssText = 'padding:4px 10px;border-radius:99px;font-size:12px;background:rgba(124,158,248,.15);color:var(--p);border:0.5px solid rgba(124,158,248,.3);display:inline-flex;align-items:center;gap:5px;';
+  tag.innerHTML = `${name} <span onclick="this.parentElement.remove()" style="font-size:14px;line-height:1;opacity:.6;cursor:pointer;">×</span>`;
+  tagsEl.appendChild(tag);
+}
+
+function addOwnerTag() {
+  const sel = document.getElementById('ownerSelect');
+  if (!sel || !sel.value) return;
+  addOwnerTagWithName(sel.value);
+  sel.value = '';
 }
 
 function addAssignTag(jobId) {
@@ -2583,12 +2611,13 @@ function addAssignTag(jobId) {
 function claimJob(jobId) {
   const tagsEl = document.getElementById('tags_' + jobId);
   const names = tagsEl ? Array.from(tagsEl.querySelectorAll('[data-name]')).map(t => t.dataset.name) : [];
-  // fallback dropdown เดิม
   if (!names.length) {
     const sel = document.getElementById('assignSel_' + jobId);
     if (sel && sel.value) names.push(sel.value);
   }
   if (!names.length) { alert('กรุณาเลือก Staff ก่อน'); return; }
+  const btn = document.querySelector(`[onclick="claimJob('${jobId}')"]`);
+  if (btn) setLoading(btn, true);
   const owner = names.join(', ');
   const payload = {
     id: String(jobId), status: 'รอดำเนินการ',
