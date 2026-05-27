@@ -1861,7 +1861,7 @@ function renderJobs() {
   }
 
   if(CURRENT_JOB_VIEW === 'my') {
-    baseJobs = baseJobs.filter(j => (j.owner || '').trim() === CURRENT_USER.name.trim());
+    baseJobs = baseJobs.filter(j => (j.owner || '').includes(CURRENT_USER.name.trim()));
   } else if(CURRENT_JOB_VIEW === 'all' && CURRENT_USER.role === 'admin') {
     const staffFilter = document.getElementById('adminStaffFilter').value;
     if(staffFilter !== 'all') {
@@ -2422,7 +2422,7 @@ function checkNewJobs(jobs) {
 
   // งานของฉันที่รอดำเนินการ
   const myWaiting = jobs.filter(j =>
-    j.owner && j.owner.trim() === CURRENT_USER.name.trim() &&
+    j.owner && j.owner.includes(CURRENT_USER.name.trim()) &&
     j.status.includes('รอ')
   );
 
