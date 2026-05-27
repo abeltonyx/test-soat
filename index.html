@@ -2287,7 +2287,7 @@ function saveEdit() {
     owner: (() => {
       if (CURRENT_USER.role !== 'admin') return CURRENT_USER.name;
       const tags = document.getElementById('ownerTags');
-      const names = tags ? Array.from(tags.querySelectorAll('[data-name]')).map(t => t.dataset.name) : [];
+      const names = tags ? Array.from(tags.querySelectorAll('[data-name]')).map(t => t.dataset.name).filter(n => n && n !== '-') : [];
       return names.length ? names.join(', ') : '-';
     })(),
     doneDate: document.getElementById('editDoneDate').value,
@@ -2581,7 +2581,7 @@ function acceptJob(jobId) {
 }
 
 function addOwnerTagWithName(name) {
-  if (!name) return;
+  if (!name || name === '-') return;
   const tagsEl = document.getElementById('ownerTags');
   if (!tagsEl) return;
   if (tagsEl.querySelector(`[data-name="${name}"]`)) return;
