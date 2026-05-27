@@ -640,7 +640,7 @@ body.dark .res-group { background: rgba(255,255,255,.04); border-color: var(--g-
 /* admin nav */
 .admin-nav {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 7px; margin-bottom: 16px;
 }
 .admin-nav .btn {
@@ -655,10 +655,10 @@ body.dark .res-group { background: rgba(255,255,255,.04); border-color: var(--g-
 }
 @media (max-width: 500px) {
   .admin-nav {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
   .admin-nav .btn {
-    padding: 11px 8px; font-size: 14px;
+    padding: 11px 8px; font-size: 13px;
   }
 }
 
@@ -951,6 +951,9 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       <button class="btn secondary" onclick="showSection('job','my')">
         <span class="material-symbols-rounded">person</span>งานของฉัน
       </button>
+      <button class="btn secondary" onclick="showSection('resource','')">
+        <span class="material-symbols-rounded">inventory_2</span>วัสดุ
+      </button>
       <button id="userMenuBtn" class="btn secondary" onclick="showSection('user','')">
         <span class="material-symbols-rounded">manage_accounts</span>ผู้ใช้
       </button>
@@ -1031,6 +1034,19 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       <div id="paginationTop"></div>
       <div id="adminList"></div>
       <div id="paginationBottom"></div>
+    </div>
+
+    <div id="resourceSection" style="display:none;">
+      <div class="card" style="padding:14px 16px;margin-bottom:10px;">
+        <div class="noise"></div>
+        <span class="section-label">สรุปการใช้วัสดุ</span>
+        <div id="resourceSummary" style="margin-top:8px;"></div>
+      </div>
+      <div class="card" style="padding:14px 16px;">
+        <div class="noise"></div>
+        <span class="section-label">รายการทั้งหมด</span>
+        <div id="resourceList" style="margin-top:8px;"></div>
+      </div>
     </div>
 
     <div id="userSection" style="display:none;">
@@ -1720,7 +1736,8 @@ function login() {
 function showSection(sec, jobViewType) {
   document.getElementById('jobSection').style.display = sec === 'job' ? 'block' : 'none';
   document.getElementById('userSection').style.display = sec === 'user' ? 'block' : 'none';
-  
+  document.getElementById('resourceSection').style.display = sec === 'resource' ? 'block' : 'none';
+
   if(sec === 'job' && jobViewType) { 
     CURRENT_JOB_VIEW = jobViewType; 
     if(CURRENT_JOB_VIEW === 'all' && CURRENT_USER.role === 'admin') {
@@ -1730,6 +1747,7 @@ function showSection(sec, jobViewType) {
     }
     filterStatus('all'); 
   }
+  if(sec === 'resource') loadResources();
 }
 
 function loadAllData() {
@@ -1886,6 +1904,58 @@ function changePage(dir) {
   const totalPages = Math.ceil((window._filteredJobs||[]).length / PAGE_SIZE);
   CURRENT_PAGE = Math.max(1, Math.min(totalPages, CURRENT_PAGE + dir));
   renderPage(window._filteredJobs);
+}
+
+function loadResources() {
+  document.getElementById('resourceSummary').innerHTML = loadingHTML;
+  document.getElementById('resourceList').innerHTML = '';
+  gasCall('getResources', { owner: CURRENT_USER.name, role: CURRENT_USER.role }).then(data => {
+    renderResources(data);
+  }).catch(() => {
+    document.getElementById('resourceSummary').innerHTML = '<div style="color:#ef4444;font-size:13px;">เกิดข้อผิดพลาด</div>';
+  });
+}
+
+function renderResources(data) {
+  if (!data || data.length === 0) {
+    document.getElementById('resourceSummary').innerHTML = '<div style="text-align:center;color:var(--t2);padding:20px 0;">ยังไม่มีข้อมูลทรัพยากร</div>';
+    document.getElementById('resourceList').innerHTML = '';
+    return;
+  }
+
+  // สรุปรวมแต่ละชนิด
+  const countMap = {};
+  data.forEach(r => {
+    if (!r.name) return;
+    countMap[r.name] = (countMap[r.name] || 0) + 1;
+  });
+  const sorted = Object.entries(countMap).sort((a,b) => b[1]-a[1]);
+  const max = sorted[0]?.[1] || 1;
+
+  const colors = ['#7c9ef8','#a0c4ff','#c0b8ff','#ffc0e0','#ffd4b8','#a7f3d0'];
+  document.getElementById('resourceSummary').innerHTML = sorted.map(([name, count], i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--g-b2);">
+      <div style="flex:1;font-size:13px;color:var(--t1);">${name}</div>
+      <div style="flex:1;height:4px;background:var(--g-b2);border-radius:2px;overflow:hidden;">
+        <div style="height:100%;width:${Math.round(count/max*100)}%;background:${colors[i%colors.length]};border-radius:2px;"></div>
+      </div>
+      <div style="font-size:13px;font-weight:500;color:var(--t1);min-width:24px;text-align:right;">${count}</div>
+    </div>
+  `).join('');
+
+  // รายการ
+  document.getElementById('resourceList').innerHTML = data.map(r => `
+    <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--g-b2);">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--p);flex-shrink:0;"></div>
+      <div style="flex:1;">
+        <div style="font-size:13px;color:var(--t1);">${r.name}</div>
+        <div style="font-size:11px;color:var(--t3);">#${r.jobId} · ${r.doneDate || '-'}</div>
+      </div>
+      <div style="font-size:12px;color:var(--t2);text-align:right;">
+        ${[r.qty, r.color, r.size].filter(Boolean).join(' · ') || '-'}
+      </div>
+    </div>
+  `).join('') || '<div style="text-align:center;color:var(--t2);padding:12px;">ไม่มีรายการ</div>';
 }
 
 function renderUsers() {
