@@ -1037,15 +1037,43 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
     </div>
 
     <div id="resourceSection" style="display:none;">
-      <div class="card" style="padding:14px 16px;margin-bottom:10px;">
-        <div class="noise"></div>
-        <span class="section-label">สรุปการใช้วัสดุ</span>
-        <div id="resourceSummary" style="margin-top:8px;"></div>
+      <!-- stat cards -->
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px;">
+        <div class="card" style="padding:11px 12px;margin:0;">
+          <div class="noise"></div>
+          <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">รายการทั้งหมด</div>
+          <div id="resStat1" style="font-size:20px;font-weight:500;color:var(--t1);">—</div>
+          <div style="font-size:10px;color:var(--t2);margin-top:1px;">งานที่บันทึกวัสดุ</div>
+        </div>
+        <div class="card" style="padding:11px 12px;margin:0;">
+          <div class="noise"></div>
+          <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">ใช้บ่อยสุด</div>
+          <div id="resStat2" style="font-size:13px;font-weight:500;color:var(--t1);padding-top:3px;">—</div>
+          <div id="resStat3" style="font-size:10px;color:var(--t2);margin-top:1px;">—</div>
+        </div>
       </div>
-      <div class="card" style="padding:14px 16px;">
+
+      <!-- วัสดุที่ใช้บ่อย -->
+      <div class="card" style="margin-bottom:10px;">
         <div class="noise"></div>
-        <span class="section-label">รายการทั้งหมด</span>
-        <div id="resourceList" style="margin-top:8px;"></div>
+        <span class="section-label">วัสดุที่ใช้บ่อย</span>
+        <div id="resSummaryRows"></div>
+        <div id="resExtraRows" style="display:none;"></div>
+        <button id="resMoreBtn" onclick="toggleResMore()" style="display:none;width:100%;padding:9px;border-radius:10px;border:0.5px solid var(--g-b2);background:transparent;font-family:inherit;font-size:12px;color:var(--p);cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:4px;">
+          <span class="material-symbols-rounded" id="resMoreIcon" style="font-size:15px;margin:0;">expand_more</span>
+          <span id="resMoreTxt">ดูเพิ่มเติม</span>
+        </button>
+      </div>
+
+      <!-- รายการงาน -->
+      <div class="card">
+        <div class="noise"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span class="section-label" style="margin:0;">รายการงาน</span>
+          <span id="resJobPageInfo" style="font-size:11px;color:var(--t3);"></span>
+        </div>
+        <div id="resJobList"></div>
+        <div id="resJobPagination" style="display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 0 0;"></div>
       </div>
     </div>
 
@@ -1906,56 +1934,132 @@ function changePage(dir) {
   renderPage(window._filteredJobs);
 }
 
+let _resData = [];
+let _resJobPage = 1;
+const RES_JOB_PAGE_SIZE = 10;
+let _resExpanded = false;
+
 function loadResources() {
-  document.getElementById('resourceSummary').innerHTML = loadingHTML;
-  document.getElementById('resourceList').innerHTML = '';
+  document.getElementById('resSummaryRows').innerHTML = loadingHTML;
+  document.getElementById('resJobList').innerHTML = '';
   gasCall('getResources', { owner: CURRENT_USER.name, role: CURRENT_USER.role }).then(data => {
-    renderResources(data);
+    _resData = data || [];
+    _resJobPage = 1;
+    _resExpanded = false;
+    renderResources();
   }).catch(() => {
-    document.getElementById('resourceSummary').innerHTML = '<div style="color:#ef4444;font-size:13px;">เกิดข้อผิดพลาด</div>';
+    document.getElementById('resSummaryRows').innerHTML = '<div style="color:#ef4444;font-size:13px;">เกิดข้อผิดพลาด</div>';
   });
 }
 
-function renderResources(data) {
-  if (!data || data.length === 0) {
-    document.getElementById('resourceSummary').innerHTML = '<div style="text-align:center;color:var(--t2);padding:20px 0;">ยังไม่มีข้อมูลทรัพยากร</div>';
-    document.getElementById('resourceList').innerHTML = '';
+function toggleResMore() {
+  _resExpanded = !_resExpanded;
+  document.getElementById('resExtraRows').style.display = _resExpanded ? 'block' : 'none';
+  document.getElementById('resMoreIcon').textContent = _resExpanded ? 'expand_less' : 'expand_more';
+  document.getElementById('resMoreTxt').textContent = _resExpanded ? 'ย่อ' : `ดูเพิ่มเติม`;
+}
+
+function renderResources() {
+  const data = _resData;
+  if (!data.length) {
+    document.getElementById('resStat1').textContent = '0';
+    document.getElementById('resStat2').textContent = '—';
+    document.getElementById('resStat3').textContent = '—';
+    document.getElementById('resSummaryRows').innerHTML = '<div style="text-align:center;color:var(--t2);padding:20px 0;">ยังไม่มีข้อมูลทรัพยากร</div>';
+    document.getElementById('resJobList').innerHTML = '';
     return;
   }
 
-  // สรุปรวมแต่ละชนิด
-  const countMap = {};
+  // group by jobId
+  const jobMap = {};
   data.forEach(r => {
-    if (!r.name) return;
-    countMap[r.name] = (countMap[r.name] || 0) + 1;
+    if (!jobMap[r.jobId]) jobMap[r.jobId] = { jobId: r.jobId, doneDate: r.doneDate, items: [] };
+    jobMap[r.jobId].items.push(r);
   });
-  const sorted = Object.entries(countMap).sort((a,b) => b[1]-a[1]);
-  const max = sorted[0]?.[1] || 1;
+  const jobs = Object.values(jobMap).sort((a, b) => Number(b.jobId) - Number(a.jobId));
 
-  const colors = ['#7c9ef8','#a0c4ff','#c0b8ff','#ffc0e0','#ffd4b8','#a7f3d0'];
-  document.getElementById('resourceSummary').innerHTML = sorted.map(([name, count], i) => `
-    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--g-b2);">
-      <div style="flex:1;font-size:13px;color:var(--t1);">${name}</div>
-      <div style="flex:1;height:4px;background:var(--g-b2);border-radius:2px;overflow:hidden;">
+  // stat
+  document.getElementById('resStat1').textContent = jobs.length;
+
+  // count by name
+  const countMap = {};
+  data.forEach(r => { countMap[r.name] = (countMap[r.name] || 0) + 1; });
+  const sorted = Object.entries(countMap).sort((a, b) => b[1] - a[1]);
+  const max = sorted[0]?.[1] || 1;
+  document.getElementById('resStat2').textContent = sorted[0]?.[0] || '—';
+  document.getElementById('resStat3').textContent = sorted[0] ? `${sorted[0][1]} ครั้ง · ${Math.round(sorted[0][1]/data.length*100)}%` : '—';
+
+  // bar chart
+  const colors = ['#7c9ef8','#a0c4ff','#c0b8ff','#ffc0e0','#ffd4b8','#a7f3d0','#c4b5fd','#fed7aa'];
+  const rowHtml = (name, count, i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--g-b2);">
+      <div style="flex:1;font-size:12px;color:var(--t1);">${name}</div>
+      <div style="width:70px;height:4px;background:var(--g-b2);border-radius:2px;overflow:hidden;flex-shrink:0;">
         <div style="height:100%;width:${Math.round(count/max*100)}%;background:${colors[i%colors.length]};border-radius:2px;"></div>
       </div>
-      <div style="font-size:13px;font-weight:500;color:var(--t1);min-width:24px;text-align:right;">${count}</div>
-    </div>
-  `).join('');
+      <div style="font-size:12px;font-weight:500;color:var(--t1);min-width:18px;text-align:right;">${count}</div>
+    </div>`;
 
-  // รายการ
-  document.getElementById('resourceList').innerHTML = data.map(r => `
-    <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--g-b2);">
-      <div style="width:8px;height:8px;border-radius:50%;background:var(--p);flex-shrink:0;"></div>
-      <div style="flex:1;">
-        <div style="font-size:13px;color:var(--t1);">${r.name}</div>
-        <div style="font-size:11px;color:var(--t3);">#${r.jobId} · ${r.doneDate || '-'}</div>
-      </div>
-      <div style="font-size:12px;color:var(--t2);text-align:right;">
-        ${[r.qty, r.color, r.size].filter(Boolean).join(' · ') || '-'}
-      </div>
-    </div>
-  `).join('') || '<div style="text-align:center;color:var(--t2);padding:12px;">ไม่มีรายการ</div>';
+  document.getElementById('resSummaryRows').innerHTML = sorted.slice(0, 5).map((e, i) => rowHtml(e[0], e[1], i)).join('');
+  const extra = sorted.slice(5);
+  if (extra.length) {
+    document.getElementById('resExtraRows').innerHTML = extra.map((e, i) => rowHtml(e[0], e[1], i + 5)).join('');
+    document.getElementById('resMoreBtn').style.display = 'flex';
+    document.getElementById('resMoreTxt').textContent = `ดูเพิ่มเติม (${extra.length} รายการ)`;
+  } else {
+    document.getElementById('resMoreBtn').style.display = 'none';
+  }
+
+  renderResJobPage(jobs);
+}
+
+function renderResJobPage(jobs) {
+  if (!jobs) {
+    const countMap = {};
+    _resData.forEach(r => { countMap[r.name] = (countMap[r.name] || 0) + 1; });
+    const jobMap = {};
+    _resData.forEach(r => {
+      if (!jobMap[r.jobId]) jobMap[r.jobId] = { jobId: r.jobId, doneDate: r.doneDate, items: [] };
+      jobMap[r.jobId].items.push(r);
+    });
+    jobs = Object.values(jobMap).sort((a, b) => Number(b.jobId) - Number(a.jobId));
+  }
+
+  const total = jobs.length;
+  const totalPages = Math.ceil(total / RES_JOB_PAGE_SIZE);
+  const start = (_resJobPage - 1) * RES_JOB_PAGE_SIZE;
+  const pageJobs = jobs.slice(start, start + RES_JOB_PAGE_SIZE);
+
+  document.getElementById('resJobPageInfo').textContent = `หน้า ${_resJobPage}/${totalPages} (${total})`;
+  document.getElementById('resJobList').innerHTML = pageJobs.map(j => {
+    const tags = j.items.map(r => {
+      const detail = [r.qty, r.color, r.size].filter(Boolean).join(' ');
+      return `<span style="padding:3px 8px;border-radius:99px;font-size:11px;background:rgba(255,255,255,.5);border:0.5px solid var(--g-b2);color:var(--t2);">${r.name}${detail ? ' · ' + detail : ''}</span>`;
+    }).join('');
+    return `
+      <div style="background:rgba(255,255,255,.35);border:0.5px solid var(--g-b2);border-radius:12px;padding:10px 12px;margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="font-size:15px;font-weight:500;color:var(--p);">#${j.jobId}</div>
+          <div style="font-size:11px;color:var(--t3);">${j.doneDate || ''}</div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;">${tags}</div>
+      </div>`;
+  }).join('') || '<div style="text-align:center;color:var(--t2);padding:12px;">ไม่มีรายการ</div>';
+
+  document.getElementById('resJobPagination').innerHTML = totalPages > 1 ? `
+    <button class="pg-btn" onclick="resChangePage(-1)" style="${_resJobPage<=1?'opacity:.3;pointer-events:none;':''}">‹</button>
+    <span style="font-size:12px;color:var(--t2);">หน้า ${_resJobPage}/${totalPages}</span>
+    <button class="pg-btn" onclick="resChangePage(1)" style="${_resJobPage>=totalPages?'opacity:.3;pointer-events:none;':''}">›</button>
+  ` : '';
+
+  window._resJobs = jobs;
+}
+
+function resChangePage(dir) {
+  const total = (window._resJobs || []).length;
+  const totalPages = Math.ceil(total / RES_JOB_PAGE_SIZE);
+  _resJobPage = Math.max(1, Math.min(totalPages, _resJobPage + dir));
+  renderResJobPage(window._resJobs);
 }
 
 function renderUsers() {
