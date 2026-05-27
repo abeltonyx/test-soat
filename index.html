@@ -961,6 +961,9 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       <button id="resMenuBtn" class="btn secondary" onclick="showSection('resource','')" style="display:none;">
         <span class="material-symbols-rounded">inventory_2</span>ทรัพยากร
       </button>
+      <button id="staffAccountBtn" class="btn secondary" onclick="openChangePw()" style="display:none;">
+        <span class="material-symbols-rounded">key</span>บัญชีฉัน
+      </button>
     </div>
     <div class="admin-nav admin-nav-bottom" id="adminNavBottom">
       <button id="userMenuBtn" class="btn secondary" onclick="showSection('user','')">
@@ -1803,6 +1806,8 @@ function login() {
       document.getElementById('resMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('adminNavTop').style.gridTemplateColumns = res.role === 'admin' ? '' : 'repeat(2,1fr)';
       document.getElementById('adminNavBottom').style.display = res.role === 'admin' ? 'grid' : 'none';
+      // staff — ย้ายปุ่มบัญชีฉันไปแถวบน
+      document.getElementById('staffAccountBtn').style.display = res.role === 'admin' ? 'none' : 'block';
       showSection('job', res.role === 'admin' ? 'all' : 'my');
       switchPage('admin');
       loadAllData();
