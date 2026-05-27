@@ -1865,7 +1865,7 @@ function renderJobs() {
   } else if(CURRENT_JOB_VIEW === 'all' && CURRENT_USER.role === 'admin') {
     const staffFilter = document.getElementById('adminStaffFilter').value;
     if(staffFilter !== 'all') {
-      baseJobs = baseJobs.filter(j => (j.owner || '').trim() === staffFilter.trim());
+      baseJobs = baseJobs.filter(j => (j.owner || '').includes(staffFilter.trim()));
     }
   }
 
