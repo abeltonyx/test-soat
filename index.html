@@ -1689,13 +1689,22 @@ function goBack() {
       if (Math.abs(dx) > 8 || dy > 8) {
         isHorizontal = Math.abs(dx) > dy * 1.5;
         if (!isHorizontal) { isDragging = false; return; }
+        // ปิด CSS animation ทันทีที่รู้ว่าเป็น horizontal
+        currentPage.style.animation = 'none';
       }
       return;
     }
-    if (dx < 0) return;
+    if (dx < 0) {
+      // ลากซ้าย — เลื่อนตามแต่จำกัดไว้
+      const clampedDx = Math.max(dx, -30);
+      currentPage.style.transition = 'none';
+      currentPage.style.transform = `translateX(${clampedDx}px)`;
+      currentPage.style.opacity = String(Math.min(1, 1 + clampedDx / 100));
+      return;
+    }
     currentPage.style.transition = 'none';
     currentPage.style.transform = `translateX(${dx}px)`;
-    currentPage.style.opacity = String(Math.max(0.4, 1 - (dx / window.innerWidth) * 0.6));
+    currentPage.style.opacity = String(Math.max(0.3, 1 - (dx / window.innerWidth) * 0.7));
   }, { passive: true });
 
   document.addEventListener('touchend', e => {
@@ -1705,10 +1714,12 @@ function goBack() {
     const dx = e.changedTouches[0].clientX - startX;
 
     if (dx > 80) {
-      currentPage.style.transition = 'transform .25s ease, opacity .25s ease';
+      // ยืนยัน — เลื่อนออกขวา
+      currentPage.style.transition = 'transform .22s ease, opacity .22s ease';
       currentPage.style.transform = `translateX(${window.innerWidth}px)`;
       currentPage.style.opacity = '0';
       setTimeout(() => {
+        currentPage.style.animation = '';
         currentPage.style.transition = '';
         currentPage.style.transform = '';
         currentPage.style.opacity = '';
@@ -1719,12 +1730,16 @@ function goBack() {
           prev.classList.add('active');
           window.scrollTo(0, 0);
         }
-      }, 250);
+      }, 220);
     } else {
+      // ยกเลิก — snap กลับ
       currentPage.style.transition = 'transform .2s ease, opacity .2s ease';
       currentPage.style.transform = '';
       currentPage.style.opacity = '';
-      setTimeout(() => { currentPage.style.transition = ''; }, 200);
+      setTimeout(() => {
+        currentPage.style.animation = '';
+        currentPage.style.transition = '';
+      }, 200);
     }
   });
 })();
