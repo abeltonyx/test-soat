@@ -1627,16 +1627,11 @@ function clearSearch() {
   var si = document.getElementById('searchInput'); if(si) si.value='';
   var res = document.getElementById('result'); if(res) res.innerHTML='';
 }
-const PAGE_HISTORY = [];
-history.replaceState({ page: 'home' }, '', '');
-
 function switchPage(id) {
   const current = document.querySelector('.page.active');
   const next = document.getElementById(id);
   if (current === next) return;
   if (current) {
-    PAGE_HISTORY.push(current.id);
-    history.pushState({ page: id }, '', '');
     current.classList.add('exit');
     setTimeout(() => {
       current.classList.remove('active', 'exit');
@@ -1646,28 +1641,6 @@ function switchPage(id) {
   } else {
     next.classList.add('active');
     window.scrollTo(0, 0);
-  }
-}
-
-window.addEventListener('popstate', () => {
-  if (PAGE_HISTORY.length > 0) {
-    goBack();
-  }
-});
-
-function goBack() {
-  if (PAGE_HISTORY.length === 0) return;
-  const prevId = PAGE_HISTORY.pop();
-  const current = document.querySelector('.page.active');
-  const prev = document.getElementById(prevId);
-  if (!prev || current === prev) return;
-  if (current) {
-    current.classList.add('exit');
-    setTimeout(() => {
-      current.classList.remove('active', 'exit');
-      prev.classList.add('active');
-      window.scrollTo(0, 0);
-    }, 150);
   }
 }
 
