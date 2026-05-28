@@ -1628,6 +1628,7 @@ function clearSearch() {
   var res = document.getElementById('result'); if(res) res.innerHTML='';
 }
 const PAGE_HISTORY = [];
+history.replaceState({ page: 'home' }, '', '');
 
 function switchPage(id) {
   const current = document.querySelector('.page.active');
@@ -1635,6 +1636,7 @@ function switchPage(id) {
   if (current === next) return;
   if (current) {
     PAGE_HISTORY.push(current.id);
+    history.pushState({ page: id }, '', '');
     current.classList.add('exit');
     setTimeout(() => {
       current.classList.remove('active', 'exit');
@@ -1646,6 +1648,12 @@ function switchPage(id) {
     window.scrollTo(0, 0);
   }
 }
+
+window.addEventListener('popstate', () => {
+  if (PAGE_HISTORY.length > 0) {
+    goBack();
+  }
+});
 
 function goBack() {
   if (PAGE_HISTORY.length === 0) return;
