@@ -1550,11 +1550,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const i=document.getElementById('darkIcon'),l=document.getElementById('darkLabel');
     if(i) i.textContent='light_mode'; if(l) l.textContent='โหมดกลางวัน';
   }
-  flatpickr("#orderDateInput", { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
-  flatpickr("#needDateInput", { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
-  flatpickr("#editDoneDate", { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
-  fpStart = flatpickr("#filterStartDate", { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
-  fpEnd = flatpickr("#filterEndDate", { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
+  flatpickr("#orderDateInput", { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
+  flatpickr("#needDateInput", { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
+  flatpickr("#editDoneDate", { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
+  fpStart = flatpickr("#filterStartDate", { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
+  fpEnd = flatpickr("#filterEndDate", { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
   
   let resHtml = '';
   for(let i=1; i<=3; i++){
@@ -2005,8 +2005,8 @@ function loadResources() {
   document.getElementById('resJobList').innerHTML = '';
 
   if (!fpResStart) {
-    fpResStart = flatpickr("#resFilterStart", { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
-    fpResEnd   = flatpickr("#resFilterEnd",   { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
+    fpResStart = flatpickr("#resFilterStart", { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
+    fpResEnd   = flatpickr("#resFilterEnd",   { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
   }
 
   gasCall('getResources', { owner: CURRENT_USER.name, role: CURRENT_USER.role }).then(data => {
