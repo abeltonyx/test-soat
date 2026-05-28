@@ -1568,18 +1568,18 @@ const skeletonCard = `
 
 const loadingHTML = skeletonCard + skeletonCard + skeletonCard;
 
+function makeFp(sel) {
+  const fp = flatpickr(sel, { locale: "th", dateFormat: "d/m/Y", disableMobile: "true", clickOpens: false });
+  document.querySelector(sel).addEventListener('click', () => fp.isOpen ? fp.close() : fp.open());
+  return fp;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   if(localStorage.getItem('dm')==='1'){
     document.body.classList.add('dark');
     const i=document.getElementById('darkIcon'),l=document.getElementById('darkLabel');
     if(i) i.textContent='light_mode'; if(l) l.textContent='โหมดกลางวัน';
   }
-  function makeFp(sel) {
-    const fp = flatpickr(sel, { locale: "th", dateFormat: "d/m/Y", disableMobile: "true", clickOpens: false });
-    document.querySelector(sel).addEventListener('click', () => fp.isOpen ? fp.close() : fp.open());
-    return fp;
-  }
-
   const fpOrder = makeFp("#orderDateInput");
   const fpNeed  = makeFp("#needDateInput");
   const fpDone  = makeFp("#editDoneDate");
