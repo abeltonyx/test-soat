@@ -13,9 +13,9 @@
 <meta name="application-name" content="โสตฯ Service">
 <link rel="icon" sizes="192x192" href="https://raw.githubusercontent.com/abeltonyx/test-soat/refs/heads/main/iconnn.png">
 <link rel="icon" sizes="512x512" href="https://raw.githubusercontent.com/abeltonyx/test-soat/refs/heads/main/iconnn.png">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/th.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,300,0,0"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
@@ -1550,11 +1550,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const i=document.getElementById('darkIcon'),l=document.getElementById('darkLabel');
     if(i) i.textContent='light_mode'; if(l) l.textContent='โหมดกลางวัน';
   }
-  flatpickr("#orderDateInput", { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
-  flatpickr("#needDateInput", { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
-  flatpickr("#editDoneDate", { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
-  fpStart = flatpickr("#filterStartDate", { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
-  fpEnd = flatpickr("#filterEndDate", { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
+  flatpickr("#orderDateInput", { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
+  flatpickr("#needDateInput", { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
+  flatpickr("#editDoneDate", { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
+  fpStart = flatpickr("#filterStartDate", { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
+  fpEnd = flatpickr("#filterEndDate", { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
   
   let resHtml = '';
   for(let i=1; i<=3; i++){
@@ -2005,8 +2005,8 @@ function loadResources() {
   document.getElementById('resJobList').innerHTML = '';
 
   if (!fpResStart) {
-    fpResStart = flatpickr("#resFilterStart", { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
-    fpResEnd   = flatpickr("#resFilterEnd",   { locale: "th", dateFormat: "d/m/Y", disableMobile: true });
+    fpResStart = flatpickr("#resFilterStart", { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
+    fpResEnd   = flatpickr("#resFilterEnd",   { locale: "th", dateFormat: "d/m/Y", disableMobile: "true" });
   }
 
   gasCall('getResources', { owner: CURRENT_USER.name, role: CURRENT_USER.role }).then(data => {
