@@ -1690,31 +1690,31 @@ function goBack() {
       if (Math.abs(dx) > 8 || dy > 8) {
         isHorizontal = Math.abs(dx) > dy * 1.5;
         if (!isHorizontal) { isDragging = false; return; }
-        // ปิด CSS animation + เตรียมหน้าก่อนหน้า
+        // ปิด animation + แสดงหน้าก่อนหน้าอยู่ด้านหลัง static
         currentPage.style.animation = 'none';
         const prevId = PAGE_HISTORY[PAGE_HISTORY.length - 1];
         prevPage = document.getElementById(prevId);
         if (prevPage) {
           prevPage.style.animation = 'none';
           prevPage.style.display = 'flex';
-          prevPage.style.transform = `translateX(-30%)`;
-          prevPage.style.opacity = '0.7';
+          prevPage.style.position = 'fixed';
+          prevPage.style.inset = '0';
+          prevPage.style.zIndex = '0';
           prevPage.style.pointerEvents = 'none';
+          prevPage.style.opacity = '1';
+          prevPage.style.transform = 'none';
         }
+        currentPage.style.position = 'fixed';
+        currentPage.style.inset = '0';
+        currentPage.style.zIndex = '1';
       }
       return;
     }
 
-    const progress = Math.max(0, dx) / window.innerWidth;
+    const safeDx = Math.max(0, dx);
     currentPage.style.transition = 'none';
-    currentPage.style.transform = `translateX(${Math.max(0, dx)}px)`;
-    currentPage.style.opacity = String(Math.max(0.3, 1 - progress * 0.7));
-
-    if (prevPage) {
-      prevPage.style.transition = 'none';
-      prevPage.style.transform = `translateX(${-30 + progress * 30}%)`;
-      prevPage.style.opacity = String(0.7 + progress * 0.3);
-    }
+    currentPage.style.transform = `translateX(${safeDx}px)`;
+    currentPage.style.opacity = String(Math.max(0.3, 1 - (safeDx / window.innerWidth) * 0.5));
   }, { passive: true });
 
   document.addEventListener('touchend', e => {
@@ -1723,57 +1723,48 @@ function goBack() {
     if (!isHorizontal) return;
     const dx = e.changedTouches[0].clientX - startX;
 
-    if (dx > 80) {
-      // ยืนยัน — animate ออก
-      currentPage.style.transition = 'transform .22s cubic-bezier(.4,0,.2,1), opacity .22s ease';
-      currentPage.style.transform = `translateX(${window.innerWidth}px)`;
-      currentPage.style.opacity = '0';
-      if (prevPage) {
-        prevPage.style.transition = 'transform .22s cubic-bezier(.4,0,.2,1), opacity .22s ease';
-        prevPage.style.transform = 'translateX(0)';
-        prevPage.style.opacity = '1';
-      }
-      setTimeout(() => {
-        currentPage.style.animation = '';
-        currentPage.style.transition = '';
-        currentPage.style.transform = '';
-        currentPage.style.opacity = '';
-        currentPage.classList.remove('active');
-        if (prevPage) {
-          prevPage.style.animation = '';
-          prevPage.style.transition = '';
-          prevPage.style.transform = '';
-          prevPage.style.opacity = '';
-          prevPage.style.pointerEvents = '';
-          prevPage.classList.add('active');
-          PAGE_HISTORY.pop();
-        }
-        window.scrollTo(0, 0);
-        prevPage = null;
-      }, 220);
-    } else {
-      // ยกเลิก — snap กลับ
-      currentPage.style.transition = 'transform .2s cubic-bezier(.4,0,.2,1), opacity .2s ease';
+    function cleanup(confirmed) {
+      currentPage.style.position = '';
+      currentPage.style.inset = '';
+      currentPage.style.zIndex = '';
+      currentPage.style.animation = '';
+      currentPage.style.transition = '';
       currentPage.style.transform = '';
       currentPage.style.opacity = '';
       if (prevPage) {
-        prevPage.style.transition = 'transform .2s cubic-bezier(.4,0,.2,1), opacity .2s ease';
-        prevPage.style.transform = 'translateX(-30%)';
-        prevPage.style.opacity = '0.7';
+        prevPage.style.position = '';
+        prevPage.style.inset = '';
+        prevPage.style.zIndex = '';
+        prevPage.style.animation = '';
+        prevPage.style.transition = '';
+        prevPage.style.transform = '';
+        prevPage.style.opacity = '';
+        prevPage.style.pointerEvents = '';
+        if (!confirmed) prevPage.style.display = '';
+        prevPage = null;
       }
+    }
+
+    if (dx > 80) {
+      currentPage.style.transition = 'transform .22s cubic-bezier(.4,0,.2,1), opacity .22s ease';
+      currentPage.style.transform = `translateX(${window.innerWidth}px)`;
+      currentPage.style.opacity = '0';
       setTimeout(() => {
-        currentPage.style.animation = '';
-        currentPage.style.transition = '';
-        if (prevPage) {
-          prevPage.style.display = '';
-          prevPage.style.animation = '';
-          prevPage.style.transition = '';
-          prevPage.style.transform = '';
-          prevPage.style.opacity = '';
-          prevPage.style.pointerEvents = '';
-          prevPage = null;
+        currentPage.classList.remove('active');
+        cleanup(true);
+        const prevId = PAGE_HISTORY.pop();
+        const prev = document.getElementById(prevId);
+        if (prev) {
+          prev.style.display = '';
+          prev.classList.add('active');
+          window.scrollTo(0, 0);
         }
-      }, 200);
+      }, 220);
+    } else {
+      currentPage.style.transition = 'transform .22s cubic-bezier(.4,0,.2,1), opacity .22s ease';
+      currentPage.style.transform = '';
+      currentPage.style.opacity = '';
+      setTimeout(() => { cleanup(false); }, 220);
     }
   });
 })();
