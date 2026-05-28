@@ -13,9 +13,9 @@
 <meta name="application-name" content="โสตฯ Service">
 <link rel="icon" sizes="192x192" href="https://raw.githubusercontent.com/abeltonyx/test-soat/refs/heads/main/iconnn.png">
 <link rel="icon" sizes="512x512" href="https://raw.githubusercontent.com/abeltonyx/test-soat/refs/heads/main/iconnn.png">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/th.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,300,0,0"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
@@ -705,6 +705,30 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
   .back-btn { font-size: 16px !important; }
   .section-label { font-size: 13px !important; }
   .jcard { padding: 18px 16px 15px !important; }
+}
+/* ── Flatpickr fix — month/year dropdown not clipped ── */
+.flatpickr-current-month {
+  display: flex !important;
+  align-items: center !important;
+  padding: 4px 0 !important;
+  height: 34px !important;
+}
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  font-family: 'Kanit', sans-serif !important;
+  font-size: 14px !important;
+  height: 28px !important;
+  padding: 0 4px !important;
+  -webkit-appearance: auto !important;
+  appearance: auto !important;
+}
+.flatpickr-current-month input.cur-year {
+  font-family: 'Kanit', sans-serif !important;
+  font-size: 14px !important;
+  height: 28px !important;
+}
+.flatpickr-months .flatpickr-month {
+  height: 42px !important;
+  overflow: visible !important;
 }
 
 </style>
