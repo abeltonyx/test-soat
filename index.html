@@ -1663,71 +1663,18 @@ function goBack() {
   }
 }
 
-// swipe back gesture with slide animation
+// swipe back gesture
 (function() {
-  let startX = 0, startY = 0, isDragging = false, isHorizontal = null;
-  let currentPage = null;
-
+  let startX = 0, startY = 0;
   document.addEventListener('touchstart', e => {
-    const active = document.querySelector('.page.active');
-    if (!active || active.id === 'home') return; // ไม่ทำบนหน้า home
-    if (e.touches[0].clientX > 20) return;
-    if (PAGE_HISTORY.length === 0) return;
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
-    isDragging = true;
-    isHorizontal = null;
-    currentPage = active;
   }, { passive: true });
-
-  document.addEventListener('touchmove', e => {
-    if (!isDragging || !currentPage) return;
-    const dx = e.touches[0].clientX - startX;
-    const dy = Math.abs(e.touches[0].clientY - startY);
-
-    if (isHorizontal === null) {
-      if (Math.abs(dx) > 6 || dy > 6) {
-        isHorizontal = Math.abs(dx) > dy;
-        if (!isHorizontal) { isDragging = false; return; } // แนวตั้ง = PTR ไม่ทำ swipe
-      }
-      return;
-    }
-    if (dx < 0) return;
-
-    currentPage.style.transition = 'none';
-    currentPage.style.transform = `translateX(${dx}px)`;
-    currentPage.style.opacity = String(1 - (dx / window.innerWidth) * 0.5);
-  }, { passive: true });
-
   document.addEventListener('touchend', e => {
-    if (!isDragging || !currentPage) { isDragging = false; return; }
-    isDragging = false;
-    if (!isHorizontal) return;
     const dx = e.changedTouches[0].clientX - startX;
-
-    if (dx > 80) {
-      currentPage.style.transition = 'transform .25s ease, opacity .25s ease';
-      currentPage.style.transform = `translateX(${window.innerWidth}px)`;
-      currentPage.style.opacity = '0';
-      setTimeout(() => {
-        currentPage.style.transition = '';
-        currentPage.style.transform = '';
-        currentPage.style.opacity = '';
-        const prevId = PAGE_HISTORY.pop();
-        const prev = document.getElementById(prevId);
-        if (prev) {
-          currentPage.classList.remove('active');
-          prev.classList.add('active');
-          window.scrollTo(0, 0);
-        }
-      }, 250);
-    } else {
-      currentPage.style.transition = 'transform .2s ease, opacity .2s ease';
-      currentPage.style.transform = '';
-      currentPage.style.opacity = '';
-      setTimeout(() => { currentPage.style.transition = ''; }, 200);
-    }
-  });
+    const dy = Math.abs(e.changedTouches[0].clientY - startY);
+    if (dx > 80 && dy < 60 && startX < 40) goBack();
+  }, { passive: true });
 })();
 function toggleDark(){
   const d=document.body.classList.toggle('dark');
