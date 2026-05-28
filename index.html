@@ -2772,12 +2772,14 @@ _orbState.forEach(o => {
   const THRESHOLD = 80;
   const ind = document.getElementById('ptrIndicator');
 
-  function isAdminPage() {
-    return document.getElementById('admin').classList.contains('active');
+  function getActivePage() {
+    if (document.getElementById('admin').classList.contains('active')) return 'admin';
+    if (document.getElementById('search').classList.contains('active')) return 'search';
+    return null;
   }
 
   document.addEventListener('touchstart', e => {
-    if (!isAdminPage()) return;
+    if (!getActivePage()) return;
     if (window.scrollY > 0) return;
     startY = e.touches[0].clientY;
     pulling = true;
@@ -2798,10 +2800,12 @@ _orbState.forEach(o => {
     if (!pulling) return;
     pulling = false;
     const diff = currentY - startY;
-    if (diff >= THRESHOLD && isAdminPage()) {
+    const page = getActivePage();
+    if (diff >= THRESHOLD && page) {
       ind.classList.remove('ready');
       ind.classList.add('loading');
-      loadAllData();
+      if (page === 'admin') loadAllData();
+      else if (page === 'search') { clearSearch(); }
       setTimeout(() => {
         ind.classList.remove('visible', 'loading');
         ind.style.top = '0px';
