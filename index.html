@@ -829,7 +829,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
         <span class="material-symbols-rounded">search</span> ค้นหา
       </button>
     </div>
-    <div id="result"></div>
+    <div id="result" style="word-break:break-word;overflow-wrap:break-word;"></div>
   </div>
 </div>
 
@@ -918,7 +918,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       </svg>
       <div class="brand" style="margin-bottom:3px;">ส่งคำขอสำเร็จ</div>
       <span class="brand-sub" style="margin-bottom:18px;">Request Submitted</span>
-      <div id="successData" style="text-align:left;font-size:13px;line-height:1.85;color:var(--t2);"></div>
+      <div id="successData" style="text-align:left;font-size:13px;line-height:1.85;color:var(--t2);word-break:break-word;overflow-wrap:break-word;"></div>
       <button class="btn primary" style="margin-top:20px;" onclick="goHome()">
         <span class="material-symbols-rounded">home</span> กลับหน้าหลัก
       </button>
@@ -1993,10 +1993,10 @@ function renderPage(filtered) {
               <span style="background:${sb};color:${sc};padding:6px 12px;border-radius:99px;font-size:13px;font-weight:700;">${d.status.replace(/[\u1000-\uFFFF⏳🔄✅❌]/g,'').trim()}</span>
             </div>
           </div>
-          <div style="font-size:17px;font-weight:600;color:var(--t2);line-height:1.4;margin-top:2px;">${d.fullName}</div>
-          <div style="font-size:17px;color:var(--t2);margin-top:0;">· ${d.jobType||'-'}</div>
+          <div style="font-size:17px;font-weight:600;color:var(--t2);line-height:1.4;margin-top:2px;word-break:break-word;overflow-wrap:break-word;">${d.fullName}</div>
+          <div style="font-size:17px;color:var(--t2);margin-top:0;word-break:break-word;overflow-wrap:break-word;">· ${d.jobType||'-'}</div>
         </div>
-        <div style="padding:6px 16px 6px;font-size:16px;line-height:1.8;">
+        <div style="padding:6px 16px 6px;font-size:16px;line-height:1.8;word-break:break-word;overflow-wrap:break-word;">
           <b>กลุ่มภารกิจ:</b> ${d.group||'-'}<br>
           <b>หน่วยงาน:</b> ${d.department||'-'}<br>
           <b>เบอร์ติดต่อ:</b> ${d.phone||'-'}
@@ -2006,7 +2006,7 @@ function renderPage(filtered) {
           <span style="transition:transform .2s;font-size:14px;color:var(--t3);">▾</span>
         </div>
         <div style="max-height:0;overflow:hidden;transition:max-height .3s ease;" class="job-detail-body">
-          <div style="padding:8px 16px;font-size:16px;line-height:1.8;">
+          <div style="padding:8px 16px;font-size:16px;line-height:1.8;word-break:break-word;overflow-wrap:break-word;">
             <b>วันที่สั่ง:</b> ${d.orderDate||'-'}<br>
             <b>วันที่ต้องการ:</b> ${d.needDate||'-'}<br>
             <b>รายละเอียด:</b> ${d.detail||'-'}<br>
@@ -2014,7 +2014,7 @@ function renderPage(filtered) {
           </div>
         </div>
         <div style="height:0.5px;background:rgba(255,255,255,.14);margin:0 16px;"></div>
-        <div style="padding:8px 16px 14px;font-size:16px;line-height:1.8;">
+        <div style="padding:8px 16px 14px;font-size:16px;line-height:1.8;word-break:break-word;overflow-wrap:break-word;">
           <b>ผู้รับผิดชอบ:</b> ${d.owner||'-'}<br>
           <b>หมายเหตุ:</b> ${d.note||'-'}
           <button class="btn secondary" style="margin-top:10px;margin-bottom:0;padding:12px;border-radius:14px;" onclick="openEditModal('${d.id}')">
