@@ -2376,7 +2376,10 @@ function saveEdit() {
     status: document.getElementById('modalStatus').value,
     note: document.getElementById('editNote').value,
     owner: (() => {
-      if (CURRENT_USER.role !== 'admin') return CURRENT_USER.name;
+      if (CURRENT_USER.role !== 'admin') {
+        const job = ALL_JOBS.find(j => String(j.id) === String(ACTIVE_ID));
+        return job ? job.owner : CURRENT_USER.name;
+      }
       const tags = document.getElementById('ownerTags');
       const names = tags ? Array.from(tags.querySelectorAll('[data-name]')).map(t => t.dataset.name).filter(n => n && n !== '-') : [];
       return names.length ? names.join(', ') : '-';
