@@ -1082,8 +1082,8 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
         <div class="card" style="padding:11px 12px;margin:0;">
           <div class="noise"></div>
           <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">ใช้บ่อยสุด</div>
-          <div id="resStat2" style="font-size:13px;font-weight:500;color:var(--t1);padding-top:3px;">—</div>
-          <div id="resStat3" style="font-size:12px;color:var(--t2);margin-top:1px;">—</div>
+          <div id="resStat2" style="font-size:15px;font-weight:500;color:var(--t1);padding-top:3px;">—</div>
+          <div id="resStat3" style="font-size:13px;color:var(--t2);margin-top:1px;">—</div>
         </div>
       </div>
 
@@ -1106,10 +1106,10 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
         <div class="noise"></div>
         <span class="section-label">วัสดุที่ใช้บ่อย</span>
         <div style="display:flex;align-items:center;gap:8px;padding:4px 0 6px;border-bottom:0.5px solid var(--g-b2);margin-bottom:2px;">
-          <div style="flex:1;font-size:13px;color:var(--t3);letter-spacing:.05em;">วัสดุ</div>
+          <div style="flex:1;font-size:14px;color:var(--t3);letter-spacing:.05em;">วัสดุ</div>
           <div style="width:60px;"></div>
-          <div style="min-width:32px;text-align:right;font-size:13px;color:var(--t3);">ครั้ง</div>
-          <div style="min-width:54px;text-align:right;font-size:13px;color:var(--t3);">จำนวน</div>
+          <div style="min-width:36px;text-align:right;font-size:14px;color:var(--t3);">ครั้ง</div>
+          <div style="min-width:58px;text-align:right;font-size:14px;color:var(--t3);">จำนวน</div>
         </div>
         <div id="resSummaryRows"></div>
         <div id="resExtraRows" style="display:none;"></div>
@@ -1993,15 +1993,15 @@ function renderPage(filtered) {
               <span style="background:${sb};color:${sc};padding:6px 12px;border-radius:99px;font-size:12px;font-weight:700;">${d.status.replace(/[\u1000-\uFFFF⏳🔄✅❌]/g,'').trim()}</span>
             </div>
           </div>
-          <div style="font-size:14px;font-weight:600;color:var(--t2);line-height:1.4;margin-top:2px;">${d.fullName}</div>
-          <div style="font-size:14px;color:var(--t2);margin-top:0;">· ${d.jobType||'-'}</div>
+          <div style="font-size:16px;font-weight:600;color:var(--t2);line-height:1.4;margin-top:2px;">${d.fullName}</div>
+          <div style="font-size:16px;color:var(--t2);margin-top:0;">· ${d.jobType||'-'}</div>
         </div>
         <div style="padding:6px 16px 6px;font-size:14px;line-height:1.8;">
           <b>กลุ่มภารกิจ:</b> ${d.group||'-'}<br>
           <b>หน่วยงาน:</b> ${d.department||'-'}<br>
           <b>เบอร์ติดต่อ:</b> ${d.phone||'-'}
         </div>
-        <div onclick="toggleJobDetail(this)" style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;font-size:14px;color:var(--t2);cursor:pointer;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);">
+        <div onclick="toggleJobDetail(this)" style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;font-size:16px;color:var(--t2);cursor:pointer;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);">
           <span>ดูรายละเอียดเพิ่ม</span>
           <span style="transition:transform .2s;font-size:14px;color:var(--t3);">▾</span>
         </div>
@@ -2178,11 +2178,11 @@ function renderResources() {
   const colors = ['#7c9ef8','#a0c4ff','#c0b8ff','#ffc0e0','#ffd4b8','#a7f3d0','#c4b5fd','#fed7aa'];
   const rowHtml = (name, count, i) => `
     <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--g-b2);">
-      <div style="flex:1;font-size:14px;color:var(--t1);">${name}</div>
+      <div style="flex:1;font-size:16px;color:var(--t1);">${name}</div>
       <div style="width:60px;height:6px;background:var(--g-b2);border-radius:3px;overflow:hidden;flex-shrink:0;">
         <div style="height:100%;width:${Math.round(count/max*100)}%;background:${colors[i%colors.length]};border-radius:3px;"></div>
       </div>
-      <div style="min-width:32px;text-align:right;font-size:14px;font-weight:500;color:var(--t1);">${count}</div>
+      <div style="min-width:32px;text-align:right;font-size:16px;font-weight:500;color:var(--t1);">${count}</div>
       <div style="min-width:54px;text-align:right;font-size:13px;color:var(--t3);">${qtyMap[name] > 0 ? qtyMap[name] : '—'}</div>
     </div>`;
 
