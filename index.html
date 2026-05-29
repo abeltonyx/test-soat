@@ -1485,11 +1485,21 @@ const PAGE_SIZE = 20;
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbyguzz7Z4W1x1zJJDZdXweqgnCRadrw3CB-7Ry9vuBr7uHEzjhEoNCvp0wP5glsCgs0/exec';
 
 async function gasCall(action, payload = {}) {
-  const res = await fetch(GAS_URL, {
-    method: 'POST',
-    body: JSON.stringify({ action, ...payload })
-  });
-  return res.json();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action, ...payload }),
+      signal: controller.signal
+    });
+    return res.json();
+  } catch(err) {
+    if (err.name === 'AbortError') throw new Error('การเชื่อมต่อหมดเวลา กรุณาลองใหม่');
+    throw new Error('ไม่สามารถเชื่อมต่อได้ กรุณาตรวจสอบอินเทอร์เน็ต');
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 // ── PWA Service Worker ──
