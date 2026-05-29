@@ -966,7 +966,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       <span class="material-symbols-rounded" style="font-size:22px;color:var(--t2);margin:0;">notifications</span>
       <span id="bellBadge" style="display:none;position:absolute;top:2px;right:2px;width:16px;height:16px;background:#ef4444;border-radius:50%;font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;line-height:1;">0</span>
     </button>
-    <div class="admin-user-badge">
+    <div class="admin-user-badge" style="font-size:20px;">
       <span class="material-symbols-rounded">account_circle</span>
       <span id="adminName">—</span>
     </div>
@@ -1993,15 +1993,15 @@ function renderPage(filtered) {
               <span style="background:${sb};color:${sc};padding:6px 12px;border-radius:99px;font-size:12px;font-weight:700;">${d.status.replace(/[\u1000-\uFFFF⏳🔄✅❌]/g,'').trim()}</span>
             </div>
           </div>
-          <div style="font-size:16px;font-weight:600;color:var(--t2);line-height:1.4;margin-top:2px;">${d.fullName}</div>
-          <div style="font-size:16px;color:var(--t2);margin-top:0;">· ${d.jobType||'-'}</div>
+          <div style="font-size:18px;font-weight:600;color:var(--t2);line-height:1.4;margin-top:2px;">${d.fullName}</div>
+          <div style="font-size:18px;color:var(--t2);margin-top:0;">· ${d.jobType||'-'}</div>
         </div>
         <div style="padding:6px 16px 6px;font-size:14px;line-height:1.8;">
           <b>กลุ่มภารกิจ:</b> ${d.group||'-'}<br>
           <b>หน่วยงาน:</b> ${d.department||'-'}<br>
           <b>เบอร์ติดต่อ:</b> ${d.phone||'-'}
         </div>
-        <div onclick="toggleJobDetail(this)" style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;font-size:16px;color:var(--t2);cursor:pointer;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);">
+        <div onclick="toggleJobDetail(this)" style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;font-size:18px;color:var(--t2);cursor:pointer;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);">
           <span>ดูรายละเอียดเพิ่ม</span>
           <span style="transition:transform .2s;font-size:14px;color:var(--t3);">▾</span>
         </div>
@@ -2221,13 +2221,13 @@ function renderResJobPage(jobs) {
   document.getElementById('resJobList').innerHTML = pageJobs.map(j => {
     const tags = j.items.map(r => {
       const detail = [r.qty, r.color, r.size].filter(Boolean).join(' ');
-      return `<span style="padding:3px 8px;border-radius:99px;font-size:11px;background:rgba(255,255,255,.5);border:0.5px solid var(--g-b2);color:var(--t2);">${r.name}${detail ? ' · ' + detail : ''}</span>`;
+      return `<span style="padding:3px 8px;border-radius:99px;font-size:14px;background:rgba(255,255,255,.5);border:0.5px solid var(--g-b2);color:var(--t2);">${r.name}${detail ? ' · ' + detail : ''}</span>`;
     }).join('');
     return `
       <div style="background:rgba(255,255,255,.35);border:0.5px solid var(--g-b2);border-radius:12px;padding:10px 12px;margin-bottom:8px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <div style="font-size:15px;font-weight:500;color:var(--p);">#${j.jobId}</div>
-          <div style="font-size:11px;color:var(--t3);">${j.doneDate || ''}</div>
+          <div style="font-size:17px;font-weight:500;color:var(--p);">#${j.jobId}</div>
+          <div style="font-size:14px;color:var(--t3);">${j.doneDate || ''}</div>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:5px;">${tags}</div>
       </div>`;
