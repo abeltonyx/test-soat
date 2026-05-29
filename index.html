@@ -1077,13 +1077,13 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
           <div class="noise"></div>
           <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">รายการงาน</div>
           <div id="resStat1" style="font-size:20px;font-weight:500;color:var(--t1);">—</div>
-          <div style="font-size:10px;color:var(--t2);margin-top:1px;">ที่บันทึกวัสดุ</div>
+          <div style="font-size:12px;color:var(--t2);margin-top:1px;">ที่บันทึกวัสดุ</div>
         </div>
         <div class="card" style="padding:11px 12px;margin:0;">
           <div class="noise"></div>
           <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">ใช้บ่อยสุด</div>
           <div id="resStat2" style="font-size:13px;font-weight:500;color:var(--t1);padding-top:3px;">—</div>
-          <div id="resStat3" style="font-size:10px;color:var(--t2);margin-top:1px;">—</div>
+          <div id="resStat3" style="font-size:12px;color:var(--t2);margin-top:1px;">—</div>
         </div>
       </div>
 
@@ -1106,10 +1106,10 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
         <div class="noise"></div>
         <span class="section-label">วัสดุที่ใช้บ่อย</span>
         <div style="display:flex;align-items:center;gap:8px;padding:4px 0 6px;border-bottom:0.5px solid var(--g-b2);margin-bottom:2px;">
-          <div style="flex:1;font-size:10px;color:var(--t3);letter-spacing:.05em;">วัสดุ</div>
+          <div style="flex:1;font-size:13px;color:var(--t3);letter-spacing:.05em;">วัสดุ</div>
           <div style="width:60px;"></div>
-          <div style="min-width:28px;text-align:right;font-size:10px;color:var(--t3);">ครั้ง</div>
-          <div style="min-width:50px;text-align:right;font-size:10px;color:var(--t3);">จำนวน</div>
+          <div style="min-width:32px;text-align:right;font-size:13px;color:var(--t3);">ครั้ง</div>
+          <div style="min-width:54px;text-align:right;font-size:13px;color:var(--t3);">จำนวน</div>
         </div>
         <div id="resSummaryRows"></div>
         <div id="resExtraRows" style="display:none;"></div>
@@ -1854,6 +1854,7 @@ function showSection(sec, jobViewType) {
   document.getElementById('jobSection').style.display = sec === 'job' ? 'block' : 'none';
   document.getElementById('userSection').style.display = sec === 'user' ? 'block' : 'none';
   document.getElementById('resourceSection').style.display = sec === 'resource' ? 'block' : 'none';
+  if (sec !== 'resource') resetResMore();
 
   if(sec === 'job' && jobViewType) { 
     CURRENT_JOB_VIEW = jobViewType; 
@@ -2092,6 +2093,16 @@ function toggleResMore() {
   document.getElementById('resMoreTxt').textContent = _resExpanded ? 'ย่อ' : `ดูเพิ่มเติม`;
 }
 
+function resetResMore() {
+  _resExpanded = false;
+  const extra = document.getElementById('resExtraRows');
+  const icon = document.getElementById('resMoreIcon');
+  const txt = document.getElementById('resMoreTxt');
+  if (extra) extra.style.display = 'none';
+  if (icon) icon.textContent = 'expand_more';
+  if (txt && txt.textContent === 'ย่อ') txt.textContent = 'ดูเพิ่มเติม';
+}
+
 function renderResources() {
   const data = _resFiltered;
   if (!data.length) {
@@ -2131,13 +2142,13 @@ function renderResources() {
 
   const colors = ['#7c9ef8','#a0c4ff','#c0b8ff','#ffc0e0','#ffd4b8','#a7f3d0','#c4b5fd','#fed7aa'];
   const rowHtml = (name, count, i) => `
-    <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--g-b2);">
-      <div style="flex:1;font-size:12px;color:var(--t1);">${name}</div>
-      <div style="width:60px;height:4px;background:var(--g-b2);border-radius:2px;overflow:hidden;flex-shrink:0;">
-        <div style="height:100%;width:${Math.round(count/max*100)}%;background:${colors[i%colors.length]};border-radius:2px;"></div>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--g-b2);">
+      <div style="flex:1;font-size:14px;color:var(--t1);">${name}</div>
+      <div style="width:60px;height:6px;background:var(--g-b2);border-radius:3px;overflow:hidden;flex-shrink:0;">
+        <div style="height:100%;width:${Math.round(count/max*100)}%;background:${colors[i%colors.length]};border-radius:3px;"></div>
       </div>
-      <div style="min-width:28px;text-align:right;font-size:12px;font-weight:500;color:var(--t1);">${count}</div>
-      <div style="min-width:50px;text-align:right;font-size:10px;color:var(--t3);">${qtyMap[name] > 0 ? qtyMap[name] : '—'}</div>
+      <div style="min-width:32px;text-align:right;font-size:14px;font-weight:500;color:var(--t1);">${count}</div>
+      <div style="min-width:54px;text-align:right;font-size:13px;color:var(--t3);">${qtyMap[name] > 0 ? qtyMap[name] : '—'}</div>
     </div>`;
 
   document.getElementById('resSummaryRows').innerHTML = sorted.slice(0, 5).map((e, i) => rowHtml(e[0], e[1], i)).join('');
@@ -2804,6 +2815,7 @@ _orbState.forEach(o => {
       ind.classList.add('loading');
       if (page === 'admin') loadAllData();
       else if (page === 'search') { clearSearch(); }
+      else if (page === 'resource') { resetResMore(); loadResources(); }
       setTimeout(() => {
         ind.classList.remove('visible', 'loading');
         ind.style.top = '0px';
