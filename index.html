@@ -2609,7 +2609,8 @@ function renderNotifList() {
         <span style="font-size:12px;color:var(--t3);">${j.needDate ? 'ต้องการ: '+j.needDate : ''}</span>
       </div>
       <div style="font-size:14px;font-weight:600;color:var(--t1);">${j.jobType || '-'}</div>
-      <div style="font-size:13px;color:var(--t2);margin-bottom:10px;">${j.department || '-'} • ${j.fullName || '-'}</div>
+      <div style="font-size:13px;color:var(--t2);margin-bottom:4px;">${j.department || '-'} • ${j.fullName || '-'}</div>
+      ${j.owner && j.owner !== '-' ? `<div style="font-size:13px;color:var(--t3);margin-bottom:10px;">ผู้รับผิดชอบ: ${j.owner}</div>` : '<div style="margin-bottom:10px;"></div>'}
       ${_notifTab === 'my'
         ? `<button class="btn primary" style="margin:0;padding:10px;font-size:14px;" onclick="acceptJob('${j.id}')">
              <span class="material-symbols-rounded" style="font-size:16px;">play_arrow</span> รับงาน / เริ่มดำเนินการ
