@@ -1828,6 +1828,8 @@ function doSearch() {
         </div>
       </div>
     `;
+  }).catch(() => {
+    document.getElementById('result').innerHTML = "<div class='glass-card' style='text-align:center;'>เกิดข้อผิดพลาด กรุณาลองใหม่</div>";
   });
 }
 
@@ -1880,8 +1882,10 @@ function showSection(sec, jobViewType) {
 
 function loadAllData() {
   document.getElementById('adminList').innerHTML = loadingHTML;
-  gasCall('getAllData').then(data => { ALL_JOBS = data; checkNewJobs(data); renderJobs(); });
-  gasCall('getUsers').then(users => { ALL_USERS = users; updateAssignDropdown(); renderUsers(); });
+  gasCall('getAllData').then(data => { ALL_JOBS = data; checkNewJobs(data); renderJobs(); }).catch(() => {
+    document.getElementById('adminList').innerHTML = "<div class='glass-card' style='text-align:center;'>โหลดข้อมูลไม่สำเร็จ กรุณาดึงรีเฟรช</div>";
+  });
+  gasCall('getUsers').then(users => { ALL_USERS = users; updateAssignDropdown(); renderUsers(); }).catch(() => {});
 }
 
 function updateAssignDropdown() {
@@ -2310,7 +2314,7 @@ function addUserFromForm() {
 }
 
 function toggleUser(user, currentStatus) {
-  gasCall('toggleUserStatus', { user, currentStatus }).then(() => loadAllData());
+  gasCall('toggleUserStatus', { user, currentStatus }).then(() => loadAllData()).catch(e => alert(e.message));
 }
 
 function deleteUser(user) {
@@ -2663,8 +2667,8 @@ function acceptJob(jobId) {
   gasCall('updateJob', { payload }).then(() => {
     gasCall('getAllData').then(data => {
       ALL_JOBS = data; checkNewJobs(data); renderNotifList();
-    });
-  });
+    }).catch(() => {});
+  }).catch(e => { if (btn) setLoading(btn, false); alert(e.message); });
 }
 
 function addOwnerTagWithName(name) {
@@ -2719,8 +2723,8 @@ function claimJob(jobId) {
   gasCall('updateJob', { payload }).then(() => {
     gasCall('getAllData').then(data => {
       ALL_JOBS = data; checkNewJobs(data); renderNotifList();
-    });
-  });
+    }).catch(() => {});
+  }).catch(e => { if (btn) setLoading(btn, false); alert(e.message); });
 }
 
 function drawAdminChart(filteredJobs) {
