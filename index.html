@@ -2660,9 +2660,10 @@ function closeNotif() {
 function acceptJob(jobId) {
   const btn = document.querySelector(`[onclick="acceptJob('${jobId}')"]`);
   if (btn) setLoading(btn, true);
+  const job = ALL_JOBS.find(j => String(j.id) === String(jobId));
   const payload = {
     id: String(jobId), status: 'กำลังดำเนินการ',
-    owner: CURRENT_USER.name, note: '', doneDate: '', resources: []
+    owner: job ? job.owner : CURRENT_USER.name, note: '', doneDate: '', resources: []
   };
   gasCall('updateJob', { payload }).then(() => {
     gasCall('getAllData').then(data => {
