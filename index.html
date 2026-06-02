@@ -1524,7 +1524,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 </div>
 
 <div id="ptrIndicator" class="ptr-indicator">
-  <span class="material-symbols-rounded">sync</span>
+  <span class="material-symbols-rounded">cached</span>
 </div>
 
 <script>
@@ -1733,7 +1733,7 @@ function updateDept() {
 function setLoading(btn, loading, originalHTML) {
   if (loading) {
     btn._originalHTML = btn.innerHTML;
-    btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;margin:0;font-size:16px;">sync</span>`;
+    btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;margin:0;font-size:16px;">cached</span>`;
     btn.disabled = true;
   } else {
     btn.innerHTML = originalHTML || btn._originalHTML || btn.innerHTML;
@@ -1789,7 +1789,7 @@ function submitService() {
 
   // เปลี่ยนสถานะปุ่มเป็นกำลังโหลด
   const btn = document.getElementById('submitBtn');
-  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync</span> กำลังประมวลผล...`; 
+  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">cached</span> กำลังประมวลผล...`; 
   btn.disabled = true;
 
   if(fileObj) {
@@ -1869,7 +1869,7 @@ function login() {
   const u = document.getElementById('loginUser').value;
   const p = document.getElementById('loginPass').value;
   const btn = document.getElementById('loginBtn');
-  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync</span> รอสักครู่...`;
+  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">cached</span> รอสักครู่...`;
   btn.disabled = true;
   gasCall('checkLogin', { u, p }).then(res => {
     btn.innerHTML = "เข้าสู่ระบบ"; btn.disabled = false;
