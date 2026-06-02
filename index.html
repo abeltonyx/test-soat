@@ -1423,7 +1423,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 <div id="viewResModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)this.style.display='none'">
   <div style="background:rgba(240,244,255,.95);backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r4);padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--s3);">
     <h3 style="margin:0 0 4px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
-      <span class="material-symbols-rounded" style="color:#10b981;margin:0;font-size:17px;">task</span>
+      <span class="material-symbols-rounded" style="color:#10b981;margin:0;font-size:17px;">task_alt</span>
       งาน <span style="color:var(--p);">#<span id="viewResJobId"></span></span>
       <span style="font-size:12px;background:rgba(16,185,129,.12);color:#10b981;padding:3px 10px;border-radius:99px;font-weight:500;">เสร็จสิ้น</span>
       <button onclick="document.getElementById('viewResModal').style.display='none'" style="margin-left:auto;background:rgba(0,0,0,.06);border:none;cursor:pointer;color:var(--t2);font-size:26px;line-height:1;padding:2px 6px;border-radius:8px;flex-shrink:0;">×</button>
@@ -1947,7 +1947,7 @@ function loadAllData() {
 
 function updateAssignDropdown() {
   let opts = '<option value="">— เลือก Staff เพิ่ม —</option>';
-  let filterOpts = '<option value="all">-- ดูงานทุกคน --</option><option value="__none__">ไม่มีผู้รับผิดชอบ</option>';
+  let filterOpts = '<option value="all">-- ดูงานทุกคน --</option><option value="__none__">ไม่มีผู้รับผิดชอบ</option><option value="__multi__">ผู้รับผิดชอบ 2 คนขึ้นไป</option>';
   ALL_USERS.filter(u => String(u.active).toUpperCase() === 'TRUE').forEach(u => {
     opts += `<option value="${u.name}">${u.name}</option>`;
     filterOpts += `<option value="${u.name}">${u.name}</option>`;
@@ -1994,6 +1994,8 @@ function renderJobs() {
     const staffFilter = document.getElementById('adminStaffFilter').value;
     if(staffFilter === '__none__') {
       baseJobs = baseJobs.filter(j => !j.owner || j.owner.trim() === '-' || j.owner.trim() === '');
+    } else if(staffFilter === '__multi__') {
+      baseJobs = baseJobs.filter(j => (j.owner || '').split(',').map(s=>s.trim()).filter(Boolean).length >= 2);
     } else if(staffFilter !== 'all') {
       baseJobs = baseJobs.filter(j => (j.owner || '').includes(staffFilter.trim()));
     }
