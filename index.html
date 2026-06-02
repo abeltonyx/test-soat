@@ -1060,9 +1060,9 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       <!-- filter pills -->
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;">
         <button id="btnFilterAll"    onclick="filterStatus('all')"    class="filter-btn active">ทั้งหมด (0)</button>
-        <button id="btnFilterWait"   onclick="filterStatus('รอ')"     class="filter-btn">รอ (0)</button>
-        <button id="btnFilterDoing"  onclick="filterStatus('กำลัง')"  class="filter-btn">กำลังทำ (0)</button>
-        <button id="btnFilterDone"   onclick="filterStatus('เสร็จ')"  class="filter-btn">เสร็จ (0)</button>
+        <button id="btnFilterWait"   onclick="filterStatus('รอ')"     class="filter-btn">รอจัดการ (0)</button>
+        <button id="btnFilterDoing"  onclick="filterStatus('กำลัง')"  class="filter-btn">กำลังดำเนินการ (0)</button>
+        <button id="btnFilterDone"   onclick="filterStatus('เสร็จ')"  class="filter-btn">เสร็จสิ้น (0)</button>
         <button id="btnFilterCancel" onclick="filterStatus('ยกเลิก')" class="filter-btn">ยกเลิก (0)</button>
       </div>
 
@@ -1366,11 +1366,12 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 <!-- ══════════════════════════════════════════
      EDIT MODAL
 ══════════════════════════════════════════ -->
-<div id="editModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;align-items:center;justify-content:center;padding:16px;">
+<div id="editModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)closeEditModal()">
   <div>
     <h3 style="margin:0 0 16px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
       <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:17px;">folder_open</span>
       งาน <span style="color:var(--p);">#<span id="editJobId"></span></span>
+      <button onclick="closeEditModal()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--t3);font-size:22px;line-height:1;padding:0;flex-shrink:0;">×</button>
     </h3>
     <div id="adminAssignPanel" style="display:none;">
       <span class="section-label">มอบหมายให้</span>
@@ -1410,11 +1411,34 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
   </div>
 </div>
 
+<!-- View Resource Modal (done jobs) -->
+<div id="viewResModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:rgba(240,244,255,.95);backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r4);padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--s3);">
+    <h3 style="margin:0 0 4px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
+      <span class="material-symbols-rounded" style="color:#10b981;margin:0;font-size:17px;">task_alt</span>
+      งาน <span style="color:var(--p);">#<span id="viewResJobId"></span></span>
+      <span style="font-size:12px;background:rgba(16,185,129,.12);color:#10b981;padding:3px 10px;border-radius:99px;font-weight:500;">เสร็จสิ้น</span>
+      <button onclick="document.getElementById('viewResModal').style.display='none'" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--t3);font-size:22px;line-height:1;padding:0;flex-shrink:0;">×</button>
+    </h3>
+    <div id="viewResDoneDate" style="font-size:13px;color:var(--t3);margin-bottom:16px;"></div>
+    <span class="section-label" style="display:flex;align-items:center;gap:5px;">
+      <span class="material-symbols-rounded" style="font-size:13px;margin:0;color:var(--p);">inventory_2</span> ทรัพยากรที่ใช้
+    </span>
+    <div id="viewResItems" style="margin-top:10px;"></div>
+    <div style="margin-top:18px;">
+      <span class="section-label">หมายเหตุ</span>
+      <div id="viewResNote" style="margin-top:8px;font-size:15px;color:var(--t2);background:rgba(255,255,255,.5);border:1px solid var(--g-b2);border-radius:var(--r1);padding:10px 14px;min-height:36px;"></div>
+    </div>
+    <button class="btn neutral" style="margin-top:20px;" onclick="document.getElementById('viewResModal').style.display='none'">ปิด</button>
+  </div>
+</div>
+
 <!-- Change Password Modal -->
-<div id="changePwModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;align-items:center;justify-content:center;padding:16px;">
+<div id="changePwModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)closeChangePw()">
   <div>
     <h3 style="margin:0 0 16px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
       <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:17px;">manage_accounts</span> ตั้งค่าบัญชี
+      <button onclick="closeChangePw()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--t3);font-size:22px;line-height:1;padding:0;flex-shrink:0;">×</button>
     </h3>
     <div style="font-size:12px;color:var(--t3);margin-bottom:4px;">Username ปัจจุบัน</div>
     <div id="pwCurrentUser" style="font-size:15px;font-weight:600;color:var(--p);margin-bottom:14px;">—</div>
@@ -1449,7 +1473,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 
 
 <!-- Notification Modal -->
-<div id="notifModal" style="display:none;position:fixed;inset:0;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999;align-items:flex-start;justify-content:flex-end;padding:70px 16px 0;">
+<div id="notifModal" style="display:none;position:fixed;inset:0;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999;align-items:flex-start;justify-content:flex-end;padding:70px 16px 0;" onclick="if(event.target===this)closeNotif()">
   <div style="background:rgba(240,244,255,.96);backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r3);width:100%;max-width:380px;max-height:75vh;display:flex;flex-direction:column;box-shadow:var(--s3);">
     <!-- sticky header -->
     <div style="padding:16px 20px 12px;border-bottom:1px solid var(--g-b2);flex-shrink:0;">
@@ -1746,11 +1770,11 @@ function submitService() {
   // ดึงข้อมูลไฟล์มาเช็คก่อนเปลี่ยนสถานะปุ่ม
   const fileObj = document.getElementById('fileInput').files[0];
   
-  // --- เพิ่มการเช็คขนาดไฟล์ 10MB ตรงนี้ ---
+  // --- เพิ่มการเช็คขนาดไฟล์ 25MB ตรงนี้ ---
   if (fileObj) {
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    const maxSize = 25 * 1024 * 1024; // 25MB
     if (fileObj.size > maxSize) {
-      document.getElementById('serviceResult').innerText = "ขนาดไฟล์ต้องไม่เกิน 10MB";
+      document.getElementById('serviceResult').innerText = "ขนาดไฟล์ต้องไม่เกิน 25MB";
       return; // หยุดการทำงานถ้าไฟล์ใหญ่เกินไป
     }
   }
@@ -1948,9 +1972,9 @@ function renderJobs() {
   const countCancel = baseJobs.filter(j => j.status.includes('ยกเลิก')).length;
 
   document.getElementById('btnFilterAll').innerText = `ทั้งหมด (${countAll})`;
-  document.getElementById('btnFilterWait').innerText = `รอ (${countWait})`;
-  document.getElementById('btnFilterDoing').innerText = `กำลังทำ (${countDoing})`;
-  document.getElementById('btnFilterDone').innerText = `เสร็จ (${countDone})`;
+  document.getElementById('btnFilterWait').innerText = `รอจัดการ (${countWait})`;
+  document.getElementById('btnFilterDoing').innerText = `กำลังดำเนินการ (${countDoing})`;
+  document.getElementById('btnFilterDone').innerText = `เสร็จสิ้น (${countDone})`;
   document.getElementById('btnFilterCancel').innerText = `ยกเลิก (${countCancel})`;
   
   // ==========================================
@@ -2330,10 +2354,43 @@ function deleteUser(user) {
   }
 }
 
+function openViewResModal(jobId) {
+  const job = ALL_JOBS.find(j => j.id === String(jobId));
+  if (!job) return;
+  document.getElementById('viewResJobId').textContent = job.id;
+  document.getElementById('viewResNote').textContent = job.note || '-';
+  document.getElementById('viewResDoneDate').textContent = '';
+  document.getElementById('viewResItems').innerHTML = '<div style="font-size:13px;color:var(--t3);">กำลังโหลด...</div>';
+  document.getElementById('viewResModal').style.display = 'flex';
+
+  gasCall('getResources', { owner: CURRENT_USER.name, role: CURRENT_USER.role }).then(data => {
+    const items = (data || []).filter(r => String(r.jobId) === String(jobId));
+    if (items.length) {
+      document.getElementById('viewResDoneDate').textContent = items[0].doneDate ? 'วันที่เสร็จ: ' + items[0].doneDate : '';
+      document.getElementById('viewResItems').innerHTML = items.map(r => {
+        const detail = [r.qty ? 'จำนวน ' + r.qty : '', r.color, r.size].filter(Boolean).join(' · ');
+        return `<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;margin-bottom:7px;background:rgba(255,255,255,.5);border:0.5px solid var(--g-b2);border-radius:12px;">
+          <span class="material-symbols-rounded" style="font-size:16px;color:var(--p);margin:0;flex-shrink:0;">inventory_2</span>
+          <div>
+            <div style="font-size:15px;font-weight:600;color:var(--t1);">${r.name}</div>
+            ${detail ? `<div style="font-size:13px;color:var(--t3);">${detail}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    } else {
+      document.getElementById('viewResItems').innerHTML = '<div style="text-align:center;color:var(--t3);padding:16px 0;font-size:14px;">ไม่มีข้อมูลทรัพยากร</div>';
+    }
+  }).catch(() => {
+    document.getElementById('viewResItems').innerHTML = '<div style="color:#ef4444;font-size:13px;">โหลดไม่สำเร็จ</div>';
+  });
+}
+
 function openEditModal(jobId) {
   ACTIVE_ID = String(jobId);
   const job = ALL_JOBS.find(j => j.id === ACTIVE_ID);
   if(!job) return;
+
+  if (job.status.includes('เสร็จ')) { openViewResModal(jobId); return; }
 
   document.getElementById('editJobId').innerText = job.id;
   document.getElementById('modalStatus').value = job.status.includes('รอ') ? 'รอดำเนินการ' : job.status.includes('กำลัง') ? 'กำลังดำเนินการ' : job.status.includes('เสร็จ') ? 'เสร็จสิ้น' : job.status.includes('ยกเลิก') ? 'ยกเลิก' : 'รอดำเนินการ';
@@ -2365,7 +2422,17 @@ function toggleDoneSection() {
   document.getElementById('modalDoneSection').style.display = s.includes('เสร็จ') ? 'block' : 'none';
 }
 
-function closeEditModal() { document.getElementById('editModal').style.display = 'none'; ACTIVE_ID = null; }
+function closeEditModal() {
+  document.getElementById('editModal').style.display = 'none';
+  ACTIVE_ID = null;
+  document.getElementById('editNote').value = '';
+  document.getElementById('editDoneDate').value = '';
+  document.getElementById('modalDoneSection').style.display = 'none';
+  document.getElementById('ownerTags').innerHTML = '';
+  for(let i=1;i<=3;i++){
+    ['name','qty','color','size'].forEach(f => { const el = document.getElementById(`res${i}${f}`); if(el) el.value=''; });
+  }
+}
 
 function saveEdit() {
   if(!ACTIVE_ID) return;
@@ -2519,6 +2586,11 @@ function openChangePw() {
 }
 function closeChangePw() {
   document.getElementById('changePwModal').style.display = 'none';
+  document.getElementById('pwNewUser').value = '';
+  document.getElementById('pwOld').value = '';
+  document.getElementById('pwNew').value = '';
+  document.getElementById('pwConfirm').value = '';
+  document.getElementById('pwMsg').textContent = '';
 }
 function saveChangePw() {
   const newUser = document.getElementById('pwNewUser').value.trim();
@@ -2752,7 +2824,7 @@ function drawAdminChart(filteredJobs) {
   const C = 2 * Math.PI * 54;
 
   const slices = [
-    { id:'arc_wait',   count:counts.wait,   color:'#e8c060', label:'รอดำเนินการ' },
+    { id:'arc_wait',   count:counts.wait,   color:'#e8c060', label:'รอจัดการ' },
     { id:'arc_doing',  count:counts.doing,  color:'var(--p)', label:'กำลังดำเนินการ' },
     { id:'arc_done',   count:counts.done,   color:'#50c890', label:'เสร็จสิ้น' },
     { id:'arc_cancel', count:counts.cancel, color:'#d07070', label:'ยกเลิก' },
