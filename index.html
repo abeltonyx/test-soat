@@ -1135,17 +1135,9 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       <!-- จัดการรายการวัสดุ -->
       <div class="card">
         <div class="noise"></div>
-        <span class="section-label" style="display:flex;align-items:center;gap:5px;">
-          <span class="material-symbols-rounded" style="font-size:13px;margin:0;color:var(--p);">inventory_2</span> จัดการรายการวัสดุ
-        </span>
-        <div style="display:flex;gap:8px;margin-top:10px;">
-          <input id="newResItemInput" placeholder="ชื่อวัสดุใหม่" style="flex:1;margin:0;">
-          <button class="btn primary" style="margin:0;padding:10px 14px;flex-shrink:0;" onclick="addResItem()">
-            <span class="material-symbols-rounded" style="margin:0;font-size:18px;">add</span>
-          </button>
-        </div>
-        <div id="resItemMsg" style="font-size:13px;margin-top:6px;color:#ef4444;min-height:18px;"></div>
-        <div id="resItemList" style="margin-top:8px;"></div>
+        <button class="btn secondary" style="margin:0;" onclick="openResItemModal()">
+          <span class="material-symbols-rounded">inventory_2</span> จัดการรายการวัสดุ
+        </button>
       </div>
     </div>
 
@@ -1449,6 +1441,24 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
   </div>
 </div>
 
+<!-- Manage Resource Items Modal -->
+<div id="resItemModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:rgba(240,244,255,.95);backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r4);padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--s3);">
+    <h3 style="margin:0 0 16px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
+      <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:17px;">inventory_2</span> จัดการรายการวัสดุ
+      <button onclick="document.getElementById('resItemModal').style.display='none'" style="margin-left:auto;background:rgba(0,0,0,.06);border:none;cursor:pointer;color:var(--t2);font-size:26px;line-height:1;padding:2px 6px;border-radius:8px;flex-shrink:0;">×</button>
+    </h3>
+    <div style="display:flex;gap:8px;margin-bottom:6px;">
+      <input id="newResItemInput" placeholder="ชื่อวัสดุใหม่" style="flex:1;margin:0;">
+      <button class="btn primary" style="margin:0;padding:10px 14px;flex-shrink:0;" onclick="addResItem()">
+        <span class="material-symbols-rounded" style="margin:0;font-size:18px;">add</span>
+      </button>
+    </div>
+    <div id="resItemMsg" style="font-size:13px;margin-bottom:8px;color:#ef4444;min-height:18px;"></div>
+    <div id="resItemList"></div>
+  </div>
+</div>
+
 <!-- Change Password Modal -->
 <div id="changePwModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)closeChangePw()">
   <div>
@@ -1514,7 +1524,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 </div>
 
 <div id="ptrIndicator" class="ptr-indicator">
-  <span class="material-symbols-rounded">sync_alt</span>
+  <span class="material-symbols-rounded">sync</span>
 </div>
 
 <script>
@@ -1746,7 +1756,7 @@ function updateDept() {
 function setLoading(btn, loading, originalHTML) {
   if (loading) {
     btn._originalHTML = btn.innerHTML;
-    btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;margin:0;font-size:16px;">sync_alt</span>`;
+    btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;margin:0;font-size:16px;">sync</span>`;
     btn.disabled = true;
   } else {
     btn.innerHTML = originalHTML || btn._originalHTML || btn.innerHTML;
@@ -1802,7 +1812,7 @@ function submitService() {
 
   // เปลี่ยนสถานะปุ่มเป็นกำลังโหลด
   const btn = document.getElementById('submitBtn');
-  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync_alt</span> กำลังประมวลผล...`; 
+  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync</span> กำลังประมวลผล...`; 
   btn.disabled = true;
 
   if(fileObj) {
@@ -1882,7 +1892,7 @@ function login() {
   const u = document.getElementById('loginUser').value;
   const p = document.getElementById('loginPass').value;
   const btn = document.getElementById('loginBtn');
-  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync_alt</span> รอสักครู่...`;
+  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync</span> รอสักครู่...`;
   btn.disabled = true;
   gasCall('checkLogin', { u, p }).then(res => {
     btn.innerHTML = "เข้าสู่ระบบ"; btn.disabled = false;
@@ -1924,7 +1934,7 @@ function showSection(sec, jobViewType) {
     }
     filterStatus('all'); 
   }
-  if(sec === 'resource') { loadResources(); loadResItemList(); }
+  if(sec === 'resource') { loadResources(); }
 }
 
 function loadAllData() {
@@ -2127,7 +2137,15 @@ const RES_JOB_PAGE_SIZE = 10;
 let _resExpanded = false;
 let fpResStart, fpResEnd;
 
+function openResItemModal() {
+  document.getElementById('resItemModal').style.display = 'flex';
+  document.getElementById('newResItemInput').value = '';
+  document.getElementById('resItemMsg').textContent = '';
+  loadResItemList();
+}
+
 function buildResContainer(list) {
+  if (!Array.isArray(list)) list = [];
   let html = '';
   const opts = list.map(n => `<option>${n}</option>`).join('');
   for (let i = 1; i <= 3; i++) {
