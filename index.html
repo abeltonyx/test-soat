@@ -1121,7 +1121,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       </div>
 
       <!-- รายการงาน -->
-      <div class="card">
+      <div class="card" style="margin-bottom:10px;">
         <div class="noise"></div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
           <span class="section-label" style="margin:0;">รายการงาน</span>
@@ -1130,6 +1130,22 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
         <div id="resJobPaginationTop"></div>
         <div id="resJobList"></div>
         <div id="resJobPaginationBottom"></div>
+      </div>
+
+      <!-- จัดการรายการวัสดุ -->
+      <div class="card">
+        <div class="noise"></div>
+        <span class="section-label" style="display:flex;align-items:center;gap:5px;">
+          <span class="material-symbols-rounded" style="font-size:13px;margin:0;color:var(--p);">inventory_2</span> จัดการรายการวัสดุ
+        </span>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <input id="newResItemInput" placeholder="ชื่อวัสดุใหม่" style="flex:1;margin:0;">
+          <button class="btn primary" style="margin:0;padding:10px 14px;flex-shrink:0;" onclick="addResItem()">
+            <span class="material-symbols-rounded" style="margin:0;font-size:18px;">add</span>
+          </button>
+        </div>
+        <div id="resItemMsg" style="font-size:13px;margin-top:6px;color:#ef4444;min-height:18px;"></div>
+        <div id="resItemList" style="margin-top:8px;"></div>
       </div>
     </div>
 
@@ -1498,7 +1514,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 </div>
 
 <div id="ptrIndicator" class="ptr-indicator">
-  <span class="material-symbols-rounded">sync_alt</span>
+  <span class="material-symbols-rounded">sync</span>
 </div>
 
 <script>
@@ -1621,32 +1637,13 @@ document.addEventListener("DOMContentLoaded", () => {
   fpStart = makeFp("#filterStartDate");
   fpEnd   = makeFp("#filterEndDate");
   
-  let resHtml = '';
-  for(let i=1; i<=3; i++){
-    resHtml += `
-    <div class="res-group">
-      <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;">ชิ้นที่ ${i}</div>
-      <select id="res${i}name" style="margin-top:0; margin-bottom:10px;">
-        <option value="">-- เลือกทรัพยากร --</option>
-        <option>อิงค์เจ็ท A4</option><option>อิงค์เจ็ท A3</option>
-        <option>กระดาษ A4</option><option>กระดาษ A3</option><option>กระดาษ A5</option>
-        <option>กระดาษโฟโต้ A4</option><option>กระดาษโฟโต้</option>
-        <option>กระดาษการ์ดขาว 180 แกรม</option><option>กระดาษการ์ด</option>
-        <option>กระดาษโรเนียว A4</option><option>กระดาษโรเนียว</option>
-        <option>กระดาษ</option><option>สติ๊กเกอร์</option>
-        <option>กระดาษสติ๊กเกอร์ A4</option>
-        <option>พลาสติกเคลือบ A3</option><option>พลาสติกเคลือบ A4</option>
-        <option>พลาสติกเคลือบ A5</option><option>พลาสติกเคลือบ</option>
-        <option>อะคริลิค</option><option>ฟิวเจอร์บอร์ด</option><option>ใบประกาศ</option>
-      </select>
-      <div style="display:flex;gap:10px;">
-        <input id="res${i}qty" placeholder="จำนวน" style="flex:1; margin-top:0;">
-        <input id="res${i}color" placeholder="สี" style="flex:1; margin-top:0;">
-        <input id="res${i}size" placeholder="ขนาด" style="flex:1; margin-top:0;">
-      </div>
-    </div>`;
-  }
-  document.getElementById('resContainer').innerHTML = resHtml;
+  buildResContainer([
+    'อิงค์เจ็ท A4','อิงค์เจ็ท A3','กระดาษ A4','กระดาษ A3','กระดาษ A5',
+    'กระดาษโฟโต้ A4','กระดาษโฟโต้','กระดาษการ์ดขาว 180 แกรม','กระดาษการ์ด',
+    'กระดาษโรเนียว A4','กระดาษโรเนียว','กระดาษ','สติ๊กเกอร์','กระดาษสติ๊กเกอร์ A4',
+    'พลาสติกเคลือบ A3','พลาสติกเคลือบ A4','พลาสติกเคลือบ A5','พลาสติกเคลือบ',
+    'อะคริลิค','ฟิวเจอร์บอร์ด','ใบประกาศ'
+  ]); // default — จะถูกแทนด้วยข้อมูลจาก GAS ตอน login
   
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && localStorage.getItem('dm') === null) {
     document.body.classList.add('dark');
@@ -1726,7 +1723,7 @@ function updateDept() {
 function setLoading(btn, loading, originalHTML) {
   if (loading) {
     btn._originalHTML = btn.innerHTML;
-    btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;margin:0;font-size:16px;">sync_alt</span>`;
+    btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;margin:0;font-size:16px;">sync</span>`;
     btn.disabled = true;
   } else {
     btn.innerHTML = originalHTML || btn._originalHTML || btn.innerHTML;
@@ -1782,7 +1779,7 @@ function submitService() {
 
   // เปลี่ยนสถานะปุ่มเป็นกำลังโหลด
   const btn = document.getElementById('submitBtn');
-  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync_alt</span> กำลังประมวลผล...`; 
+  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync</span> กำลังประมวลผล...`; 
   btn.disabled = true;
 
   if(fileObj) {
@@ -1862,7 +1859,7 @@ function login() {
   const u = document.getElementById('loginUser').value;
   const p = document.getElementById('loginPass').value;
   const btn = document.getElementById('loginBtn');
-  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync_alt</span> รอสักครู่...`;
+  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync</span> รอสักครู่...`;
   btn.disabled = true;
   gasCall('checkLogin', { u, p }).then(res => {
     btn.innerHTML = "เข้าสู่ระบบ"; btn.disabled = false;
@@ -1880,6 +1877,7 @@ function login() {
       showSection('job', res.role === 'admin' ? 'all' : 'my');
       switchPage('admin');
       loadAllData();
+      gasCall('getResourceList').then(list => { if(list) { RESOURCE_LIST = list; buildResContainer(list); } });
     } else { document.getElementById('loginMsg').innerText = "รหัสผ่านผิด หรือบัญชีถูกระงับ"; }
   }).catch(() => {
     btn.innerHTML = "เข้าสู่ระบบ"; btn.disabled = false;
@@ -1902,7 +1900,7 @@ function showSection(sec, jobViewType) {
     }
     filterStatus('all'); 
   }
-  if(sec === 'resource') loadResources();
+  if(sec === 'resource') { loadResources(); loadResItemList(); }
 }
 
 function loadAllData() {
@@ -2104,6 +2102,71 @@ let _resJobPage = 1;
 const RES_JOB_PAGE_SIZE = 10;
 let _resExpanded = false;
 let fpResStart, fpResEnd;
+
+function buildResContainer(list) {
+  let html = '';
+  const opts = list.map(n => `<option>${n}</option>`).join('');
+  for (let i = 1; i <= 3; i++) {
+    html += `<div class="res-group">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;">ชิ้นที่ ${i}</div>
+      <select id="res${i}name" style="margin-top:0;margin-bottom:10px;">
+        <option value="">-- เลือกทรัพยากร --</option>${opts}
+      </select>
+      <div style="display:flex;gap:10px;">
+        <input id="res${i}qty" placeholder="จำนวน" style="flex:1;margin-top:0;">
+        <input id="res${i}color" placeholder="สี" style="flex:1;margin-top:0;">
+        <input id="res${i}size" placeholder="ขนาด" style="flex:1;margin-top:0;">
+      </div>
+    </div>`;
+  }
+  document.getElementById('resContainer').innerHTML = html;
+}
+
+let RESOURCE_LIST = [];
+
+function loadResItemList() {
+  const el = document.getElementById('resItemList');
+  if (!el) return;
+  el.innerHTML = '<div style="font-size:13px;color:var(--t3);">กำลังโหลด...</div>';
+  gasCall('getResourceList').then(list => {
+    RESOURCE_LIST = list || [];
+    buildResContainer(RESOURCE_LIST);
+    renderResItemList();
+  });
+}
+
+function renderResItemList() {
+  const el = document.getElementById('resItemList');
+  if (!el) return;
+  if (!RESOURCE_LIST.length) { el.innerHTML = '<div style="font-size:13px;color:var(--t3);padding:8px 0;">ไม่มีรายการ</div>'; return; }
+  el.innerHTML = RESOURCE_LIST.map(name => `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:5px;background:rgba(255,255,255,.5);border:0.5px solid var(--g-b2);border-radius:10px;">
+      <span class="material-symbols-rounded" style="font-size:15px;color:var(--p);margin:0;flex-shrink:0;">inventory_2</span>
+      <span style="flex:1;font-size:14px;color:var(--t1);">${name}</span>
+      <button onclick="deleteResItem('${name.replace(/'/g,"\\'")}')\" style="background:rgba(239,68,68,.1);border:none;border-radius:8px;padding:4px 8px;cursor:pointer;color:#ef4444;font-size:12px;font-family:inherit;display:flex;align-items:center;gap:3px;">
+        <span class="material-symbols-rounded" style="font-size:14px;margin:0;">delete</span>
+      </button>
+    </div>`).join('');
+}
+
+function addResItem() {
+  const input = document.getElementById('newResItemInput');
+  const msg = document.getElementById('resItemMsg');
+  const name = input.value.trim();
+  if (!name) { msg.textContent = 'กรุณากรอกชื่อวัสดุ'; return; }
+  msg.textContent = '';
+  gasCall('addResourceItem', { name }).then(() => {
+    input.value = '';
+    loadResItemList();
+  }).catch(e => { msg.textContent = e.message || 'เกิดข้อผิดพลาด'; });
+}
+
+function deleteResItem(name) {
+  if (!confirm(`ลบ "${name}" ออกจากรายการ?`)) return;
+  gasCall('deleteResourceItem', { name }).then(() => {
+    loadResItemList();
+  }).catch(e => { alert(e.message || 'เกิดข้อผิดพลาด'); });
+}
 
 function loadResources() {
   document.getElementById('resSummaryRows').innerHTML = loadingHTML;
