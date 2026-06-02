@@ -1088,6 +1088,14 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
         </div>
       </div>
 
+      <!-- จัดการรายการวัสดุ -->
+      <div class="card" style="margin-bottom:10px;">
+        <div class="noise"></div>
+        <button class="btn secondary" style="margin:0;" onclick="openResItemModal()">
+          <span class="material-symbols-rounded">inventory_2</span> จัดการรายการวัสดุ
+        </button>
+      </div>
+
       <!-- date filter -->
       <div class="card" style="padding:14px 16px;margin-bottom:10px;">
         <div class="noise"></div>
@@ -1130,14 +1138,6 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
         <div id="resJobPaginationTop"></div>
         <div id="resJobList"></div>
         <div id="resJobPaginationBottom"></div>
-      </div>
-
-      <!-- จัดการรายการวัสดุ -->
-      <div class="card">
-        <div class="noise"></div>
-        <button class="btn secondary" style="margin:0;" onclick="openResItemModal()">
-          <span class="material-symbols-rounded">inventory_2</span> จัดการรายการวัสดุ
-        </button>
       </div>
     </div>
 
@@ -1448,10 +1448,10 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:17px;">inventory_2</span> จัดการรายการวัสดุ
       <button onclick="document.getElementById('resItemModal').style.display='none'" style="margin-left:auto;background:rgba(0,0,0,.06);border:none;cursor:pointer;color:var(--t2);font-size:26px;line-height:1;padding:2px 6px;border-radius:8px;flex-shrink:0;">×</button>
     </h3>
-    <div style="display:flex;gap:8px;margin-bottom:6px;">
-      <input id="newResItemInput" placeholder="ชื่อวัสดุใหม่" style="flex:1;margin:0;">
-      <button class="btn primary" style="margin:0;padding:10px 14px;flex-shrink:0;" onclick="addResItem()">
-        <span class="material-symbols-rounded" style="margin:0;font-size:18px;">add</span>
+    <div style="display:flex;gap:8px;margin-bottom:6px;align-items:center;">
+      <input id="newResItemInput" placeholder="ชื่อวัสดุใหม่" style="flex:1;margin:0;padding:12px 14px;border-radius:14px;border:1px solid var(--g-b2);background:rgba(255,255,255,.6);font-family:inherit;font-size:15px;color:var(--t1);outline:none;">
+      <button class="btn primary" style="margin:0;padding:12px 16px;flex-shrink:0;border-radius:14px;" onclick="addResItem()">
+        <span class="material-symbols-rounded" style="margin:0;font-size:20px;">add</span>
       </button>
     </div>
     <div id="resItemMsg" style="font-size:13px;margin-bottom:8px;color:#ef4444;min-height:18px;"></div>
@@ -1524,7 +1524,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 </div>
 
 <div id="ptrIndicator" class="ptr-indicator">
-  <span class="material-symbols-rounded">sync</span>
+  <span class="material-symbols-rounded">sync_alt</span>
 </div>
 
 <script>
@@ -1756,7 +1756,7 @@ function updateDept() {
 function setLoading(btn, loading, originalHTML) {
   if (loading) {
     btn._originalHTML = btn.innerHTML;
-    btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;margin:0;font-size:16px;">sync</span>`;
+    btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;margin:0;font-size:16px;">sync_alt</span>`;
     btn.disabled = true;
   } else {
     btn.innerHTML = originalHTML || btn._originalHTML || btn.innerHTML;
@@ -1812,7 +1812,7 @@ function submitService() {
 
   // เปลี่ยนสถานะปุ่มเป็นกำลังโหลด
   const btn = document.getElementById('submitBtn');
-  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync</span> กำลังประมวลผล...`; 
+  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync_alt</span> กำลังประมวลผล...`; 
   btn.disabled = true;
 
   if(fileObj) {
@@ -1892,7 +1892,7 @@ function login() {
   const u = document.getElementById('loginUser').value;
   const p = document.getElementById('loginPass').value;
   const btn = document.getElementById('loginBtn');
-  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync</span> รอสักครู่...`;
+  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">sync_alt</span> รอสักครู่...`;
   btn.disabled = true;
   gasCall('checkLogin', { u, p }).then(res => {
     btn.innerHTML = "เข้าสู่ระบบ"; btn.disabled = false;
