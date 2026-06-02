@@ -889,7 +889,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
           <span class="material-symbols-rounded" style="font-size:13px;margin:0;">attach_file</span> ไฟล์แนบ (ถ้ามี)
         </div>
         <input type="file" id="fileInput" style="margin-top:0;border:none;padding:0;background:transparent;box-shadow:none;font-size:13px;">
-        <div style="font-size:11px;color:var(--t3);margin-top:4px;">ไม่เกิน 10MB</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:4px;">ไม่เกิน 25MB</div>
       </div>
 
       <input type="text" id="needDateInput" placeholder="วันที่ต้องการงาน">
@@ -1058,12 +1058,12 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       </div>
 
       <!-- filter pills -->
-      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;">
-        <button id="btnFilterAll"    onclick="filterStatus('all')"    class="filter-btn active">ทั้งหมด (0)</button>
-        <button id="btnFilterWait"   onclick="filterStatus('รอ')"     class="filter-btn">รอจัดการ (0)</button>
-        <button id="btnFilterDoing"  onclick="filterStatus('กำลัง')"  class="filter-btn">กำลังดำเนินการ (0)</button>
-        <button id="btnFilterDone"   onclick="filterStatus('เสร็จ')"  class="filter-btn">เสร็จสิ้น (0)</button>
-        <button id="btnFilterCancel" onclick="filterStatus('ยกเลิก')" class="filter-btn">ยกเลิก (0)</button>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:12px;">
+        <button id="btnFilterAll"    onclick="filterStatus('all')"    class="filter-btn active" style="text-align:center;">ทั้งหมด (0)</button>
+        <button id="btnFilterWait"   onclick="filterStatus('รอ')"     class="filter-btn" style="text-align:center;">รอจัดการ (0)</button>
+        <button id="btnFilterDoing"  onclick="filterStatus('กำลัง')"  class="filter-btn" style="text-align:center;">กำลังดำเนินการ (0)</button>
+        <button id="btnFilterDone"   onclick="filterStatus('เสร็จ')"  class="filter-btn" style="text-align:center;">เสร็จสิ้น (0)</button>
+        <button id="btnFilterCancel" onclick="filterStatus('ยกเลิก')" class="filter-btn" style="text-align:center;">ยกเลิก (0)</button>
       </div>
 
       <div id="paginationTop"></div>
@@ -1371,7 +1371,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
     <h3 style="margin:0 0 16px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
       <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:17px;">folder_open</span>
       งาน <span style="color:var(--p);">#<span id="editJobId"></span></span>
-      <button onclick="closeEditModal()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--t3);font-size:22px;line-height:1;padding:0;flex-shrink:0;">×</button>
+      <button onclick="closeEditModal()" style="margin-left:auto;background:rgba(0,0,0,.06);border:none;cursor:pointer;color:var(--t2);font-size:26px;line-height:1;padding:2px 6px;border-radius:8px;flex-shrink:0;">×</button>
     </h3>
     <div id="adminAssignPanel" style="display:none;">
       <span class="section-label">มอบหมายให้</span>
@@ -1418,7 +1418,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       <span class="material-symbols-rounded" style="color:#10b981;margin:0;font-size:17px;">task_alt</span>
       งาน <span style="color:var(--p);">#<span id="viewResJobId"></span></span>
       <span style="font-size:12px;background:rgba(16,185,129,.12);color:#10b981;padding:3px 10px;border-radius:99px;font-weight:500;">เสร็จสิ้น</span>
-      <button onclick="document.getElementById('viewResModal').style.display='none'" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--t3);font-size:22px;line-height:1;padding:0;flex-shrink:0;">×</button>
+      <button onclick="document.getElementById('viewResModal').style.display='none'" style="margin-left:auto;background:rgba(0,0,0,.06);border:none;cursor:pointer;color:var(--t2);font-size:26px;line-height:1;padding:2px 6px;border-radius:8px;flex-shrink:0;">×</button>
     </h3>
     <div id="viewResDoneDate" style="font-size:13px;color:var(--t3);margin-bottom:16px;"></div>
     <span class="section-label" style="display:flex;align-items:center;gap:5px;">
@@ -1438,7 +1438,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
   <div>
     <h3 style="margin:0 0 16px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
       <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:17px;">manage_accounts</span> ตั้งค่าบัญชี
-      <button onclick="closeChangePw()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--t3);font-size:22px;line-height:1;padding:0;flex-shrink:0;">×</button>
+      <button onclick="closeChangePw()" style="margin-left:auto;background:rgba(0,0,0,.06);border:none;cursor:pointer;color:var(--t2);font-size:26px;line-height:1;padding:2px 6px;border-radius:8px;flex-shrink:0;">×</button>
     </h3>
     <div style="font-size:12px;color:var(--t3);margin-bottom:4px;">Username ปัจจุบัน</div>
     <div id="pwCurrentUser" style="font-size:15px;font-weight:600;color:var(--p);margin-bottom:14px;">—</div>
