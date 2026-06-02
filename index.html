@@ -1661,33 +1661,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if(i) i.textContent='light_mode'; if(l) l.textContent='โหมดกลางวัน';
   }
   // แสดงคำแนะนำการติดตั้งหลังจากโหลดหน้า 2 วินาที
-  // ── restore session ──
-  const _saved = localStorage.getItem('session');
-  if (_saved) {
-    try {
-      const res = JSON.parse(_saved);
-      CURRENT_USER = res;
-      document.getElementById('adminName').innerText = res.name;
-      document.getElementById('adminPageTitle').innerText = res.role === 'admin' ? 'Admin' : 'Staff';
-      document.getElementById('allJobBtn').style.display = res.role === 'admin' ? 'block' : 'none';
-      document.getElementById('userMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
-      document.getElementById('resMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
-      document.getElementById('adminNavTop').style.gridTemplateColumns = res.role === 'admin' ? '' : 'repeat(2,1fr)';
-      document.getElementById('adminNavBottom').style.display = res.role === 'admin' ? 'grid' : 'none';
-      document.getElementById('staffAccountBtn').style.display = res.role === 'admin' ? 'none' : 'block';
-      showSection('job', res.role === 'admin' ? 'all' : 'my');
-      switchPage('admin');
-      loadAllData();
-      gasCall('getResourceList').then(list => { if(list) { RESOURCE_LIST = list; buildResContainer(list); } });
-      setTimeout(showPwaPrompt, 2000);
-      return;
-    } catch(e) { localStorage.removeItem('session'); }
-  }
   setTimeout(showPwaPrompt, 2000);
 });
 
 function goHome() { 
-  localStorage.removeItem('session');
   CURRENT_USER = null;
   clearForm(); 
 
@@ -1898,7 +1875,6 @@ function login() {
     btn.innerHTML = "เข้าสู่ระบบ"; btn.disabled = false;
     if(res.success) {
       CURRENT_USER = res;
-      localStorage.setItem('session', JSON.stringify(res));
       document.getElementById('adminName').innerText = res.name;
       document.getElementById('adminPageTitle').innerText = res.role === 'admin' ? 'Admin' : 'Staff';
       document.getElementById('allJobBtn').style.display = res.role === 'admin' ? 'block' : 'none';
