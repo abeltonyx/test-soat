@@ -60,9 +60,9 @@
 body.dark {
   --bg:   #0c1222;
   --bg2:  #101828;
-  --t1:   #eef2fc;
-  --t2:   #c8d8f0;
-  --t3:   #8aa0c0;
+  --t1:   #f0f4ff;
+  --t2:   #d0e0f8;
+  --t3:   #9ab0d0;
   --p:    #8aabfc;
   --p2:   #a0bfff;
   --p-glow: rgba(138,171,252,.20);
@@ -350,15 +350,15 @@ body.dark .topbar {
 .card {
   position: relative; overflow: hidden;
   border-radius: var(--r4); padding: 22px 20px; margin-bottom: 12px;
-  background: rgba(255,255,255,.06);
-  backdrop-filter: blur(40px) saturate(260%);
-  -webkit-backdrop-filter: blur(40px) saturate(260%);
-  border: 1px solid rgba(255,255,255,.50);
+  background: rgba(255,255,255,.38);
+  backdrop-filter: blur(48px) saturate(200%);
+  -webkit-backdrop-filter: blur(48px) saturate(200%);
+  border: 1px solid rgba(255,255,255,.82);
   box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,.80),
-    inset 0 -1px 0 rgba(180,200,255,.12),
-    0 8px 40px rgba(100,130,220,.08),
-    0 2px 8px rgba(0,0,0,.03);
+    inset 0 1.5px 0 rgba(255,255,255,.95),
+    inset 0 -1px 0 rgba(180,200,255,.10),
+    0 8px 40px rgba(100,130,220,.06),
+    0 2px 8px rgba(0,0,0,.02);
   isolation: isolate;
   transition: box-shadow var(--d) var(--ease);
 }
@@ -475,22 +475,22 @@ body.dark .section-label { color: var(--t2); border-color: var(--p); }
 body.dark .primary { background: linear-gradient(145deg, #6a8ae8, #4060c8); }
 
 .secondary {
-  background: var(--g-bg); color: var(--p);
-  border: 1px solid var(--g-b);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.85), var(--s1);
+  background: rgba(255,255,255,.38); color: var(--p);
+  border: 1px solid rgba(255,255,255,.82);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), var(--s1);
 }
-.secondary:hover { background: rgba(255,255,255,.80); }
-body.dark .secondary { background: var(--g-bg); color: var(--p); border-color: var(--g-b); }
+.secondary:hover { background: rgba(255,255,255,.55); }
+body.dark .secondary { background: rgba(255,255,255,.08); color: var(--p); border-color: rgba(255,255,255,.14); }
 
 .neutral {
-  background: rgba(255,255,255,.45); color: var(--t2);
-  border: 1px solid var(--g-b2);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  box-shadow: var(--s1);
+  background: rgba(255,255,255,.32); color: var(--t2);
+  border: 1px solid rgba(255,255,255,.78);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), var(--s1);
 }
-.neutral:hover { background: rgba(255,255,255,.65); color: var(--t1); }
-body.dark .neutral { background: rgba(255,255,255,.06); color: var(--t2); border-color: var(--g-b); }
+.neutral:hover { background: rgba(255,255,255,.52); color: var(--t1); }
+body.dark .neutral { background: rgba(255,255,255,.06); color: var(--t2); border-color: rgba(255,255,255,.12); }
 
 .danger { background: rgba(255,238,238,.75); color: #c04040; border: 1px solid rgba(220,140,140,.24); }
 body.dark .danger { background: rgba(80,15,15,.45); color: #e07070; border-color: rgba(200,80,80,.18); }
@@ -500,12 +500,13 @@ body.dark .danger { background: rgba(80,15,15,.45); color: #e07070; border-color
    ───────────────────────────────────────────── */
 input, select, textarea {
   width: 100%; padding: 12px 14px; margin-top: 9px;
-  border: 1px solid var(--g-b2); border-radius: var(--r1);
-  background: rgba(255,255,255,.68); color: var(--t1);
+  border: 1px solid rgba(255,255,255,.75); border-radius: var(--r1);
+  background: rgba(255,255,255,.42); color: var(--t1);
   font-family: 'Kanit', sans-serif; font-size: 14px;
   transition: all var(--d) var(--ease);
   -webkit-appearance: none; appearance: none;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.85), var(--s1);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), var(--s1);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
 }
 input::placeholder, textarea::placeholder { color: var(--t3); }
 input:focus, select:focus, textarea:focus {
@@ -579,8 +580,30 @@ body.dark .badge-cancel { background: rgba(225,85,85,.11);   color: #e08888; bor
   width: 100%; max-width: 500px; max-height: 88vh; overflow-y: auto;
   box-shadow: var(--s3);
 }
-body.dark #editModal > div, body.dark #changePwModal > div {
-  background: rgba(12,18,34,.94); border-color: rgba(255,255,255,.08);
+body.dark #editModal > div, body.dark #changePwModal > div,
+body.dark #viewResModal > div, body.dark #resItemModal > div {
+  background: rgba(14,22,44,.88) !important;
+  border-color: rgba(255,255,255,.14) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1) !important;
+}
+
+body.dark #notifModal > div {
+  background: rgba(14,22,44,.88) !important;
+  border-color: rgba(255,255,255,.14) !important;
+}
+body.dark #notifModal > div > div:first-child {
+  background: rgba(255,255,255,.04) !important;
+  border-bottom-color: rgba(255,255,255,.08) !important;
+}
+
+/* light mode modal glass */
+#editModal > div, #changePwModal > div,
+#viewResModal > div, #resItemModal > div {
+  background: rgba(255,255,255,.42) !important;
+  backdrop-filter: blur(60px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(60px) saturate(180%) !important;
+  border: 1px solid rgba(255,255,255,.92) !important;
+  box-shadow: 0 12px 48px rgba(100,130,220,.1), 0 2px 8px rgba(0,0,0,.03), inset 0 1.5px 0 rgba(255,255,255,1), inset 0 0 0 0.5px rgba(255,255,255,.5) !important;
 }
 
 /* ─────────────────────────────────────────────
@@ -670,7 +693,7 @@ body.dark .res-group { background: rgba(255,255,255,.04); border-color: var(--g-
   }
 }
 
-body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba(255,255,255,.08); }
+body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgba(255,255,255,.15) !important; }
 
 /* admin topbar extra */
 .admin-user-badge {
@@ -1162,6 +1185,21 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
   </div>
 </div>
 
+  <!-- Dark mode FAB (mobile only) -->
+  <button id="darkFab" onclick="toggleDark()" style="
+    position:fixed;bottom:24px;right:20px;z-index:999;
+    width:48px;height:48px;border-radius:50%;
+    background:rgba(255,255,255,.45);
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.9);
+    box-shadow:0 4px 16px rgba(100,130,220,.15),inset 0 1px 0 rgba(255,255,255,1);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:transform .15s;
+  " onmousedown="this.style.transform='scale(.9)'" onmouseup="this.style.transform=''" ontouchstart="this.style.transform='scale(.9)'" ontouchend="this.style.transform=''">
+    <span class="material-symbols-rounded" id="darkFabIcon" style="font-size:22px;margin:0;color:var(--t2);">dark_mode</span>
+  </button>
+</div>
+
 <!-- ══════════════════════════════════════════
      HELP
 ══════════════════════════════════════════ -->
@@ -1374,7 +1412,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 <!-- ══════════════════════════════════════════
      EDIT MODAL
 ══════════════════════════════════════════ -->
-<div id="editModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)closeEditModal()">
+<div id="editModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)closeEditModal()">
   <div>
     <h3 style="margin:0 0 16px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
       <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:17px;">folder_open</span>
@@ -1420,7 +1458,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 </div>
 
 <!-- View Resource Modal (done jobs) -->
-<div id="viewResModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)this.style.display='none'">
+<div id="viewResModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)this.style.display='none'">
   <div style="background:rgba(240,244,255,.95);backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r4);padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--s3);">
     <h3 style="margin:0 0 4px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
       <span class="material-symbols-rounded" style="color:#10b981;margin:0;font-size:17px;">task_alt</span>
@@ -1442,7 +1480,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 </div>
 
 <!-- Manage Resource Items Modal -->
-<div id="resItemModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)this.style.display='none'">
+<div id="resItemModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)this.style.display='none'">
   <div style="background:rgba(240,244,255,.95);backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r4);padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--s3);">
     <h3 style="margin:0 0 16px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
       <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:17px;">inventory_2</span> จัดการรายการวัสดุ
@@ -1460,7 +1498,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 </div>
 
 <!-- Change Password Modal -->
-<div id="changePwModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)closeChangePw()">
+<div id="changePwModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(8,14,26,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)closeChangePw()">
   <div>
     <h3 style="margin:0 0 16px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
       <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:17px;">manage_accounts</span> ตั้งค่าบัญชี
@@ -1499,14 +1537,15 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 
 
 <!-- Notification Modal -->
-<div id="notifModal" style="display:none;position:fixed;inset:0;background:rgba(8,14,26,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999;align-items:flex-start;justify-content:flex-end;padding:70px 16px 0;" onclick="if(event.target===this)closeNotif()">
-  <div style="background:rgba(240,244,255,.96);backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r3);width:100%;max-width:380px;max-height:75vh;display:flex;flex-direction:column;box-shadow:var(--s3);">
+<div id="notifModal" style="display:none;position:fixed;inset:0;background:rgba(8,14,26,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;align-items:flex-start;justify-content:flex-end;padding:70px 16px 0;" onclick="if(event.target===this)closeNotif()">
+  <div style="background:rgba(255,255,255,.42);backdrop-filter:blur(60px) saturate(180%);-webkit-backdrop-filter:blur(60px) saturate(180%);border:1px solid rgba(255,255,255,.92);border-radius:var(--r3);width:100%;max-width:380px;max-height:75vh;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(100,130,220,.1),0 2px 8px rgba(0,0,0,.03),inset 0 1.5px 0 rgba(255,255,255,1);">
     <!-- sticky header -->
-    <div style="padding:16px 20px 12px;border-bottom:1px solid var(--g-b2);flex-shrink:0;">
+    <div style="padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,.6);flex-shrink:0;background:rgba(255,255,255,.2);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div style="font-size:16px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:7px;">
           <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:18px;">inbox</span>
           กล่องงาน
+          <span id="notifStaffBadge" style="display:none;background:#ef4444;color:#fff;border-radius:99px;padding:1px 8px;font-size:12px;margin-left:2px;">0</span>
         </div>
         <button onclick="closeNotif()" style="background:var(--g-bg);border:1px solid var(--g-b);border-radius:99px;cursor:pointer;color:var(--t2);font-size:14px;font-weight:600;padding:6px 14px;display:flex;align-items:center;gap:4px;">
           <span class="material-symbols-rounded" style="font-size:16px;margin:0;">close</span> ปิด
@@ -1514,7 +1553,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
       </div>
       <!-- tabs (admin only) -->
       <div id="notifTabs" style="display:none;gap:6px;">
-        <button id="tabMyJobs" class="filter-btn active" onclick="switchNotifTab('my')" style="flex:1;">งานของฉัน</button>
+        <button id="tabMyJobs" class="filter-btn active" onclick="switchNotifTab('my')" style="flex:1;">งานของฉัน <span id="tabMyBadge" style="display:none;background:#ef4444;color:#fff;border-radius:99px;padding:1px 6px;font-size:11px;margin-left:3px;">0</span></button>
         <button id="tabNewJobs" class="filter-btn" onclick="switchNotifTab('new')" style="flex:1;">งานใหม่ <span id="tabNewBadge" style="display:none;background:#ef4444;color:#fff;border-radius:99px;padding:1px 6px;font-size:11px;margin-left:3px;">0</span></button>
       </div>
     </div>
@@ -1530,7 +1569,7 @@ body.dark #notifModal > div { background: rgba(12,18,34,.96); border-color: rgba
 <script>
 
 let CURRENT_PAGE = 1;
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 5;
 
 // ── GAS API ──
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbyguzz7Z4W1x1zJJDZdXweqgnCRadrw3CB-7Ry9vuBr7uHEzjhEoNCvp0wP5glsCgs0/exec';
@@ -1640,6 +1679,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add('dark');
     const i=document.getElementById('darkIcon'),l=document.getElementById('darkLabel');
     if(i) i.textContent='light_mode'; if(l) l.textContent='โหมดกลางวัน';
+    const fab=document.getElementById('darkFabIcon');
+    if(fab) fab.textContent='light_mode';
   }
   const fpOrder = makeFp("#orderDateInput");
   const fpNeed  = makeFp("#needDateInput");
@@ -1721,6 +1762,8 @@ function toggleDark(){
   const i=document.getElementById('darkIcon'), l=document.getElementById('darkLabel');
   if(i) i.textContent=d?'light_mode':'dark_mode';
   if(l) l.textContent=d?'โหมดกลางวัน':'โหมดกลางคืน';
+  const fab=document.getElementById('darkFabIcon');
+  if(fab) fab.textContent=d?'light_mode':'dark_mode';
   localStorage.setItem('dm',d?'1':'0');
 }
 
@@ -1923,7 +1966,7 @@ function loadAllData() {
 
 function updateAssignDropdown() {
   let opts = '<option value="">— เลือก Staff เพิ่ม —</option>';
-  let filterOpts = '<option value="all">-- ดูงานทุกคน --</option><option value="__none__">ไม่มีผู้รับผิดชอบ</option>';
+  let filterOpts = '<option value="all">-- ดูงานทุกคน --</option><option value="__none__">งานที่ยังไม่ได้มอบหมาย</option>';
   ALL_USERS.filter(u => String(u.active).toUpperCase() === 'TRUE').forEach(u => {
     opts += `<option value="${u.name}">${u.name}</option>`;
     filterOpts += `<option value="${u.name}">${u.name}</option>`;
@@ -1969,7 +2012,10 @@ function renderJobs() {
   } else if(CURRENT_JOB_VIEW === 'all' && CURRENT_USER.role === 'admin') {
     const staffFilter = document.getElementById('adminStaffFilter').value;
     if(staffFilter === '__none__') {
-      baseJobs = baseJobs.filter(j => !j.owner || j.owner.trim() === '-' || j.owner.trim() === '');
+      baseJobs = baseJobs.filter(j => 
+        (!j.owner || j.owner.trim() === '-' || j.owner.trim() === '') &&
+        j.status.includes('รอ')
+      );
     } else if(staffFilter === '__multi__') {
       baseJobs = baseJobs.filter(j => (j.owner || '').split(',').map(s=>s.trim()).filter(Boolean).length >= 2);
     } else if(staffFilter !== 'all') {
@@ -2800,12 +2846,32 @@ function openNotif() {
 
   // update new jobs badge in tab
   const unassigned = window._unassignedJobs || [];
+  const myWaiting = window._myWaitingJobs || [];
   const tabBadge = document.getElementById('tabNewBadge');
+  const tabMyBadge = document.getElementById('tabMyBadge');
+  const staffBadge = document.getElementById('notifStaffBadge');
+
   if (unassigned.length > 0) {
     tabBadge.textContent = unassigned.length;
     tabBadge.style.display = 'inline';
   } else {
     tabBadge.style.display = 'none';
+  }
+  if (tabMyBadge) {
+    if (myWaiting.length > 0) {
+      tabMyBadge.textContent = myWaiting.length;
+      tabMyBadge.style.display = 'inline';
+    } else {
+      tabMyBadge.style.display = 'none';
+    }
+  }
+  if (staffBadge) {
+    if (!isAdmin && myWaiting.length > 0) {
+      staffBadge.textContent = myWaiting.length;
+      staffBadge.style.display = 'inline';
+    } else {
+      staffBadge.style.display = 'none';
+    }
   }
 
   _notifTab = 'my';
@@ -2954,15 +3020,40 @@ function drawAdminChart(filteredJobs) {
    ═══════════════════════════════════════ */
 
 const ORB_PALETTES = [
+  // ม่วง/ฟ้า
   ['#c4b5fd','#93c5fd'], ['#a5b4fc','#7dd3fc'], ['#bae6fd','#7dd3fc'],
+  // ชมพู/มาเจนต้า
   ['#fbcfe8','#f9a8d4'], ['#fda4af','#f9a8d4'], ['#f0abfc','#e879f9'],
+  // เขียว
   ['#a7f3d0','#6ee7b7'], ['#bbf7d0','#86efac'],
+  // เหลือง/ส้ม
   ['#fde68a','#fcd34d'], ['#fed7aa','#fdba74'],
+  // ชมพูอ่อน/พีช
   ['#fecdd3','#fda4af'], ['#e9d5ff','#c4b5fd'],
   ['#ffc8a0','#ffaac8'], ['#ddc8ff','#ffb8e0'], ['#ffd4b8','#e8c8ff'],
   ['#ffb8c8','#d8b8ff'], ['#ffc0b0','#ffb0d0'], ['#e0b8ff','#ffc0e0'],
   ['#ffd0a8','#ffb0c8'], ['#d8c0ff','#ffc8e8'],
+  // teal/cyan
+  ['#99f6e4','#67e8f9'], ['#6ee7b7','#67e8f9'], ['#a5f3fc','#5eead4'],
+  ['#7fffd4','#a0e9e0'], ['#b2f5ea','#81e6d9'],
+  // coral/red-orange
+  ['#fca5a5','#fb923c'], ['#fdba74','#f87171'], ['#ffb347','#ff8c69'],
+  ['#ffc3a0','#ffafbd'], ['#ff9a9e','#fecfef'],
+  // lime/yellow-green
+  ['#d9f99d','#bef264'], ['#ecfccb','#d9f99d'], ['#c6f135','#a3e635'],
+  ['#b8f57a','#d4fc79'],
+  // sky/indigo
+  ['#bfdbfe','#a5b4fc'], ['#c7d2fe','#818cf8'], ['#a0c4ff','#b8d8ff'],
+  ['#93c5fd','#6366f1'],
+  // amber/gold
+  ['#fef08a','#fde047'], ['#fcd34d','#f59e0b'], ['#fef3c7','#fde68a'],
+  // rose/fuchsia
+  ['#fda4af','#e879f9'], ['#f9a8d4','#c084fc'], ['#fbcfe8','#e9d5ff'],
+  ['#ff9de2','#d4a5f5'],
+  // mint/sage
+  ['#bbf7d0','#a7f3d0'], ['#6ee7b7','#a7f3d0'], ['#d1fae5','#a7f3d0'],
 ];
+
 
 function _lerp(a, b, t) {
   const ah=parseInt(a.slice(1),16), bh=parseInt(b.slice(1),16);
