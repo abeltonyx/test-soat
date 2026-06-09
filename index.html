@@ -1776,15 +1776,16 @@ function makeFp(sel) {
   return fp;
 }
 
+function isBusinessHours() {
+  const now = new Date();
+  const thai = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+  const day = thai.getDay();
+  const mins = thai.getHours() * 60 + thai.getMinutes();
+  return day >= 1 && day <= 5 && mins >= 10*60+40 && mins < 10*60+45;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // ── check business hours + system override from GAS ──
-  function isBusinessHours() {
-    const now = new Date();
-    const thai = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
-    const day = thai.getDay();
-    const mins = thai.getHours() * 60 + thai.getMinutes();
-    return day >= 1 && day <= 5 && mins >= 10*60+40 && mins < 10*60+45;
-  }
 
   function showOffHours() {
     document.getElementById('home').classList.remove('active');
@@ -1879,8 +1880,8 @@ function goHome() {
 
   // clear search
   clearSearch();
-  // 5. สลับกลับไปหน้าแรก
-  switchPage('home'); 
+  // 5. reload กลับไปหน้าแรก (splash จะจัดการเอง)
+  window.location.reload();
 }
 function goService() { clearForm();switchPage('service'); }
 function goSearch() { clearSearch(); switchPage('search'); }
