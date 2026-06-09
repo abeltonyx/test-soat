@@ -183,7 +183,19 @@ body.dark .orb-3 { background: radial-gradient(circle at 45% 45%, #7a3820, #5a18
   width: 100%; max-width: 520px;
   margin: 0 auto; padding: 0 16px;
   position: relative; z-index: 10;
-  flex: 1;
+  flex: 1; overflow-x: hidden;
+}
+.wrap { overflow-x: hidden; }
+#filterPillsRow::-webkit-scrollbar { display: none; }
+
+@media (min-width: 1024px) {
+  #filterPillsRow {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    overflow-x: visible !important;
+    padding-bottom: 0 !important;
+  }
+  #filterPillsRow .filter-btn { flex-shrink: unset !important; white-space: normal !important; text-align: center !important; }
 }
 
 /* ─────────────────────────────────────────────
@@ -755,6 +767,10 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
   overflow: visible !important;
 }
 
+@keyframes splashLogoIn { from{opacity:0;transform:scale(.6) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes splashTextIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+@keyframes splashDot { 0%,100%{opacity:.3;transform:scale(.7)} 50%{opacity:1;transform:scale(1.2)} }
+
 </style>
 </head>
 <body>
@@ -769,6 +785,77 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
 <!-- ══════════════════════════════════════════
      HOME
 ══════════════════════════════════════════ -->
+<!-- Splash Screen -->
+<div id="splashScreen" style="position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,var(--bg-grad-a,#dce8ff) 0%,var(--bg-grad-b,#f0e0ff) 50%,var(--bg-grad-c,#ffe0e8) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .6s ease;">
+  <div style="position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,#c4b5fd,#93c5fd);top:-60px;left:-60px;filter:blur(60px);opacity:.55;animation:orbDrift 6s ease-in-out infinite alternate;"></div>
+  <div style="position:absolute;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,#fbcfe8,#f9a8d4);bottom:-40px;right:-40px;filter:blur(60px);opacity:.55;animation:orbDrift 8s ease-in-out infinite alternate-reverse;"></div>
+  <img src="https://raw.githubusercontent.com/abeltonyx/myimg/refs/heads/main/LogoHosOrangeWhite.png" style="width:76px;height:76px;object-fit:contain;border-radius:22px;box-shadow:0 8px 28px rgba(100,130,220,.22);animation:splashLogoIn .6s cubic-bezier(.16,1,.3,1) both;position:relative;z-index:1;">
+  <div style="font-size:16px;font-weight:600;color:var(--t1);text-align:center;line-height:1.5;animation:splashTextIn .6s .2s cubic-bezier(.16,1,.3,1) both;position:relative;z-index:1;">งานเวชนิทัศน์และ<br>โสตทัศนศึกษา</div>
+  <div style="font-size:11px;color:var(--p);letter-spacing:.18em;animation:splashTextIn .6s .35s cubic-bezier(.16,1,.3,1) both;position:relative;z-index:1;">Smart Service System</div>
+  <div style="display:flex;gap:6px;margin-top:6px;animation:splashTextIn .6s .5s cubic-bezier(.16,1,.3,1) both;position:relative;z-index:1;">
+    <span style="width:7px;height:7px;border-radius:50%;background:var(--p);animation:splashDot 1.2s ease-in-out infinite;"></span>
+    <span style="width:7px;height:7px;border-radius:50%;background:var(--p);animation:splashDot 1.2s .2s ease-in-out infinite;"></span>
+    <span style="width:7px;height:7px;border-radius:50%;background:var(--p);animation:splashDot 1.2s .4s ease-in-out infinite;"></span>
+  </div>
+</div>
+
+<!-- Off Hours Page -->
+<div id="offHours" class="page" style="display:none;justify-content:center;align-items:center;padding:40px 16px;min-height:100dvh;">
+  <div class="wrap" style="text-align:center;max-width:400px;">
+    <div class="card">
+      <div class="noise"></div>
+      <img src="https://raw.githubusercontent.com/abeltonyx/myimg/refs/heads/main/LogoHosOrangeWhite.png" style="width:64px;height:64px;object-fit:contain;border-radius:16px;margin:0 auto 6px;display:block;filter:drop-shadow(0 4px 12px rgba(100,130,220,.2));">
+      <div style="font-size:12px;color:var(--p);letter-spacing:.1em;margin-bottom:14px;">งานเวชนิทัศน์และโสตทัศนศึกษา</div>
+      <svg id="offHoursSvgClock" width="110" height="110" viewBox="0 0 140 140" style="display:block;margin:0 auto;filter:drop-shadow(0 4px 16px rgba(124,158,248,.25));">
+        <circle cx="70" cy="70" r="65" fill="rgba(255,255,255,.5)" stroke="rgba(255,255,255,.95)" stroke-width="2"/>
+        <circle cx="70" cy="70" r="60" fill="none" stroke="rgba(124,158,248,.15)" stroke-width="0.5"/>
+        <g stroke="rgba(124,158,248,.5)" stroke-width="2" stroke-linecap="round">
+          <line x1="70" y1="14" x2="70" y2="22" transform="rotate(0 70 70)"/>
+          <line x1="70" y1="14" x2="70" y2="22" transform="rotate(30 70 70)"/>
+          <line x1="70" y1="14" x2="70" y2="22" transform="rotate(60 70 70)"/>
+          <line x1="70" y1="14" x2="70" y2="22" transform="rotate(90 70 70)"/>
+          <line x1="70" y1="14" x2="70" y2="22" transform="rotate(120 70 70)"/>
+          <line x1="70" y1="14" x2="70" y2="22" transform="rotate(150 70 70)"/>
+          <line x1="70" y1="14" x2="70" y2="22" transform="rotate(180 70 70)"/>
+          <line x1="70" y1="14" x2="70" y2="22" transform="rotate(210 70 70)"/>
+          <line x1="70" y1="14" x2="70" y2="22" transform="rotate(240 70 70)"/>
+          <line x1="70" y1="14" x2="70" y2="22" transform="rotate(270 70 70)"/>
+          <line x1="70" y1="14" x2="70" y2="22" transform="rotate(300 70 70)"/>
+          <line x1="70" y1="14" x2="70" y2="22" transform="rotate(330 70 70)"/>
+        </g>
+        <line id="offHoursHH" x1="70" y1="70" x2="70" y2="36" stroke="#7c9ef8" stroke-width="4" stroke-linecap="round"/>
+        <line id="offHoursMH" x1="70" y1="70" x2="70" y2="24" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round"/>
+        <line id="offHoursSH" x1="70" y1="78" x2="70" y2="18" stroke="#f9a8d4" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="70" cy="70" r="4" fill="#7c9ef8"/>
+        <circle cx="70" cy="70" r="2" fill="white"/>
+      </svg>
+      <div id="offHoursClock" style="font-size:13px;color:var(--p);margin:8px 0 14px;"></div>
+      <div class="brand" style="font-size:22px;margin-bottom:6px;">นอกเวลาทำการ</div>
+      <div style="width:36px;height:2px;background:var(--p);border-radius:99px;margin:0 auto 14px;"></div>
+      <div style="font-size:15px;color:var(--t2);line-height:1.9;margin-bottom:16px;">
+        ระบบให้บริการเฉพาะ<br>
+        <b style="color:var(--t1);font-weight:500;">วันจันทร์ – วันศุกร์</b><br>
+        เวลา <b style="color:var(--p);">08:30 – 16:30 น.</b><br>
+        <span style="font-size:13px;color:var(--t3);">(หยุดเสาร์ – อาทิตย์)</span>
+      </div>
+      <div style="width:100%;height:0.5px;background:var(--g-b2);margin-bottom:12px;"></div>
+      <div style="font-size:11px;color:var(--t3);margin-bottom:8px;letter-spacing:.06em;">สำหรับเจ้าหน้าที่</div>
+      <button class="btn secondary" onclick="goLogin()" style="margin:0 0 14px;">
+        <span class="material-symbols-rounded">admin_panel_settings</span> เข้าสู่ระบบเจ้าหน้าที่
+      </button>
+      <div style="width:100%;height:0.5px;background:var(--g-b2);margin-bottom:12px;"></div>
+      <div style="font-size:11px;color:var(--t3);margin-bottom:6px;letter-spacing:.06em;">ติดต่อสอบถาม</div>
+      <div style="background:rgba(124,158,248,.06);border:1px solid rgba(124,158,248,.15);border-radius:12px;padding:10px 14px;">
+        <div style="font-size:15px;font-weight:500;color:var(--t1);display:flex;align-items:center;justify-content:center;gap:6px;">
+          <span class="material-symbols-rounded" style="font-size:16px;margin:0;color:var(--p);">phone_in_talk</span>
+          037-211-088 ต่อ 2516
+        </div>
+        <div style="font-size:12px;color:var(--t3);margin-top:3px;">วันจันทร์ – ศุกร์ เวลา 08:30 – 16:30 น.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="home" class="page active">
   <div class="home-inner">
     <img src="https://raw.githubusercontent.com/abeltonyx/myimg/refs/heads/main/LogoHosOrangeWhite.png" class="logo" alt="logo">
@@ -986,6 +1073,10 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
       <span class="material-symbols-rounded">logout</span>
     </button>
     <div class="topbar-title" id="adminPageTitle">Admin</div>
+    <button id="sysOverrideBtn" onclick="toggleSysOverride()" style="display:none;align-items:center;gap:4px;padding:5px 10px;border-radius:99px;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;background:rgba(200,210,230,.3);color:var(--t3);transition:all .2s;">
+      <span class="material-symbols-rounded" id="sysOverrideIcon" style="font-size:15px;margin:0;">power_settings_new</span>
+      <span id="sysOverrideLabel">ปิดอยู่</span>
+    </button>
     <button id="bellBtn" onclick="openNotif()" style="position:relative;background:none;border:none;cursor:pointer;padding:6px;margin-right:6px;">
       <span class="material-symbols-rounded" style="font-size:22px;color:var(--t2);margin:0;">notifications</span>
       <span id="bellBadge" style="display:none;position:absolute;top:2px;right:2px;width:16px;height:16px;background:#ef4444;border-radius:50%;font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;line-height:1;">0</span>
@@ -1081,12 +1172,12 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
       </div>
 
       <!-- filter pills -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:12px;">
-        <button id="btnFilterAll"    onclick="filterStatus('all')"    class="filter-btn active" style="text-align:center;">ทั้งหมด (0)</button>
-        <button id="btnFilterWait"   onclick="filterStatus('รอ')"     class="filter-btn" style="text-align:center;">รอจัดการ (0)</button>
-        <button id="btnFilterDoing"  onclick="filterStatus('กำลัง')"  class="filter-btn" style="text-align:center;">กำลังดำเนินการ (0)</button>
-        <button id="btnFilterDone"   onclick="filterStatus('เสร็จ')"  class="filter-btn" style="text-align:center;">เสร็จสิ้น (0)</button>
-        <button id="btnFilterCancel" onclick="filterStatus('ยกเลิก')" class="filter-btn" style="text-align:center;">ยกเลิก (0)</button>
+      <div id="filterPillsRow" style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;">
+        <button id="btnFilterAll"    onclick="filterStatus('all')"    class="filter-btn active" style="white-space:nowrap;flex-shrink:0;">ทั้งหมด (0)</button>
+        <button id="btnFilterWait"   onclick="filterStatus('รอ')"     class="filter-btn" style="white-space:nowrap;flex-shrink:0;">รอจัดการ (0)</button>
+        <button id="btnFilterDoing"  onclick="filterStatus('กำลัง')"  class="filter-btn" style="white-space:nowrap;flex-shrink:0;">กำลังดำเนินการ (0)</button>
+        <button id="btnFilterDone"   onclick="filterStatus('เสร็จ')"  class="filter-btn" style="white-space:nowrap;flex-shrink:0;">เสร็จสิ้น (0)</button>
+        <button id="btnFilterCancel" onclick="filterStatus('ยกเลิก')" class="filter-btn" style="white-space:nowrap;flex-shrink:0;">ยกเลิก (0)</button>
       </div>
 
       <div id="paginationTop"></div>
@@ -1392,6 +1483,17 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
       </div>
 
       <div class="help-divider"></div>
+
+      <!-- ติดต่อ -->
+      <div style="background:rgba(124,158,248,.08);border:1px solid rgba(124,158,248,.2);border-radius:var(--r2);padding:14px 15px;margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:600;color:var(--p);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span class="material-symbols-rounded" style="font-size:16px;margin:0;">phone_in_talk</span> ติดต่องานเวชนิทัศน์ฯ
+        </div>
+        <div style="font-size:14px;color:var(--t1);font-weight:500;">037-211-088 ต่อ 2516</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:3px;">วันจันทร์ – วันศุกร์ เวลา 08:30 – 16:30 น.</div>
+      </div>
+
+      <div class="help-divider"></div>
       <div style="background:rgba(255,235,180,.28);border:1px solid rgba(255,190,80,.25);border-radius:var(--r2);padding:14px 15px;">
         <div style="font-size:13px;font-weight:600;color:#92400e;margin-bottom:7px;display:flex;align-items:center;gap:6px;">
           <span class="material-symbols-rounded" style="color:#d97706;font-size:16px;margin:0;">lightbulb</span> เคล็ดลับ
@@ -1572,7 +1674,7 @@ let CURRENT_PAGE = 1;
 const PAGE_SIZE = 5;
 
 // ── GAS API ──
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyguzz7Z4W1x1zJJDZdXweqgnCRadrw3CB-7Ry9vuBr7uHEzjhEoNCvp0wP5glsCgs0/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwBBAuKWj_eN0Umor8GYhPzF6k6BnQAElVMO4omiS4MiJnyqXtTwtljjvshh9QNtSH-HA/exec';
 
 async function gasCall(action, payload = {}) {
   const controller = new AbortController();
@@ -1675,6 +1777,57 @@ function makeFp(sel) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // ── check business hours + system override from GAS ──
+  function isBusinessHours() {
+    const now = new Date();
+    const thai = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+    const day = thai.getDay();
+    const mins = thai.getHours() * 60 + thai.getMinutes();
+    return day >= 1 && day <= 5 && mins >= 10*60+40 && mins < 10*60+45;
+  }
+
+  function showOffHours() {
+    document.getElementById('home').classList.remove('active');
+    document.getElementById('home').style.display = 'none';
+    const off = document.getElementById('offHours');
+    off.style.display = 'flex';
+    off.classList.add('active');
+    const days = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+    function updateClock() {
+      const now = new Date();
+      const thai = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+      const h = thai.getHours() % 12, m = thai.getMinutes(), s = thai.getSeconds();
+      const t = thai.toLocaleTimeString('th-TH', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      document.getElementById('offHoursClock').textContent = t + ' น. (' + days[thai.getDay()] + ')';
+      const hh = document.getElementById('offHoursHH');
+      const mh = document.getElementById('offHoursMH');
+      const sh = document.getElementById('offHoursSH');
+      if(hh) hh.setAttribute('transform', `rotate(${h*30+m*0.5} 70 70)`);
+      if(mh) mh.setAttribute('transform', `rotate(${m*6} 70 70)`);
+      if(sh) sh.setAttribute('transform', `rotate(${s*6} 70 70)`);
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+  }
+
+  // เช็ค GAS system status ก่อน
+  function hideSplash() {
+    const splash = document.getElementById('splashScreen');
+    if (!splash) return;
+    splash.style.opacity = '0';
+    setTimeout(() => splash.style.display = 'none', 600);
+  }
+
+  // เช็ค GAS system status ก่อน
+  gasCall('getSystemStatus').then(res => {
+    if (!res || !res.open) {
+      if (!isBusinessHours()) { hideSplash(); showOffHours(); return; }
+    }
+    hideSplash();
+  }).catch(() => {
+    if (!isBusinessHours()) { hideSplash(); showOffHours(); return; }
+    hideSplash();
+  });
   if(localStorage.getItem('dm')==='1'){
     document.body.classList.add('dark');
     const i=document.getElementById('darkIcon'),l=document.getElementById('darkLabel');
@@ -1748,12 +1901,49 @@ function switchPage(id) {
     current.classList.add('exit');
     setTimeout(() => {
       current.classList.remove('active', 'exit');
+      current.style.display = '';
       next.classList.add('active');
       window.scrollTo(0, 0);
     }, 150);
   } else {
     next.classList.add('active');
     window.scrollTo(0, 0);
+  }
+}
+
+function toggleSysOverride() {
+  const label = document.getElementById('sysOverrideLabel');
+  if (!label) return;
+  const isOn = label.textContent.trim() === 'เปิดอยู่';
+  const msg = isOn ? 'ต้องการปิดระบบกลับเป็นปกติ?' : 'ต้องการเปิดระบบนอกเวลาทำการ?\n(ทุกคนจะเข้าใช้งานได้ทันที)';
+  if (!confirm(msg)) return;
+  const newState = !isOn;
+  // update UI ทันทีก่อน รอ GAS
+  updateSysOverrideBtn(newState);
+  gasCall('setSystemStatus', { open: newState }).catch(() => {
+    // ถ้า error rollback
+    updateSysOverrideBtn(isOn);
+    alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
+  });
+}
+
+function updateSysOverrideBtn(isOn) {
+  const btn = document.getElementById('sysOverrideBtn');
+  const icon = document.getElementById('sysOverrideIcon');
+  const label = document.getElementById('sysOverrideLabel');
+  if (!btn || !icon || !label) return;
+  if (isOn) {
+    btn.style.background = 'rgba(16,185,129,.12)';
+    btn.style.color = '#10b981';
+    btn.style.border = '1px solid rgba(16,185,129,.25)';
+    icon.textContent = 'power_settings_new';
+    label.textContent = 'เปิดอยู่';
+  } else {
+    btn.style.background = 'rgba(200,210,230,.3)';
+    btn.style.color = 'var(--t3)';
+    btn.style.border = 'none';
+    icon.textContent = 'power_settings_new';
+    label.textContent = 'ปิดอยู่';
   }
 }
 
@@ -1920,6 +2110,11 @@ function login() {
       CURRENT_USER = res;
       document.getElementById('adminName').innerText = res.name;
       document.getElementById('adminPageTitle').innerText = res.role === 'admin' ? 'Admin' : 'Staff';
+      if (res.role === 'admin') {
+        const btn = document.getElementById('sysOverrideBtn');
+        if (btn) btn.style.display = 'flex';
+        gasCall('getSystemStatus').then(s => updateSysOverrideBtn(s && s.open));
+      }
       document.getElementById('allJobBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('userMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('resMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
@@ -2098,18 +2293,12 @@ function renderPage(filtered) {
           <b>หน่วยงาน:</b> ${d.department||'-'}<br>
           <b>เบอร์ติดต่อ:</b> ${d.phone||'-'}
         </div>
-        <div onclick="toggleJobDetail(this)" style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;font-size:16px;color:var(--t2);cursor:pointer;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);">
-          <span>ดูรายละเอียดเพิ่ม</span>
-          <span style="transition:transform .2s;font-size:14px;color:var(--t3);">▾</span>
-        </div>
-        <div style="max-height:0;overflow:hidden;transition:max-height .3s ease;" class="job-detail-body">
-          <div style="padding:8px 16px;font-size:16px;line-height:1.8;word-break:break-word;overflow-wrap:break-word;">
+        <div style="padding:8px 16px;font-size:16px;line-height:1.8;word-break:break-word;overflow-wrap:break-word;border-top:1px solid rgba(255,255,255,.12);">
             <b>วันที่สั่ง:</b> ${d.orderDate||'-'}<br>
             <b>วันที่ต้องการ:</b> ${d.needDate||'-'}<br>
             <b>รายละเอียด:</b> ${d.detail||'-'}<br>
             ${fileBtn}
           </div>
-        </div>
         <div style="height:0.5px;background:rgba(255,255,255,.14);margin:0 16px;"></div>
         <div style="padding:8px 16px 14px;font-size:16px;line-height:1.8;word-break:break-word;overflow-wrap:break-word;">
           <b>ผู้รับผิดชอบ:</b> ${d.owner||'-'}<br>
