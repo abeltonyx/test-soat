@@ -1683,7 +1683,7 @@ let CURRENT_PAGE = 1;
 const PAGE_SIZE = 5;
 
 // ── GAS API ──
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyguzz7Z4W1x1zJJDZdXweqgnCRadrw3CB-7Ry9vuBr7uHEzjhEoNCvp0wP5glsCgs0/exec';
+const GAS_URL = 'AKfycbyguzz7Z4W1x1zJJDZdXweqgnCRadrw3CB-7Ry9vuBr7uHEzjhEoNCvp0wP5glsCgs0';
 
 async function gasCall(action, payload = {}) {
   const controller = new AbortController();
@@ -1836,6 +1836,34 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // เช็ค GAS system status ก่อน
+  function restoreSession() {
+    const saved = sessionStorage.getItem('mavUser');
+    if (!saved) return;
+    try {
+      const res = JSON.parse(saved);
+      CURRENT_USER = res;
+      document.getElementById('adminName').innerText = res.name;
+      document.getElementById('adminPageTitle').innerText = res.role === 'admin' ? 'Admin' : 'Staff';
+      if (res.role === 'admin') {
+        const btn = document.getElementById('sysOverrideBtn');
+        if (btn) btn.style.display = 'flex';
+        gasCall('getSystemStatus').then(s => updateSysOverrideBtn(s && s.open));
+      }
+      document.getElementById('allJobBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      document.getElementById('userMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      document.getElementById('resMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      document.getElementById('adminNavTop').style.gridTemplateColumns = res.role === 'admin' ? '' : 'repeat(2,1fr)';
+      document.getElementById('adminNavBottom').style.display = res.role === 'admin' ? 'grid' : 'none';
+      document.getElementById('staffAccountBtn').style.display = res.role === 'admin' ? 'none' : 'block';
+      showSection('job', res.role === 'admin' ? 'all' : 'my');
+      switchPage('admin');
+      loadAllData();
+      gasCall('getResourceList').then(list => { if(list) { RESOURCE_LIST = list; buildResContainer(list); } });
+    } catch(e) {
+      sessionStorage.removeItem('mavUser');
+    }
+  }
+
   function hideSplash() {
     const splash = document.getElementById('splashScreen');
     if (!splash) return;
@@ -1850,9 +1878,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!isBusinessHours()) { hideSplash(); showOffHours(false, ''); return; }
     }
     hideSplash();
+    restoreSession();
   }).catch(() => {
     if (!isBusinessHours()) { hideSplash(); showOffHours(false, ''); return; }
     hideSplash();
+    restoreSession();
   });
   if(localStorage.getItem('dm')==='1'){
     document.body.classList.add('dark');
@@ -1886,6 +1916,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function goHome() { 
   CURRENT_USER = null;
+  sessionStorage.removeItem('mavUser');
   clearForm(); 
 
   // 2. ล้างตัวกรองวันที่ในหน้าแอดมิน (ใช้ตัวแปร fpStart, fpEnd ตามที่คุณมี)
@@ -2222,6 +2253,7 @@ function login() {
     btn.innerHTML = "เข้าสู่ระบบ"; btn.disabled = false;
     if(res.success) {
       CURRENT_USER = res;
+      sessionStorage.setItem('mavUser', JSON.stringify(res));
       document.getElementById('adminName').innerText = res.name;
       document.getElementById('adminPageTitle').innerText = res.role === 'admin' ? 'Admin' : 'Staff';
       if (res.role === 'admin') {
