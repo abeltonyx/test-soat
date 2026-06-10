@@ -3182,15 +3182,14 @@ function renderNotifList() {
 }
 
 function openNotif() {
-  const isAdmin = CURRENT_USER && CURRENT_USER.role === 'admin';
-
-  // แสดง loading ก่อน
   const notifList = document.getElementById('notifList');
   if (notifList) notifList.innerHTML = '<div style="text-align:center;padding:20px;color:var(--t3);font-size:13px;">กำลังโหลด...</div>';
   document.getElementById('notifModal').style.display = 'flex';
 
-  // ดึงข้อมูลใหม่ก่อนแสดง
-  loadAllData().then(() => {
+  // ดึงเฉพาะข้อมูลงาน ไม่ re-render หน้าหลัก
+  gasCall('getAllData').then(data => {
+    ALL_JOBS = data;
+    checkNewJobs(data);
     renderNotif();
   }).catch(() => {
     renderNotif(); // fallback ใช้ข้อมูลเก่า
@@ -3252,7 +3251,7 @@ function acceptJob(jobId) {
   };
   gasCall('updateJob', { payload }).then(() => {
     gasCall('getAllData').then(data => {
-      ALL_JOBS = data; checkNewJobs(data); renderNotifList();
+      ALL_JOBS = data; checkNewJobs(data); renderNotifList(); renderJobs();
     }).catch(() => {});
   }).catch(e => { if (btn) setLoading(btn, false); alert(e.message); });
 }
@@ -3308,7 +3307,7 @@ function claimJob(jobId) {
   };
   gasCall('updateJob', { payload }).then(() => {
     gasCall('getAllData').then(data => {
-      ALL_JOBS = data; checkNewJobs(data); renderNotifList();
+      ALL_JOBS = data; checkNewJobs(data); renderNotifList(); renderJobs();
     }).catch(() => {});
   }).catch(e => { if (btn) setLoading(btn, false); alert(e.message); });
 }
