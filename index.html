@@ -1790,7 +1790,7 @@ function isBusinessHours() {
   const thai = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
   const day = thai.getDay();
   const mins = thai.getHours() * 60 + thai.getMinutes();
-  return day >= 1 && day <= 5 && mins >= 10*60+40 && mins < 10*60+45;
+  return day >= 1 && day <= 5 && mins >= 8*60+30 && mins < 16*60+30;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
