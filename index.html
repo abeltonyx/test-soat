@@ -1005,8 +1005,9 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
         <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);display:flex;align-items:center;gap:5px;margin-bottom:8px;">
           <span class="material-symbols-rounded" style="font-size:13px;margin:0;">attach_file</span> ไฟล์แนบ (ถ้ามี)
         </div>
-        <input type="file" id="fileInput" multiple style="margin-top:0;border:none;padding:0;background:transparent;box-shadow:none;font-size:13px;" onchange="showFileList(this)">
+        <input type="file" id="fileInput" multiple style="margin-top:0;border:none;padding:0;background:transparent;box-shadow:none;font-size:13px;" onchange="addFiles(this)">
         <div id="fileListPreview" style="margin-top:6px;display:flex;flex-direction:column;gap:4px;"></div>
+        <div id="fileCount" style="font-size:11px;color:var(--t3);margin-top:4px;display:none;"></div>
         <div style="font-size:11px;color:var(--t3);margin-top:4px;">ไม่เกิน 25MB</div>
       </div>
 
@@ -1972,16 +1973,61 @@ function updateSysOverrideBtn(isOn) {
   }
 }
 
-function showFileList(input) {
+// accumulated file list
+let _files = [];
+
+function addFiles(input) {
+  Array.from(input.files).forEach(f => {
+    // ไม่เพิ่มถ้าชื่อซ้ำ
+    if (!_files.find(x => x.name === f.name && x.size === f.size)) {
+      _files.push(f);
+    }
+  });
+  input.value = ''; // reset input เพื่อให้เลือกไฟล์เดิมซ้ำได้
+  renderFileList();
+}
+
+function removeFile(idx) {
+  _files.splice(idx, 1);
+  renderFileList();
+}
+
+function renderFileList() {
   const preview = document.getElementById('fileListPreview');
+  const count = document.getElementById('fileCount');
   if (!preview) return;
   preview.innerHTML = '';
-  Array.from(input.files).forEach(f => {
-    const el = document.createElement('div');
-    el.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);background:rgba(255,255,255,.4);border-radius:8px;padding:4px 10px;';
-    el.innerHTML = `<span class="material-symbols-rounded" style="font-size:14px;margin:0;color:var(--p);">attach_file</span>${f.name}`;
-    preview.appendChild(el);
+  _files.forEach((f, i) => {
+    const isImg = f.type.startsWith('image/');
+    const item = document.createElement('div');
+    item.style.cssText = 'display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.85);border-radius:10px;padding:6px 10px;';
+    if (isImg) {
+      const url = URL.createObjectURL(f);
+      item.innerHTML = `
+        <img src="${url}" style="width:34px;height:34px;border-radius:6px;object-fit:cover;flex-shrink:0;cursor:pointer;" onclick="window.open('${url}')">
+        <div style="flex:1;min-width:0;"><div style="font-size:12px;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${f.name}</div><div style="font-size:10px;color:var(--t3);">${(f.size/1024).toFixed(0)} KB</div></div>
+        <button onclick="removeFile(${i})" style="width:22px;height:22px;border-radius:50%;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.15);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;">
+          <span class="material-symbols-rounded" style="font-size:13px;margin:0;color:#ef4444;">close</span>
+        </button>`;
+    } else {
+      const icons = {'pdf':'picture_as_pdf','doc':'description','docx':'description','xls':'table_chart','xlsx':'table_chart','ppt':'slideshow','pptx':'slideshow'};
+      const ext = f.name.split('.').pop().toLowerCase();
+      const icon = icons[ext] || 'attach_file';
+      item.innerHTML = `
+        <div style="width:34px;height:34px;border-radius:6px;background:rgba(124,158,248,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <span class="material-symbols-rounded" style="font-size:18px;margin:0;color:var(--p);">${icon}</span>
+        </div>
+        <div style="flex:1;min-width:0;"><div style="font-size:12px;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${f.name}</div><div style="font-size:10px;color:var(--t3);">${(f.size/1024).toFixed(0)} KB</div></div>
+        <button onclick="removeFile(${i})" style="width:22px;height:22px;border-radius:50%;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.15);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;">
+          <span class="material-symbols-rounded" style="font-size:13px;margin:0;color:#ef4444;">close</span>
+        </button>`;
+    }
+    preview.appendChild(item);
   });
+  if (count) {
+    count.style.display = _files.length > 0 ? 'block' : 'none';
+    count.textContent = _files.length + ' ไฟล์เลือกแล้ว';
+  }
 }
 
 function toggleDark(){
@@ -2044,7 +2090,7 @@ function submitService() {
     document.getElementById('serviceResult').innerText = "กรุณากรอกเบอร์ภายใน 4 หลัก"; return;
   }
 
-  const files = document.getElementById('fileInput').files;
+  const files = _files.length > 0 ? _files : Array.from(document.getElementById('fileInput').files);
 
   // เช็คขนาดไฟล์ทุกอัน ไม่เกิน 25MB ต่อไฟล์
   const maxSize = 25 * 1024 * 1024;
@@ -2859,6 +2905,8 @@ function clearForm() {
   // ล้างไฟล์และ error
   var fi = document.getElementById('fileInput'); if(fi) fi.value = '';
   var fp = document.getElementById('fileListPreview'); if(fp) fp.innerHTML = '';
+  var fc = document.getElementById('fileCount'); if(fc) fc.style.display = 'none';
+  _files = [];
   var sr = document.getElementById('serviceResult'); if(sr) sr.innerText = '';
 }
 // ── PWA Install Prompt (Android) ──
