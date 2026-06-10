@@ -1978,18 +1978,41 @@ let _files = [];
 
 function addFiles(input) {
   Array.from(input.files).forEach(f => {
-    // ไม่เพิ่มถ้าชื่อซ้ำ
     if (!_files.find(x => x.name === f.name && x.size === f.size)) {
       _files.push(f);
     }
   });
-  input.value = ''; // reset input เพื่อให้เลือกไฟล์เดิมซ้ำได้
+  input.value = '';
   renderFileList();
 }
 
 function removeFile(idx) {
   _files.splice(idx, 1);
   renderFileList();
+}
+
+function openLightbox(url) {
+  let lb = document.getElementById('imgLightbox');
+  if (!lb) {
+    lb = document.createElement('div');
+    lb.id = 'imgLightbox';
+    lb.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(8,14,26,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;';
+    lb.onclick = (e) => { if(e.target === lb) closeLightbox(); };
+    document.body.appendChild(lb);
+  }
+  lb.innerHTML = `
+    <div style="position:relative;max-width:100%;max-height:90dvh;">
+      <img src="${url}" style="max-width:100%;max-height:85dvh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.4);display:block;">
+      <button onclick="closeLightbox()" style="position:absolute;top:-12px;right:-12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.2);">
+        <span class="material-symbols-rounded" style="font-size:16px;margin:0;color:#18243c;">close</span>
+      </button>
+    </div>`;
+  lb.style.display = 'flex';
+}
+
+function closeLightbox() {
+  const lb = document.getElementById('imgLightbox');
+  if (lb) lb.style.display = 'none';
 }
 
 function renderFileList() {
@@ -2004,7 +2027,7 @@ function renderFileList() {
     if (isImg) {
       const url = URL.createObjectURL(f);
       item.innerHTML = `
-        <img src="${url}" style="width:34px;height:34px;border-radius:6px;object-fit:cover;flex-shrink:0;cursor:pointer;" onclick="window.open('${url}')">
+        <img src="${url}" style="width:34px;height:34px;border-radius:6px;object-fit:cover;flex-shrink:0;cursor:pointer;" onclick="openLightbox('${url}')">
         <div style="flex:1;min-width:0;"><div style="font-size:12px;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${f.name}</div><div style="font-size:10px;color:var(--t3);">${(f.size/1024).toFixed(0)} KB</div></div>
         <button onclick="removeFile(${i})" style="width:22px;height:22px;border-radius:50%;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.15);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;">
           <span class="material-symbols-rounded" style="font-size:13px;margin:0;color:#ef4444;">close</span>
