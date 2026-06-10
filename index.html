@@ -1683,7 +1683,7 @@ let CURRENT_PAGE = 1;
 const PAGE_SIZE = 5;
 
 // ── GAS API ──
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyguzz7Z4W1x1zJJDZdXweqgnCRadrw3CB-7Ry9vuBr7uHEzjhEoNCvp0wP5glsCgs0/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwBBAuKWj_eN0Umor8GYhPzF6k6BnQAElVMO4omiS4MiJnyqXtTwtljjvshh9QNtSH-HA/exec';
 
 async function gasCall(action, payload = {}) {
   const controller = new AbortController();
@@ -2299,6 +2299,7 @@ function showSection(sec, jobViewType) {
 
 function loadAllData() {
   document.getElementById('adminList').innerHTML = loadingHTML;
+  gasCall('getUsers').then(users => { ALL_USERS = users; updateAssignDropdown(); renderUsers(); }).catch(() => {});
   return gasCall('getAllData').then(data => { ALL_JOBS = data; checkNewJobs(data); renderJobs(); }).catch(() => {
     document.getElementById('adminList').innerHTML = "<div class='glass-card' style='text-align:center;'>โหลดข้อมูลไม่สำเร็จ กรุณาดึงรีเฟรช</div>";
   });
