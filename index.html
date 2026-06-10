@@ -2299,10 +2299,9 @@ function showSection(sec, jobViewType) {
 
 function loadAllData() {
   document.getElementById('adminList').innerHTML = loadingHTML;
-  gasCall('getAllData').then(data => { ALL_JOBS = data; checkNewJobs(data); renderJobs(); }).catch(() => {
+  return gasCall('getAllData').then(data => { ALL_JOBS = data; checkNewJobs(data); renderJobs(); }).catch(() => {
     document.getElementById('adminList').innerHTML = "<div class='glass-card' style='text-align:center;'>โหลดข้อมูลไม่สำเร็จ กรุณาดึงรีเฟรช</div>";
   });
-  gasCall('getUsers').then(users => { ALL_USERS = users; updateAssignDropdown(); renderUsers(); }).catch(() => {});
 }
 
 function updateAssignDropdown() {
@@ -3183,6 +3182,22 @@ function renderNotifList() {
 
 function openNotif() {
   const isAdmin = CURRENT_USER && CURRENT_USER.role === 'admin';
+
+  // แสดง loading ก่อน
+  const notifList = document.getElementById('notifList');
+  if (notifList) notifList.innerHTML = '<div style="text-align:center;padding:20px;color:var(--t3);font-size:13px;">กำลังโหลด...</div>';
+  document.getElementById('notifModal').style.display = 'flex';
+
+  // ดึงข้อมูลใหม่ก่อนแสดง
+  loadAllData().then(() => {
+    renderNotif();
+  }).catch(() => {
+    renderNotif(); // fallback ใช้ข้อมูลเก่า
+  });
+}
+
+function renderNotif() {
+  const isAdmin = CURRENT_USER && CURRENT_USER.role === 'admin';
   const tabs = document.getElementById('notifTabs');
   tabs.style.display = isAdmin ? 'flex' : 'none';
 
@@ -3220,7 +3235,6 @@ function openNotif() {
   document.getElementById('tabMyJobs').classList.add('active');
   document.getElementById('tabNewJobs').classList.remove('active');
   renderNotifList();
-  document.getElementById('notifModal').style.display = 'flex';
 }
 
 function closeNotif() {
