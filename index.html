@@ -829,7 +829,14 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
         <circle cx="70" cy="70" r="4" fill="#7c9ef8"/>
         <circle cx="70" cy="70" r="2" fill="white"/>
       </svg>
-      <div id="offHoursClock" style="font-size:13px;color:var(--p);margin:8px 0 14px;"></div>
+      <div id="offHoursClock" style="font-size:13px;color:rgba(20,30,50,.75);margin:8px 0 12px;"></div>
+
+      <!-- holiday badge -->
+      <div id="offHoursBadge" style="display:none;align-items:center;gap:6px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:99px;padding:5px 14px;font-size:12px;color:#c04040;margin-bottom:10px;">
+        <span class="material-symbols-rounded" style="font-size:15px;margin:0;color:#c04040;">event</span>
+        <span class="badge-text">วันหยุดราชการ</span>
+      </div>
+
       <div class="brand" style="font-size:22px;margin-bottom:6px;">นอกเวลาทำการ</div>
       <div style="width:36px;height:2px;background:var(--p);border-radius:99px;margin:0 auto 14px;"></div>
       <div style="font-size:15px;color:var(--t2);line-height:1.9;margin-bottom:16px;">
@@ -998,7 +1005,8 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
         <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);display:flex;align-items:center;gap:5px;margin-bottom:8px;">
           <span class="material-symbols-rounded" style="font-size:13px;margin:0;">attach_file</span> ไฟล์แนบ (ถ้ามี)
         </div>
-        <input type="file" id="fileInput" style="margin-top:0;border:none;padding:0;background:transparent;box-shadow:none;font-size:13px;">
+        <input type="file" id="fileInput" multiple style="margin-top:0;border:none;padding:0;background:transparent;box-shadow:none;font-size:13px;" onchange="showFileList(this)">
+        <div id="fileListPreview" style="margin-top:6px;display:flex;flex-direction:column;gap:4px;"></div>
         <div style="font-size:11px;color:var(--t3);margin-top:4px;">ไม่เกิน 25MB</div>
       </div>
 
@@ -1787,12 +1795,27 @@ function isBusinessHours() {
 document.addEventListener("DOMContentLoaded", () => {
   // ── check business hours + system override from GAS ──
 
-  function showOffHours() {
+  function showOffHours(holiday, holidayName) {
     document.getElementById('home').classList.remove('active');
     document.getElementById('home').style.display = 'none';
     const off = document.getElementById('offHours');
     off.style.display = 'flex';
     off.classList.add('active');
+
+    // ถ้าเป็นวันหยุดราชการ เปลี่ยนข้อความ
+    const titleEl = off.querySelector('.brand');
+    const badgeEl = document.getElementById('offHoursBadge');
+    if (holiday && holidayName) {
+      if (titleEl) titleEl.textContent = holidayName;
+      if (badgeEl) {
+        badgeEl.style.display = 'inline-flex';
+        badgeEl.querySelector('span.badge-text').textContent = 'วันหยุดราชการ';
+      }
+    } else {
+      if (titleEl) titleEl.textContent = 'นอกเวลาทำการ';
+      if (badgeEl) badgeEl.style.display = 'none';
+    }
+
     const days = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
     function updateClock() {
       const now = new Date();
@@ -1822,11 +1845,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // เช็ค GAS system status ก่อน
   gasCall('getSystemStatus').then(res => {
     if (!res || !res.open) {
-      if (!isBusinessHours()) { hideSplash(); showOffHours(); return; }
+      if (res && res.holiday) { hideSplash(); showOffHours(true, res.holidayName); return; }
+      if (!isBusinessHours()) { hideSplash(); showOffHours(false, ''); return; }
     }
     hideSplash();
   }).catch(() => {
-    if (!isBusinessHours()) { hideSplash(); showOffHours(); return; }
+    if (!isBusinessHours()) { hideSplash(); showOffHours(false, ''); return; }
     hideSplash();
   });
   if(localStorage.getItem('dm')==='1'){
@@ -1948,6 +1972,18 @@ function updateSysOverrideBtn(isOn) {
   }
 }
 
+function showFileList(input) {
+  const preview = document.getElementById('fileListPreview');
+  if (!preview) return;
+  preview.innerHTML = '';
+  Array.from(input.files).forEach(f => {
+    const el = document.createElement('div');
+    el.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);background:rgba(255,255,255,.4);border-radius:8px;padding:4px 10px;';
+    el.innerHTML = `<span class="material-symbols-rounded" style="font-size:14px;margin:0;color:var(--p);">attach_file</span>${f.name}`;
+    preview.appendChild(el);
+  });
+}
+
 function toggleDark(){
   const d=document.body.classList.toggle('dark');
   const i=document.getElementById('darkIcon'), l=document.getElementById('darkLabel');
@@ -2008,29 +2044,37 @@ function submitService() {
     document.getElementById('serviceResult').innerText = "กรุณากรอกเบอร์ภายใน 4 หลัก"; return;
   }
 
-  // ดึงข้อมูลไฟล์มาเช็คก่อนเปลี่ยนสถานะปุ่ม
-  const fileObj = document.getElementById('fileInput').files[0];
-  
-  // --- เพิ่มการเช็คขนาดไฟล์ 25MB ตรงนี้ ---
-  if (fileObj) {
-    const maxSize = 25 * 1024 * 1024; // 25MB
-    if (fileObj.size > maxSize) {
-      document.getElementById('serviceResult').innerText = "ขนาดไฟล์ต้องไม่เกิน 25MB";
-      return; // หยุดการทำงานถ้าไฟล์ใหญ่เกินไป
+  const files = document.getElementById('fileInput').files;
+
+  // เช็คขนาดไฟล์ทุกอัน ไม่เกิน 25MB ต่อไฟล์
+  const maxSize = 25 * 1024 * 1024;
+  for (let i = 0; i < files.length; i++) {
+    if (files[i].size > maxSize) {
+      document.getElementById('serviceResult').innerText = `ไฟล์ "${files[i].name}" ขนาดเกิน 25MB`;
+      return;
     }
   }
-  // ------------------------------------
 
-  // เปลี่ยนสถานะปุ่มเป็นกำลังโหลด
   const btn = document.getElementById('submitBtn');
-  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">cached</span> กำลังประมวลผล...`; 
+  btn.innerHTML = `<span class="material-symbols-rounded" style="animation: spin 1s linear infinite;">cached</span> กำลังประมวลผล...`;
   btn.disabled = true;
 
-  if(fileObj) {
-    const reader = new FileReader();
-    reader.onload = () => { d.file = { data: reader.result.split(',')[1], name: fileObj.name, type: fileObj.type }; executeSubmit(d, btn); };
-    reader.readAsDataURL(fileObj);
-  } else { executeSubmit(d, btn); }
+  if (files.length > 0) {
+    const readers = [];
+    for (let i = 0; i < files.length; i++) {
+      readers.push(new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({ data: reader.result.split(',')[1], name: files[i].name, type: files[i].type });
+        reader.readAsDataURL(files[i]);
+      }));
+    }
+    Promise.all(readers).then(fileList => {
+      d.files = fileList;
+      executeSubmit(d, btn);
+    });
+  } else {
+    executeSubmit(d, btn);
+  }
 }
 
 function executeSubmit(payload, btn) {
@@ -2274,7 +2318,11 @@ function renderPage(filtered) {
     if (d.status.includes("กำลัง"))  { sc="#3b82f6"; sb="rgba(59, 130, 246, 0.15)"; }
     if (d.status.includes("ยกเลิก")) { sc="#ef4444"; sb="rgba(239, 68, 68, 0.15)"; }
 
-    let fileBtn = d.fileUrl ? `<a href="${d.fileUrl}" target="_blank" style="color:var(--p); text-decoration:none; font-weight:700; display:inline-flex; align-items:center; margin-top:8px; background:rgba(37,99,235,0.1); padding:6px 12px; border-radius:99px;"><span class="material-symbols-rounded" style="font-size:16px;">attachment</span> เปิดดูไฟล์แนบ</a><br>` : "";
+    let fileBtn = '';
+    if (d.fileUrl) {
+      const urls = d.fileUrl.split(', ').filter(Boolean);
+      fileBtn = urls.map((url, i) => `<a href="${url}" target="_blank" style="color:var(--p); text-decoration:none; font-weight:700; display:inline-flex; align-items:center; margin-top:8px; background:rgba(37,99,235,0.1); padding:6px 12px; border-radius:99px;"><span class="material-symbols-rounded" style="font-size:16px;">attachment</span> ไฟล์แนบ${urls.length > 1 ? ' '+(i+1) : ''}</a><br>`).join('');
+    }
 
     html += `
       <div class="glass-card" style="border-left:6px solid ${sc};padding:0;overflow:hidden;">
@@ -2810,6 +2858,7 @@ function clearForm() {
   if(np) np.clear();
   // ล้างไฟล์และ error
   var fi = document.getElementById('fileInput'); if(fi) fi.value = '';
+  var fp = document.getElementById('fileListPreview'); if(fp) fp.innerHTML = '';
   var sr = document.getElementById('serviceResult'); if(sr) sr.innerText = '';
 }
 // ── PWA Install Prompt (Android) ──
