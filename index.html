@@ -676,7 +676,7 @@ body.dark .res-group { background: rgba(255,255,255,.04); border-color: var(--g-
 /* admin nav */
 .admin-nav {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 7px; margin-bottom: 7px;
 }
 .admin-nav-bottom {
@@ -695,7 +695,7 @@ body.dark .res-group { background: rgba(255,255,255,.04); border-color: var(--g-
 }
 @media (max-width: 500px) {
   .admin-nav {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
   .admin-nav-bottom {
     grid-template-columns: repeat(2, 1fr) !important;
@@ -1110,6 +1110,9 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
       <button id="resMenuBtn" class="btn secondary" onclick="showSection('resource','')" style="display:none;">
         <span class="material-symbols-rounded">inventory_2</span>ทรัพยากร
       </button>
+      <button id="statMenuBtn" class="btn secondary" onclick="showSection('stat','')" style="display:none;">
+        <span class="material-symbols-rounded">bar_chart</span>สถิติงาน
+      </button>
       <button id="staffAccountBtn" class="btn secondary" onclick="openChangePw()" style="display:none;">
         <span class="material-symbols-rounded">key</span>บัญชีของฉัน
       </button>
@@ -1285,6 +1288,54 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
       </div>
       <div id="userList"></div>
     </div>
+
+    <!-- ── Stat Section ── -->
+    <div id="statSection" style="display:none;">
+      <div class="card" style="margin-bottom:10px;">
+        <div class="noise"></div>
+        <div style="font-size:12px;font-weight:600;color:var(--p);margin-bottom:10px;">กรองข้อมูล</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+          <div>
+            <div style="font-size:10px;color:var(--t3);margin-bottom:4px;">ตั้งแต่วันที่</div>
+            <input type="text" id="statDateFrom" placeholder="dd/mm/yyyy" style="width:100%;" readonly>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--t3);margin-bottom:4px;">ถึงวันที่</div>
+            <input type="text" id="statDateTo" placeholder="dd/mm/yyyy" style="width:100%;" readonly>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <div>
+            <div style="font-size:10px;color:var(--t3);margin-bottom:4px;">ผู้รับผิดชอบ</div>
+            <select id="statOwner" style="width:100%;"><option value="">ทุกคน</option></select>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--t3);margin-bottom:4px;">ประเภทงาน</div>
+            <select id="statType" style="width:100%;"><option value="">ทุกประเภท</option></select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button class="btn primary" style="margin:0;" onclick="applyStatFilter()">
+            <span class="material-symbols-rounded">search</span>ค้นหา
+          </button>
+          <button class="btn secondary" style="margin:0;" onclick="clearStatFilter()">ล้าง</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="noise"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-size:12px;font-weight:600;color:var(--p);">ประเภทงาน</div>
+          <div style="font-size:11px;color:var(--t3);" id="statResultTag"></div>
+        </div>
+        <div style="background:var(--g-bg);border:1px solid var(--g-b);border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-size:12px;color:var(--t2);">งานทั้งหมด</div>
+          <div style="font-size:20px;font-weight:700;color:var(--t1);" id="statTotalNum">0</div>
+        </div>
+        <div id="statBarList"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1855,6 +1906,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById('allJobBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('userMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('resMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      document.getElementById('statMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('adminNavTop').style.gridTemplateColumns = res.role === 'admin' ? '' : 'repeat(2,1fr)';
       document.getElementById('adminNavBottom').style.display = res.role === 'admin' ? 'grid' : 'none';
       document.getElementById('staffAccountBtn').style.display = res.role === 'admin' ? 'none' : 'block';
@@ -2267,6 +2319,7 @@ function login() {
       document.getElementById('allJobBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('userMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('resMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      document.getElementById('statMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('adminNavTop').style.gridTemplateColumns = res.role === 'admin' ? '' : 'repeat(2,1fr)';
       document.getElementById('adminNavBottom').style.display = res.role === 'admin' ? 'grid' : 'none';
       // staff — ย้ายปุ่มบัญชีของฉันไปแถวบน
@@ -2286,6 +2339,7 @@ function showSection(sec, jobViewType) {
   document.getElementById('jobSection').style.display = sec === 'job' ? 'block' : 'none';
   document.getElementById('userSection').style.display = sec === 'user' ? 'block' : 'none';
   document.getElementById('resourceSection').style.display = sec === 'resource' ? 'block' : 'none';
+  document.getElementById('statSection').style.display = sec === 'stat' ? 'block' : 'none';
   if (sec !== 'resource') resetResMore();
 
   if(sec === 'job' && jobViewType) { 
@@ -2298,6 +2352,92 @@ function showSection(sec, jobViewType) {
     filterStatus('all'); 
   }
   if(sec === 'resource') { loadResources(); }
+  if(sec === 'stat') { renderStatSection(); }
+}
+
+function renderStatSection() {
+  // init flatpickr เหมือนหน้าอื่น
+  makeFp('#statDateFrom');
+  makeFp('#statDateTo');
+
+  const needJobs = !ALL_JOBS || ALL_JOBS.length === 0;
+  const needUsers = !ALL_USERS || ALL_USERS.length === 0;
+  if(needJobs || needUsers) {
+    document.getElementById('statBarList').innerHTML = '<div style="text-align:center;padding:16px;font-size:12px;color:var(--t3);">กำลังโหลด...</div>';
+    const p1 = needJobs ? gasCall('getAllData').then(data => { ALL_JOBS = data; }) : Promise.resolve();
+    const p2 = needUsers ? gasCall('getUsers').then(users => { ALL_USERS = users; }) : Promise.resolve();
+    Promise.all([p1,p2]).then(() => { _fillStatDropdowns(); renderStatBar(ALL_JOBS); });
+    return;
+  }
+  _fillStatDropdowns();
+  applyStatFilter();
+}
+
+function _fillStatDropdowns() {
+  const ownerSel = document.getElementById('statOwner');
+  const typeSel = document.getElementById('statType');
+  ownerSel.innerHTML = '<option value="">ทุกคน</option>';
+  typeSel.innerHTML = '<option value="">ทุกประเภท</option>';
+  // debug
+  const owners = [...new Set((ALL_USERS||[]).filter(u=>String(u.active).toUpperCase()==='TRUE').map(u=>u.name).filter(Boolean))];
+  const types = [...new Set((ALL_JOBS||[]).map(j=>j.jobType).filter(Boolean))];
+  owners.forEach(o => ownerSel.innerHTML += `<option>${o}</option>`);
+  types.forEach(t => typeSel.innerHTML += `<option>${t}</option>`);
+}
+
+function applyStatFilter() {
+  const from = document.getElementById('statDateFrom').value;
+  const to = document.getElementById('statDateTo').value;
+  const owner = document.getElementById('statOwner').value;
+  const type = document.getElementById('statType').value;
+
+  function dateToNum(d){ 
+    if(!d) return 0;
+    const parts = d.split('/');
+    if(parts.length === 3) return parseInt(parts[2]+parts[1]+parts[0]);
+    return 0;
+  }
+
+  const fromNum = from ? dateToNum(from) : 0;
+  const toNum = to ? dateToNum(to) : 99999999;
+
+  let f = ALL_JOBS || [];
+  if(from || to) f = f.filter(j => {
+    const n = dateToNum(j.orderDate);
+    return n >= fromNum && n <= toNum;
+  });
+  if(owner) f = f.filter(j => j.owner === owner);
+  if(type) f = f.filter(j => j.jobType === type);
+  renderStatBar(f);
+}
+
+function clearStatFilter() {
+  document.getElementById('statDateFrom')._flatpickr && document.getElementById('statDateFrom')._flatpickr.clear();
+  document.getElementById('statDateTo')._flatpickr && document.getElementById('statDateTo')._flatpickr.clear();
+  document.getElementById('statOwner').value = '';
+  document.getElementById('statType').value = '';
+  renderStatBar(ALL_JOBS || []);
+}
+
+function renderStatBar(jobs) {
+  const COLORS = ['#7c9ef8','#a78bfa','#f9a8d4','#6ee7b7','#fcd34d','#fb923c','#93c5fd','#86efac','#fda4af','#c4b5fd','#bae6fd','#bbf7d0','#fde68a','#fed7aa','#e9d5ff'];
+  document.getElementById('statTotalNum').textContent = jobs.length;
+  const tc = {};
+  jobs.forEach(j => { if(j.jobType) tc[j.jobType] = (tc[j.jobType]||0)+1; });
+  const types = Object.entries(tc).sort((a,b)=>b[1]-a[1]);
+  const max = types[0] ? types[0][1] : 1;
+  document.getElementById('statResultTag').textContent = `${types.length} ประเภท`;
+  document.getElementById('statBarList').innerHTML = types.length
+    ? types.map(([name,n],i) => `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <div style="font-size:12px;color:rgba(100,110,150,.5);width:18px;text-align:center;flex-shrink:0;">${i+1}</div>
+          <div style="font-size:13px;color:rgba(40,40,80,.8);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}</div>
+          <div style="width:80px;height:6px;background:var(--g-bg);border-radius:99px;overflow:hidden;flex-shrink:0;">
+            <div style="width:${Math.round(n/max*100)}%;height:100%;border-radius:99px;background:${COLORS[i%COLORS.length]};"></div>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:rgba(30,30,70,.8);min-width:24px;text-align:right;">${n}</div>
+        </div>`).join('')
+    : '<div style="text-align:center;padding:16px;font-size:13px;color:var(--t3);">ไม่พบข้อมูล</div>';
 }
 
 function loadAllData() {
