@@ -697,19 +697,13 @@ body.dark .res-group { background: rgba(255,255,255,.04); border-color: var(--g-
 .mobile-only { display: none !important; }
 @media (max-width: 500px) {
   .admin-nav {
-    display: flex !important;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
     gap: 6px;
-    padding-bottom: 4px;
   }
-  .admin-nav::-webkit-scrollbar { display: none; }
   .admin-nav .btn {
-    flex-shrink: 0;
-    white-space: nowrap;
-    padding: 11px 12px;
-    font-size: 13px;
+    padding: 10px 6px;
+    font-size: 12px;
   }
 }
 
