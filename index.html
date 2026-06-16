@@ -693,19 +693,45 @@ body.dark .res-group { background: rgba(255,255,255,.04); border-color: var(--g-
 .admin-nav .btn .material-symbols-rounded {
   font-size: 16px !important; margin: 0; flex-shrink: 0;
 }
+.desktop-only { display: grid; }
+.mobile-only { display: none !important; }
 @media (max-width: 500px) {
   .admin-nav {
-    grid-template-columns: repeat(2, 1fr);
+    display: flex !important;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px;
+    padding-bottom: 4px;
   }
-  .admin-nav-bottom {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
+  .admin-nav::-webkit-scrollbar { display: none; }
   .admin-nav .btn {
-    padding: 11px 8px; font-size: 13px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 11px 12px;
+    font-size: 13px;
   }
 }
 
 body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgba(255,255,255,.15) !important; }
+
+/* sticky close button for modals */
+.modal-close-sticky {
+  position: sticky;
+  top: 0;
+  float: right;
+  margin-left: auto;
+  z-index: 10;
+  background: rgba(0,0,0,.06);
+  border: none;
+  cursor: pointer;
+  color: var(--t2);
+  font-size: 26px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
 
 /* admin topbar extra */
 .admin-user-badge {
@@ -1100,6 +1126,7 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
   </div>
 
   <div class="wrap inner-page" style="padding-top:14px;">
+    <!-- Desktop nav (เดิม) -->
     <div class="admin-nav" id="adminNavTop">
       <button id="allJobBtn" class="btn secondary" onclick="showSection('job','all')">
         <span class="material-symbols-rounded">list_alt</span>ทั้งหมด
@@ -1113,15 +1140,13 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
       <button id="statMenuBtn" class="btn secondary" onclick="showSection('stat','')" style="display:none;">
         <span class="material-symbols-rounded">bar_chart</span>สถิติงาน
       </button>
+      <button id="userMenuBtn" class="btn secondary" onclick="showSection('user','')" style="display:none;">
+        <span class="material-symbols-rounded">manage_accounts</span>ผู้ใช้
+      </button>
       <button id="staffAccountBtn" class="btn secondary" onclick="openChangePw()" style="display:none;">
         <span class="material-symbols-rounded">key</span>บัญชีของฉัน
       </button>
-    </div>
-    <div class="admin-nav admin-nav-bottom" id="adminNavBottom">
-      <button id="userMenuBtn" class="btn secondary" onclick="showSection('user','')">
-        <span class="material-symbols-rounded">manage_accounts</span>ผู้ใช้
-      </button>
-      <button class="btn secondary" onclick="openChangePw()">
+      <button id="adminAccBtn" class="btn secondary" onclick="openChangePw()" style="display:none;">
         <span class="material-symbols-rounded">key</span>บัญชีของฉัน
       </button>
     </div>
@@ -1291,6 +1316,7 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
 
     <!-- ── Stat Section ── -->
     <div id="statSection" style="display:none;">
+      <!-- Card 1: วันที่ + ผู้รับผิดชอบ + ปุ่ม -->
       <div class="card" style="margin-bottom:10px;">
         <div class="noise"></div>
         <div style="font-size:12px;font-weight:600;color:var(--p);margin-bottom:10px;">กรองข้อมูล</div>
@@ -1304,15 +1330,9 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
             <input type="text" id="statDateTo" placeholder="dd/mm/yyyy" style="width:100%;" readonly>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-          <div>
-            <div style="font-size:10px;color:var(--t3);margin-bottom:4px;">ผู้รับผิดชอบ</div>
-            <select id="statOwner" style="width:100%;"><option value="">ทุกคน</option></select>
-          </div>
-          <div>
-            <div style="font-size:10px;color:var(--t3);margin-bottom:4px;">ประเภทงาน</div>
-            <select id="statType" style="width:100%;"><option value="">ทุกประเภท</option></select>
-          </div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:10px;color:var(--t3);margin-bottom:4px;">ผู้รับผิดชอบ</div>
+          <select id="statOwner" style="width:100%;"><option value="">ทุกคน</option></select>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
           <button class="btn primary" style="margin:0;" onclick="applyStatFilter()">
@@ -1322,6 +1342,17 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
         </div>
       </div>
 
+      <!-- Card 2: ประเภทงาน dropdown filter ทันที -->
+      <div class="card" style="margin-bottom:10px;">
+        <div class="noise"></div>
+        <div style="font-size:12px;font-weight:600;color:var(--p);margin-bottom:10px;">ดูงานรายประเภท</div>
+        <div style="font-size:10px;color:var(--t3);margin-bottom:4px;">ประเภทงาน</div>
+        <select id="statType" style="width:100%;" onchange="applyStatFilter()">
+          <option value="">-- ดูทุกประเภท --</option>
+        </select>
+      </div>
+
+      <!-- ผลลัพธ์ -->
       <div class="card">
         <div class="noise"></div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -1578,11 +1609,11 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
      EDIT MODAL
 ══════════════════════════════════════════ -->
 <div id="editModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)closeEditModal()">
-  <div>
+  <div style="position:relative;background:rgba(240,244,255,.95);backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r4);padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--s3);">
+    <button onclick="closeEditModal()" class="modal-close-sticky">×</button>
     <h3 style="margin:0 0 16px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
       <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:17px;">folder_open</span>
       งาน <span style="color:var(--p);">#<span id="editJobId"></span></span>
-      <button onclick="closeEditModal()" style="margin-left:auto;background:rgba(0,0,0,.06);border:none;cursor:pointer;color:var(--t2);font-size:26px;line-height:1;padding:2px 6px;border-radius:8px;flex-shrink:0;">×</button>
     </h3>
     <div id="adminAssignPanel" style="display:none;">
       <span class="section-label">มอบหมายให้</span>
@@ -1624,12 +1655,12 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
 
 <!-- View Resource Modal (done jobs) -->
 <div id="viewResModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:rgba(240,244,255,.95);backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r4);padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--s3);">
+  <div style="position:relative;background:rgba(240,244,255,.95);backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r4);padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--s3);">
+    <button onclick="document.getElementById('viewResModal').style.display='none'" class="modal-close-sticky">×</button>
     <h3 style="margin:0 0 4px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
       <span class="material-symbols-rounded" style="color:#10b981;margin:0;font-size:17px;">task_alt</span>
       งาน <span style="color:var(--p);">#<span id="viewResJobId"></span></span>
       <span style="font-size:12px;background:rgba(16,185,129,.12);color:#10b981;padding:3px 10px;border-radius:99px;font-weight:500;">เสร็จสิ้น</span>
-      <button onclick="document.getElementById('viewResModal').style.display='none'" style="margin-left:auto;background:rgba(0,0,0,.06);border:none;cursor:pointer;color:var(--t2);font-size:26px;line-height:1;padding:2px 6px;border-radius:8px;flex-shrink:0;">×</button>
     </h3>
     <div id="viewResDoneDate" style="font-size:13px;color:var(--t3);margin-bottom:16px;"></div>
     <span class="section-label" style="display:flex;align-items:center;gap:5px;">
@@ -1646,10 +1677,10 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
 
 <!-- Manage Resource Items Modal -->
 <div id="resItemModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:rgba(8,14,26,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:rgba(240,244,255,.95);backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r4);padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--s3);">
+  <div style="position:relative;background:rgba(240,244,255,.95);backdrop-filter:blur(36px);-webkit-backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r4);padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--s3);">
+    <button onclick="document.getElementById('resItemModal').style.display='none'" class="modal-close-sticky">×</button>
     <h3 style="margin:0 0 16px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
       <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:17px;">inventory_2</span> จัดการรายการวัสดุ
-      <button onclick="document.getElementById('resItemModal').style.display='none'" style="margin-left:auto;background:rgba(0,0,0,.06);border:none;cursor:pointer;color:var(--t2);font-size:26px;line-height:1;padding:2px 6px;border-radius:8px;flex-shrink:0;">×</button>
     </h3>
     <div style="display:flex;gap:8px;margin-bottom:6px;align-items:center;">
       <input id="newResItemInput" placeholder="ชื่อวัสดุใหม่" style="flex:1;min-width:0;width:0;margin:0;padding:12px 14px;border-radius:14px;border:1px solid var(--g-b2);background:rgba(255,255,255,.6);font-family:inherit;font-size:15px;color:var(--t1);outline:none;">
@@ -1664,10 +1695,10 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
 
 <!-- Change Password Modal -->
 <div id="changePwModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(8,14,26,.12);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)closeChangePw()">
-  <div>
+  <div style="position:relative;background:rgba(240,244,255,.95);backdrop-filter:blur(36px);border:1px solid rgba(255,255,255,.78);border-radius:var(--r4);padding:24px 20px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;box-shadow:var(--s3);">
+    <button onclick="closeChangePw()" class="modal-close-sticky">×</button>
     <h3 style="margin:0 0 16px;font-size:17px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:7px;">
       <span class="material-symbols-rounded" style="color:var(--p);margin:0;font-size:17px;">manage_accounts</span> ตั้งค่าบัญชี
-      <button onclick="closeChangePw()" style="margin-left:auto;background:rgba(0,0,0,.06);border:none;cursor:pointer;color:var(--t2);font-size:26px;line-height:1;padding:2px 6px;border-radius:8px;flex-shrink:0;">×</button>
     </h3>
     <div style="font-size:12px;color:var(--t3);margin-bottom:4px;">Username ปัจจุบัน</div>
     <div id="pwCurrentUser" style="font-size:15px;font-weight:600;color:var(--p);margin-bottom:14px;">—</div>
@@ -1907,8 +1938,12 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById('userMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('resMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('statMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      if(document.getElementById('adminAccBtn')) document.getElementById('adminAccBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      if(document.getElementById('mStatBtn')) document.getElementById('mStatBtn').style.display = res.role === 'admin' ? '' : 'none';
+      if(document.getElementById('mResBtn')) document.getElementById('mResBtn').style.display = res.role === 'admin' ? '' : 'none';
+      if(document.getElementById('mUserBtn')) document.getElementById('mUserBtn').style.display = res.role === 'admin' ? '' : 'none';
+      if(document.getElementById('mAllJobBtn')) document.getElementById('mAllJobBtn').style.display = res.role === 'admin' ? '' : 'none';
       document.getElementById('adminNavTop').style.gridTemplateColumns = res.role === 'admin' ? '' : 'repeat(2,1fr)';
-      document.getElementById('adminNavBottom').style.display = res.role === 'admin' ? 'grid' : 'none';
       document.getElementById('staffAccountBtn').style.display = res.role === 'admin' ? 'none' : 'block';
       showSection('job', res.role === 'admin' ? 'all' : 'my');
       switchPage('admin');
@@ -2320,8 +2355,12 @@ function login() {
       document.getElementById('userMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('resMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('statMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      if(document.getElementById('adminAccBtn')) document.getElementById('adminAccBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      if(document.getElementById('mStatBtn')) document.getElementById('mStatBtn').style.display = res.role === 'admin' ? '' : 'none';
+      if(document.getElementById('mResBtn')) document.getElementById('mResBtn').style.display = res.role === 'admin' ? '' : 'none';
+      if(document.getElementById('mUserBtn')) document.getElementById('mUserBtn').style.display = res.role === 'admin' ? '' : 'none';
+      if(document.getElementById('mAllJobBtn')) document.getElementById('mAllJobBtn').style.display = res.role === 'admin' ? '' : 'none';
       document.getElementById('adminNavTop').style.gridTemplateColumns = res.role === 'admin' ? '' : 'repeat(2,1fr)';
-      document.getElementById('adminNavBottom').style.display = res.role === 'admin' ? 'grid' : 'none';
       // staff — ย้ายปุ่มบัญชีของฉันไปแถวบน
       document.getElementById('staffAccountBtn').style.display = res.role === 'admin' ? 'none' : 'block';
       showSection('job', res.role === 'admin' ? 'all' : 'my');
@@ -2377,10 +2416,9 @@ function _fillStatDropdowns() {
   const ownerSel = document.getElementById('statOwner');
   const typeSel = document.getElementById('statType');
   ownerSel.innerHTML = '<option value="">ทุกคน</option>';
-  typeSel.innerHTML = '<option value="">ทุกประเภท</option>';
-  // debug
+  typeSel.innerHTML = '<option value="">-- ดูทุกประเภท --</option>';
   const owners = [...new Set((ALL_USERS||[]).filter(u=>String(u.active).toUpperCase()==='TRUE').map(u=>u.name).filter(Boolean))];
-  const types = [...new Set((ALL_JOBS||[]).map(j=>j.jobType).filter(Boolean))];
+  const types = [...new Set((ALL_JOBS||[]).map(j=>j.jobType).filter(Boolean))].sort();
   owners.forEach(o => ownerSel.innerHTML += `<option>${o}</option>`);
   types.forEach(t => typeSel.innerHTML += `<option>${t}</option>`);
 }
