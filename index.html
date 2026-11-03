@@ -79,6 +79,8 @@ body.dark {
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 input, textarea, select { -webkit-user-select: text; user-select: text; }
 p, span, div, h1, h2, h3, label { -webkit-user-select: none; user-select: none; }
+.glass-card, .glass-card * { -webkit-user-select: text !important; user-select: text !important; }
+.no-select { -webkit-user-select: none !important; user-select: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
@@ -695,6 +697,33 @@ body.dark .res-group { background: rgba(255,255,255,.04); border-color: var(--g-
 }
 .desktop-only { display: grid; }
 .mobile-only { display: none !important; }
+@media (min-width: 501px) {
+  #staffAccountBtn { grid-column: span 2; }
+}
+@media (max-width: 500px) {
+  #adminAccBtn { grid-column: span 2; }
+  .tp-id { display: none; }
+}
+/* service type management */
+.tp-row { display:flex; align-items:center; gap:8px; padding:10px 0; border-top:1px solid var(--g-b2); font-size:15px; }
+.tp-col { flex-direction:column; align-items:stretch; }
+.tp-id { font-size:12px; color:var(--t3); min-width:24px; }
+.tp-name { flex:1; min-width:0; overflow-wrap:anywhere; }
+.btn.tp-ib { width:40px; height:40px; padding:0; margin:0; flex-shrink:0; border-radius:var(--r2); }
+.btn.tp-ib .material-symbols-rounded { margin:0; }
+.tp-edit { display:flex; gap:8px; align-items:center; }
+.tp-edit input { flex:1; min-width:0; margin:0; }
+.tp-actions { display:flex; gap:8px; }
+.tp-actions .btn { flex:1; margin:0; padding:10px; }
+.tp-msg { color:#c04040; font-size:13px; font-weight:500; min-height:18px; margin-top:6px; }
+.tp-empty { text-align:center; color:var(--t3); font-size:13px; padding:16px 0; }
+.dp-gh { display:flex; align-items:center; gap:8px; padding:8px 0; border-top:1px solid var(--g-b2); cursor:pointer; font-size:15px; }
+.dp-gn { flex:1; min-width:0; overflow-wrap:anywhere; font-weight:600; }
+.dp-bd { font-size:12px; color:var(--t3); background:rgba(120,120,160,.14); border-radius:999px; padding:2px 8px; flex-shrink:0; }
+.dp-chev { color:var(--t3); }
+.dp-gb { padding:0 0 8px 14px; }
+.dp-addlink { display:flex; align-items:center; gap:4px; background:none; border:none; color:var(--p); font-size:13px; font-family:inherit; padding:8px 4px; cursor:pointer; }
+.dp-addlink .material-symbols-rounded { font-size:18px; margin:0; }
 @media (max-width: 500px) {
   .admin-nav {
     display: grid !important;
@@ -1002,28 +1031,15 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
       </div>
 
       <span class="section-label" style="margin-top:18px;display:block;">หน่วยงาน</span>
-      <select id="groupInput" onchange="updateDept()">
-        <option value="">— กลุ่มภารกิจ —</option>
-        <option>ภารกิจด้านอำนวยการ</option>
-        <option>ภารกิจด้านบริการปฐมภูมิ</option>
-        <option>ภารกิจด้านพัฒนาระบบบริการและสนับสนุนบริการสุขภาพ</option>
-        <option>ภารกิจด้านบริการทุติยภูมิและตติยภูมิ</option>
-        <option>ภารกิจด้านการพยาบาล</option>
-        <option>ภารกิจด้านผลิตบุคลากรทางการแพทย์</option>
-        <option>มูลนิธิโรงพยาบาลเจ้าพระยาอภัยภูเบศรฯ</option>
-      </select>
+      <select id="groupInput" onchange="updateDept()" disabled><option value="">กำลังโหลด…</option></select>
       <select id="departmentInput"><option value="">— หน่วยงาน —</option></select>
+      <div id="masterErr" style="display:none;margin-top:8px;font-size:13px;color:#c04040;align-items:center;gap:8px;flex-wrap:wrap;">
+        <span>โหลดรายการกลุ่ม/ประเภทงานไม่สำเร็จ</span>
+        <button type="button" class="btn neutral" style="margin:0;width:auto;padding:6px 14px;" onclick="loadMasterData()">ลองใหม่</button>
+      </div>
 
       <span class="section-label" style="margin-top:18px;display:block;">รายละเอียดงาน</span>
-      <select id="typeInput">
-        <option value="">— ประเภทงาน —</option>
-        <option>งานผลิตสื่อต่างๆ</option><option>ทำข่าวประชาสัมพันธ์</option>
-        <option>เกียรติบัตร / ใบประกาศ</option><option>ถ่ายภาพ / ทำข่าวประชาสัมพันธ์</option>
-        <option>งานป้าย</option><option>งานถ่ายภาพ</option><option>งานวีดีโอ</option>
-        <option>รับคณะ</option><option>ระบบ Zoom / Webex</option><option>ดูแลห้องประชุม</option>
-        <option>เครื่องเสียง</option><option>ยืม/ติดตั้ง อุปกรณ์</option>
-        <option>ปริ้นเอกสาร / ภาพ</option><option>บัตร / บัตรคิว</option><option>เคลือบพลาสติก</option>
-      </select>
+      <select id="typeInput" disabled><option value="">กำลังโหลด…</option></select>
       <input type="text" id="orderDateInput" placeholder="วันที่สั่งงาน">
       <textarea id="detailInput" placeholder="รายละเอียด (ขนาด จำนวน ฯลฯ)"></textarea>
 
@@ -1139,6 +1155,12 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
       </button>
       <button id="userMenuBtn" class="btn secondary" onclick="showSection('user','')" style="display:none;">
         <span class="material-symbols-rounded">manage_accounts</span>ผู้ใช้
+      </button>
+      <button id="typeMenuBtn" class="btn secondary" onclick="showSection('type','')" style="display:none;">
+        <span class="material-symbols-rounded">label</span>ประเภทงาน
+      </button>
+      <button id="deptMenuBtn" class="btn secondary" onclick="showSection('dept','')" style="display:none;">
+        <span class="material-symbols-rounded">domain</span>กลุ่ม/หน่วยงาน
       </button>
       <button id="staffAccountBtn" class="btn secondary" onclick="openChangePw()" style="display:none;">
         <span class="material-symbols-rounded">key</span>บัญชีของฉัน
@@ -1309,6 +1331,41 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
         </div>
       </div>
       <div id="userList"></div>
+    </div>
+
+    <div id="typeSection" style="display:none;">
+      <div class="card" style="margin-bottom:10px;">
+        <div class="noise"></div>
+        <button id="toggleTypeBtn" class="btn primary" style="margin:0;" onclick="toggleTypeForm()">
+          <span class="material-symbols-rounded">add</span> เพิ่มประเภทงานใหม่
+        </button>
+        <div id="typeFormBox" style="display:none;margin-top:14px;">
+          <input id="newTypeName" placeholder="ชื่อประเภทงาน" maxlength="80" oninput="setTypeMsg('typeAddMsg','')" onkeydown="if(event.key==='Enter')addTypeFromForm()">
+          <div id="typeAddMsg" class="tp-msg"></div>
+          <button id="typeAddSaveBtn" class="btn primary" style="margin-top:6px;margin-bottom:0;" onclick="addTypeFromForm()">
+            <span class="material-symbols-rounded">save</span> บันทึก
+          </button>
+        </div>
+        <div id="typeList" style="margin-top:14px;"></div>
+      </div>
+    </div>
+
+    <div id="deptSection" style="display:none;">
+      <div class="card" style="margin-bottom:10px;">
+        <div class="noise"></div>
+        <button id="toggleGroupBtn" class="btn primary" style="margin:0;" onclick="toggleGroupForm()">
+          <span class="material-symbols-rounded">add</span> เพิ่มกลุ่มภารกิจใหม่
+        </button>
+        <div id="groupFormBox" style="display:none;margin-top:14px;">
+          <input id="newGroupName" placeholder="ชื่อกลุ่มภารกิจ" maxlength="200" oninput="setTypeMsg('groupAddMsg','')" onkeydown="if(event.key==='Enter')addGroupFromForm()">
+          <div id="groupAddMsg" class="tp-msg"></div>
+          <button id="groupAddSaveBtn" class="btn primary" style="margin-top:6px;margin-bottom:0;" onclick="addGroupFromForm()">
+            <span class="material-symbols-rounded">save</span> บันทึก
+          </button>
+        </div>
+        <input id="deptSearch" placeholder="ค้นหากลุ่มหรือหน่วยงาน" style="margin-top:14px;" oninput="onDeptSearch(this.value)">
+        <div id="deptList" style="margin-top:6px;"></div>
+      </div>
     </div>
 
     <!-- ── Stat Section ── -->
@@ -1543,7 +1600,7 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
           </div>
           <div class="hp-card" style="border-left:2px solid #e8c060;">
             <div class="hp-num" style="color:#e8c060;">#251</div>
-            <div class="hp-small">รอรับ · งานวีดีโอ</div>
+            <div class="hp-small">รอรับ · งานวิดีโอ</div>
           </div>
         </div>
         <div>
@@ -1700,6 +1757,7 @@ body.dark #darkFab { background: rgba(14,22,44,.7) !important; border-color: rgb
     <div style="font-size:12px;color:var(--t3);margin-bottom:4px;">Username ปัจจุบัน</div>
     <div id="pwCurrentUser" style="font-size:15px;font-weight:600;color:var(--p);margin-bottom:14px;">—</div>
     <input id="pwNewUser" placeholder="Username ใหม่ (เว้นว่างถ้าไม่เปลี่ยน)" style="margin-top:0;">
+    <input id="pwNewName" placeholder="ชื่อ-นามสกุลใหม่ (เว้นว่างถ้าไม่เปลี่ยน)" style="margin-top:9px;">
     <input id="pwOld" type="password" placeholder="รหัสผ่านปัจจุบัน" style="margin-top:9px;">
     <input id="pwNew" type="password" placeholder="รหัสผ่านใหม่" style="margin-top:9px;">
     <input id="pwConfirm" type="password" placeholder="ยืนยันรหัสผ่านใหม่" style="margin-top:9px;">
@@ -1794,53 +1852,8 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-const DEPT_MAP = {
-  "ภารกิจด้านอำนวยการ": [
-    "กลุ่มงานบริหารทั่วไป","งานสารบรรณ","งานเลขานุการ","งานประชาสัมพันธ์","งานสนาม",
-    "งานยานพาหนะ","งานแม่บ้าน","กลุ่มงานทรัพยากรบุคคล","กลุ่มงานการเงิน","กลุ่มงานบัญชี",
-    "สหกรณ์ รพ.","กลุ่มงานพัสดุ","กลุ่มงานโครงสร้างพื้นฐานและวิศวกรรมทางการแพทย์",
-    "งานโรงงาน","งานบำบัดน้ำเสีย","งานประปา","งานพัสดุการแพทย์"
-  ],
-
-  "ภารกิจด้านบริการปฐมภูมิ": [
-    "กลุ่มงานการแพทย์แผนไทยและการแพทย์ทางเลือก","กลุ่มงานสุขศึกษา","กลุ่มงานเวชกรรมสังคม",
-    "เวชปฏิบัติครอบครัวและชุมชนศูนย์สุขภาพชุมชนเมือง","กลุ่มงานการพยาบาลชุมชน",
-    "เจ้าหน้าที่ประจำสถานีอนามัย","กลุ่มงานอาชีวเวชกรรม"
-  ],
-
-  "ภารกิจด้านพัฒนาระบบบริการและสนับสนุนบริการสุขภาพ": [
-    "กลุ่มงานยุทธศาสตร์และแผนงานโครงการ","กลุ่มงานสารสนเทศทางการแพทย์","ศูนย์ไอ.ที",
-    "กลุ่มงานพัฒนาทรัพยากรบุคคล","เวชนิทัศน์และโสตทัศนศึกษา",
-    "ศูนย์พัฒนาคุณภาพ","กลุ่มงานประกันสุขภาพ"
-  ],
-
-  "ภารกิจด้านบริการทุติยภูมิและตติยภูมิ": [
-    "กลุ่มงานนิติเวช","กลุ่มงานโสต ศอ นาสิก","กลุ่มงานโภชนศาสตร์","กลุ่มงานพยาธิวิทยากายวิภาค",
-    "กลุ่มงานจิตเวช","กลุ่มงานทันตกรรม","กลุ่มงานรังสีวิทยา","กลุ่มงานพยาธิวิทยาคลีนิค",
-    "กลุ่มงานเวชกรรมฟื้นฟู","กลุ่มงานสังคมสงเคราะห์","กลุ่มงานเภสัชกรรม","องค์กรแพทย์"
-  ],
-
-  "ภารกิจด้านการพยาบาล": [
-    "กลุ่มการพยาบาล","งานติดเชื้อ","ศูนย์เครื่องมือแพทย์","วันเดย์","จ่ายกลาง","ซักฟอก-ตัดเย็บ",
-    "ศูนย์เปล","ผู้ป่วยนอก","อุบัติเหตุและฉุกเฉิน","เวชศาสตร์ฉุกเฉิน","ไอ.ซี.ยู.ศัลยกรรม",
-    "พิเศษรวมศัลยกรรม","ศัลยกรรมชาย","ศัลยกรรมหญิง","ศัลยกรรมกระดูก","ห้องเฝือก","ผ่าตัด",
-    "ผ่าตัดเล็ก","วิสัญญี","ประสาทวิทยา","อายุรกรรมชาย 1","อายุรกรรมชาย 2","อายุรกรรมหญิง 1",
-    "อายุรกรรมหญิง 2","ผู้ป่วยแยกโรค","วิกฤตทางเดินหายใจ ricu","วิกฤตหัวใจและหลอดเลือด ccu",
-    "เครื่องมือพิเศษ","ห้องปฏิบัติการสวนหัวใจ","ไตเทียม","ธเนศวร","สูติกรรมสามัญ",
-    "โอ.พี.ดี.นรีเวชฯ","สูติกรรมพิเศษ 1","สูติกรรมพิเศษ 2","หอผู้ป่วยแพทย์แผนไทย","ห้องคลอด",
-    "งานฝากครรภ์","เด็กสามัญ","เด็กพิเศษ","ไอ.ซี.ยู.เด็ก","NICU","PICU&SNB",
-    "ไอ.ซี.ยู.อายุรกรรม micu","ตา หู คอ จมูก","ตรวจรักษาพิเศษจักษุ","พิเศษสุวัทนา",
-    "พิเศษรวมอายุรกรรม","เคมีบำบัด","กึ่งวิกฤตศัลยกรรม"
-  ],
-
-  "ภารกิจด้านผลิตบุคลากรทางการแพทย์": [
-    "ศูนย์แพทยศาสตรชั้นคลินิก"
-  ],
-
-  "มูลนิธิโรงพยาบาลเจ้าพระยาอภัยภูเบศรฯ": [
-    "มูลนิธิฯ"
-  ]
-};
+let DEPT_MAP = {};   // { กลุ่ม: [หน่วยงาน] } โหลดจากชีต Departments
+let DEPT_LIST = [];  // [{ group, departments }] เรียงตามชีต
 
 let CURRENT_USER = null;
 let ALL_JOBS = [];
@@ -1933,6 +1946,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       document.getElementById('allJobBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('userMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      document.getElementById('typeMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      document.getElementById('deptMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('resMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('statMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       if(document.getElementById('adminAccBtn')) document.getElementById('adminAccBtn').style.display = res.role === 'admin' ? 'block' : 'none';
@@ -2024,7 +2039,13 @@ function goHome() {
   // clear search
   clearSearch();
   // 5. reload กลับไปหน้าแรก (splash จะจัดการเอง)
-  window.location.reload();
+  // ถ้าเปิดผ่าน Apps Script (/exec) หน้าเว็บอยู่ใน iframe ต้องสั่ง reload ที่หน้าต่างหลัก
+  try {
+    if (window.top !== window.self) window.top.location.href = GAS_URL;
+    else window.location.reload();
+  } catch (e) {
+    window.location.reload();
+  }
 }
 function goService() { clearForm();switchPage('service'); }
 function goSearch() { clearSearch(); switchPage('search'); }
@@ -2184,7 +2205,7 @@ function toggleDark(){
 function updateDept() {
   const g = document.getElementById('groupInput').value;
   const depts = DEPT_MAP[g] || [];
-  document.getElementById('departmentInput').innerHTML = '<option value="">-- หน่วยงาน --</option>' + depts.map(d => `<option value="${d}">${d}</option>`).join('');
+  document.getElementById('departmentInput').innerHTML = '<option value="">-- หน่วยงาน --</option>' + depts.map(d => `<option value="${tpEsc(d)}">${tpEsc(d)}</option>`).join('');
 }
 
 function setLoading(btn, loading, originalHTML) {
@@ -2350,6 +2371,8 @@ function login() {
       }
       document.getElementById('allJobBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('userMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      document.getElementById('typeMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
+      document.getElementById('deptMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('resMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       document.getElementById('statMenuBtn').style.display = res.role === 'admin' ? 'block' : 'none';
       if(document.getElementById('adminAccBtn')) document.getElementById('adminAccBtn').style.display = res.role === 'admin' ? 'block' : 'none';
@@ -2374,6 +2397,8 @@ function login() {
 function showSection(sec, jobViewType) {
   document.getElementById('jobSection').style.display = sec === 'job' ? 'block' : 'none';
   document.getElementById('userSection').style.display = sec === 'user' ? 'block' : 'none';
+  document.getElementById('typeSection').style.display = sec === 'type' ? 'block' : 'none';
+  document.getElementById('deptSection').style.display = sec === 'dept' ? 'block' : 'none';
   document.getElementById('resourceSection').style.display = sec === 'resource' ? 'block' : 'none';
   document.getElementById('statSection').style.display = sec === 'stat' ? 'block' : 'none';
   if (sec !== 'resource') resetResMore();
@@ -2389,6 +2414,8 @@ function showSection(sec, jobViewType) {
   }
   if(sec === 'resource') { loadResources(); }
   if(sec === 'stat') { renderStatSection(); }
+  if(sec === 'type') { cancelTypeAction(); loadTypeManage(); }
+  if(sec === 'dept') { dpReset(); _dpQ = ''; document.getElementById('deptSearch').value = ''; loadDeptManage(); }
 }
 
 function renderStatSection() {
@@ -3002,6 +3029,382 @@ function deleteUser(user) {
   }
 }
 
+// ── ประเภทงาน (sheet: ServiceTypes) ──
+let SERVICE_TYPES = [];
+let _typeEditId = null, _typeDeleteId = null, _typeEditErr = '';
+
+function tpEsc(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function fillTypeSelect() {
+  const sel = document.getElementById('typeInput');
+  if (!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— ประเภทงาน —</option>' +
+    SERVICE_TYPES.map(t => '<option>' + tpEsc(t.name) + '</option>').join('');
+  if (cur && SERVICE_TYPES.some(t => t.name === cur)) sel.value = cur;
+  sel.disabled = false;
+}
+
+function setTypeMsg(id, msg) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = msg || '';
+}
+
+function loadTypeManage() {
+  const box = document.getElementById('typeList');
+  box.innerHTML = loadingHTML;
+  gasCall('getServiceTypes').then(res => {
+    if (!Array.isArray(res)) throw new Error((res && res.error) || 'โหลดข้อมูลไม่สำเร็จ');
+    SERVICE_TYPES = res;
+    fillTypeSelect();
+    renderTypeList();
+  }).catch(e => {
+    box.innerHTML = '<div class="tp-empty">' + tpEsc(e.message) + '</div>' +
+      '<button class="btn neutral" style="margin:0;" onclick="loadTypeManage()">ลองใหม่</button>';
+  });
+}
+
+function renderTypeList() {
+  const box = document.getElementById('typeList');
+  if (!SERVICE_TYPES.length) {
+    box.innerHTML = '<div class="tp-empty">ยังไม่มีประเภทงาน กดเพิ่มประเภทงานใหม่ด้านบน</div>';
+    return;
+  }
+  box.innerHTML = SERVICE_TYPES.map(t => {
+    if (_typeDeleteId === t.id) {
+      return '<div class="tp-row tp-col"><div>ลบ “' + tpEsc(t.name) + '” ใช่หรือไม่</div>' +
+        '<div class="tp-actions"><button class="btn neutral" onclick="cancelTypeAction()">ยกเลิก</button>' +
+        '<button id="typeDelBtn" class="btn danger" onclick="confirmDeleteType(' + t.id + ')">ลบ</button></div></div>';
+    }
+    if (_typeEditId === t.id) {
+      return '<div class="tp-row tp-col"><div class="tp-edit">' +
+        '<input id="editTypeName" value="' + tpEsc(t.name) + '" maxlength="80" oninput="setTypeMsg(\'typeEditMsg\',\'\')" ' +
+        'onkeydown="if(event.key===\'Enter\')saveEditType(' + t.id + ');if(event.key===\'Escape\')cancelTypeAction()">' +
+        '<button id="typeSaveBtn" class="btn primary tp-ib" aria-label="บันทึก" onclick="saveEditType(' + t.id + ')"><span class="material-symbols-rounded">check</span></button>' +
+        '<button class="btn neutral tp-ib" aria-label="ยกเลิก" onclick="cancelTypeAction()"><span class="material-symbols-rounded">close</span></button>' +
+        '</div><div id="typeEditMsg" class="tp-msg">' + tpEsc(_typeEditErr) + '</div></div>';
+    }
+    return '<div class="tp-row"><span class="tp-id">' + t.id + '</span><span class="tp-name">' + tpEsc(t.name) + '</span>' +
+      '<button class="btn neutral tp-ib" aria-label="แก้ไข" onclick="startEditType(' + t.id + ')"><span class="material-symbols-rounded">edit</span></button>' +
+      '<button class="btn danger tp-ib" aria-label="ลบ" onclick="askDeleteType(' + t.id + ')"><span class="material-symbols-rounded">delete</span></button></div>';
+  }).join('');
+  const ei = document.getElementById('editTypeName');
+  if (ei) { ei.focus(); ei.setSelectionRange(ei.value.length, ei.value.length); }
+}
+
+function toggleTypeForm() {
+  const formBox = document.getElementById('typeFormBox');
+  const toggleBtn = document.getElementById('toggleTypeBtn');
+  if (formBox.style.display === 'none' || formBox.style.display === '') {
+    formBox.style.display = 'block';
+    toggleBtn.innerHTML = '<span class="material-symbols-rounded">close</span> ยกเลิกการเพิ่ม';
+    toggleBtn.classList.replace('primary', 'secondary');
+    document.getElementById('newTypeName').focus();
+  } else {
+    formBox.style.display = 'none';
+    toggleBtn.innerHTML = '<span class="material-symbols-rounded">add</span> เพิ่มประเภทงานใหม่';
+    toggleBtn.classList.replace('secondary', 'primary');
+    document.getElementById('newTypeName').value = '';
+    setTypeMsg('typeAddMsg', '');
+  }
+}
+
+function addTypeFromForm() {
+  const name = document.getElementById('newTypeName').value.trim();
+  if (!name) return setTypeMsg('typeAddMsg', 'กรอกชื่อประเภทงานก่อน');
+  if (SERVICE_TYPES.some(t => t.name === name)) return setTypeMsg('typeAddMsg', 'มีประเภทนี้แล้ว');
+  const btn = document.getElementById('typeAddSaveBtn');
+  setLoading(btn, true);
+  gasCall('addServiceType', { name }).then(res => {
+    setLoading(btn, false);
+    if (res && res.error) return setTypeMsg('typeAddMsg', res.error);
+    toggleTypeForm();
+    loadTypeManage();
+  }).catch(e => { setLoading(btn, false); setTypeMsg('typeAddMsg', e.message); });
+}
+
+function startEditType(id) { _typeEditId = id; _typeDeleteId = null; _typeEditErr = ''; renderTypeList(); }
+function askDeleteType(id) {
+  if (SERVICE_TYPES.length <= 1) return alert('ต้องเหลือประเภทงานอย่างน้อย 1 รายการ');
+  _typeDeleteId = id; _typeEditId = null; _typeEditErr = ''; renderTypeList();
+}
+function cancelTypeAction() {
+  _typeEditId = null; _typeDeleteId = null; _typeEditErr = '';
+  const box = document.getElementById('typeList');
+  if (SERVICE_TYPES.length && box && box.innerHTML) renderTypeList();
+}
+
+function saveEditType(id) {
+  const name = document.getElementById('editTypeName').value.trim();
+  const showErr = m => { _typeEditErr = m; setTypeMsg('typeEditMsg', m); };
+  if (!name) return showErr('กรอกชื่อประเภทงานก่อน');
+  if (SERVICE_TYPES.some(t => t.id !== id && t.name === name)) return showErr('มีประเภทนี้แล้ว');
+  const cur = SERVICE_TYPES.find(t => t.id === id);
+  if (cur && cur.name === name) return cancelTypeAction();
+  const btn = document.getElementById('typeSaveBtn');
+  setLoading(btn, true);
+  gasCall('updateServiceType', { id, name }).then(res => {
+    setLoading(btn, false);
+    if (res && res.error) return showErr(res.error);
+    cancelTypeAction();
+    loadTypeManage();
+  }).catch(e => { setLoading(btn, false); showErr(e.message); });
+}
+
+function confirmDeleteType(id) {
+  const btn = document.getElementById('typeDelBtn');
+  setLoading(btn, true);
+  gasCall('deleteServiceType', { id }).then(res => {
+    setLoading(btn, false);
+    if (res && res.error) { alert('เกิดข้อผิดพลาด: ' + res.error); return; }
+    cancelTypeAction();
+    loadTypeManage();
+  }).catch(e => { setLoading(btn, false); alert('เกิดข้อผิดพลาด: ' + e.message); });
+}
+
+// ── กลุ่มภารกิจ / หน่วยงาน (sheet: Departments) ──
+let _dpOpen = new Set(), _dpE = null, _dpX = null, _dpAdd = null;
+let _dpQ = '', _dpErrK = '', _dpErrM = '', _dpBusy = false;
+
+function dpReset() { _dpE = null; _dpX = null; _dpAdd = null; _dpErrK = ''; _dpErrM = ''; }
+function dpErr(k) { return _dpErrK === k ? '<div class="tp-msg">' + tpEsc(_dpErrM) + '</div>' : ''; }
+function dpSetErr(k, m) { _dpErrK = k; _dpErrM = m; renderDeptList(); }
+
+function dpBtn(a, gi, di, icon, label, cls) {
+  return '<button class="btn ' + cls + ' tp-ib" data-a="' + a + '" data-g="' + gi + '" data-d="' + (di === null ? '' : di) +
+    '" aria-label="' + label + '"><span class="material-symbols-rounded">' + icon + '</span></button>';
+}
+
+function dpKey(e) {
+  if (e.key === 'Enter') {
+    const b = e.target.parentElement.querySelector('[data-a^="s"]');
+    if (b) b.click();
+  } else if (e.key === 'Escape') {
+    dpReset(); renderDeptList();
+  }
+}
+
+function dpHead(g, gi, isOpen) {
+  if (_dpE && _dpE.g === gi && _dpE.d === null) {
+    return '<div class="dp-gh tp-col" style="cursor:default;"><div class="tp-edit">' +
+      '<input id="dpInE" data-focus value="' + tpEsc(g.group) + '" maxlength="200" onkeydown="dpKey(event)">' +
+      dpBtn('sg', gi, null, 'check', 'บันทึก', 'primary') + dpBtn('cx', gi, null, 'close', 'ยกเลิก', 'neutral') +
+      '</div>' + dpErr('eg' + gi) + '</div>';
+  }
+  if (_dpX && _dpX.g === gi && _dpX.d === null) {
+    return '<div class="dp-gh tp-col" style="cursor:default;"><div>ลบกลุ่ม “' + tpEsc(g.group) + '” และหน่วยงานทั้ง ' +
+      g.departments.length + ' รายการ ใช่หรือไม่</div><div class="tp-actions">' +
+      '<button class="btn neutral" data-a="cx">ยกเลิก</button>' +
+      '<button class="btn danger" data-a="dg" data-g="' + gi + '">ลบทั้งกลุ่ม</button></div>' + dpErr('xg' + gi) + '</div>';
+  }
+  return '<div class="dp-gh" data-a="tg" data-g="' + gi + '">' +
+    '<span class="material-symbols-rounded dp-chev">' + (isOpen ? 'expand_less' : 'expand_more') + '</span>' +
+    '<span class="dp-gn">' + tpEsc(g.group) + '</span><span class="dp-bd">' + g.departments.length + '</span>' +
+    dpBtn('eg', gi, null, 'edit', 'แก้ไขกลุ่ม', 'neutral') + dpBtn('xg', gi, null, 'delete', 'ลบกลุ่ม', 'danger') + '</div>';
+}
+
+function dpRow(gi, di, name) {
+  if (_dpE && _dpE.g === gi && _dpE.d === di) {
+    return '<div class="tp-row tp-col"><div class="tp-edit">' +
+      '<input id="dpInE" data-focus value="' + tpEsc(name) + '" maxlength="200" onkeydown="dpKey(event)">' +
+      dpBtn('sd', gi, di, 'check', 'บันทึก', 'primary') + dpBtn('cx', gi, di, 'close', 'ยกเลิก', 'neutral') +
+      '</div>' + dpErr('ed' + gi + '-' + di) + '</div>';
+  }
+  if (_dpX && _dpX.g === gi && _dpX.d === di) {
+    return '<div class="tp-row tp-col"><div>ลบ “' + tpEsc(name) + '” ใช่หรือไม่</div><div class="tp-actions">' +
+      '<button class="btn neutral" data-a="cx">ยกเลิก</button>' +
+      '<button class="btn danger" data-a="dd" data-g="' + gi + '" data-d="' + di + '">ลบ</button></div>' +
+      dpErr('xd' + gi + '-' + di) + '</div>';
+  }
+  return '<div class="tp-row"><span class="tp-name">' + tpEsc(name) + '</span>' +
+    dpBtn('ed', gi, di, 'edit', 'แก้ไข', 'neutral') + dpBtn('xd', gi, di, 'delete', 'ลบ', 'danger') + '</div>';
+}
+
+function dpAddRow(gi) {
+  if (_dpAdd === gi) {
+    return '<div class="tp-row tp-col"><div class="tp-edit">' +
+      '<input id="dpInA" data-focus placeholder="ชื่อหน่วยงานใหม่" maxlength="200" onkeydown="dpKey(event)">' +
+      dpBtn('sa', gi, null, 'check', 'บันทึก', 'primary') + dpBtn('ca', gi, null, 'close', 'ยกเลิก', 'neutral') +
+      '</div>' + dpErr('ad' + gi) + '</div>';
+  }
+  return '<button class="dp-addlink" data-a="ad" data-g="' + gi + '"><span class="material-symbols-rounded">add</span>เพิ่มหน่วยงานในกลุ่มนี้</button>';
+}
+
+function renderDeptList() {
+  const box = document.getElementById('deptList');
+  const ql = _dpQ.trim().toLowerCase();
+  let h = '';
+  DEPT_LIST.forEach((g, gi) => {
+    const gm = !ql || g.group.toLowerCase().includes(ql);
+    const ds = g.departments.map((n, di) => ({ n, di })).filter(x => gm || x.n.toLowerCase().includes(ql));
+    if (ql && !gm && !ds.length) return;
+    const isOpen = ql ? true : _dpOpen.has(g.group);
+    h += '<div>' + dpHead(g, gi, isOpen) +
+      (isOpen ? '<div class="dp-gb">' + ds.map(x => dpRow(gi, x.di, x.n)).join('') + dpAddRow(gi) + '</div>' : '') + '</div>';
+  });
+  box.innerHTML = h || '<div class="tp-empty">' +
+    (DEPT_LIST.length ? 'ไม่พบกลุ่มหรือหน่วยงานที่ค้นหา' : 'ยังไม่มีกลุ่มภารกิจ กดเพิ่มกลุ่มภารกิจใหม่ด้านบน') + '</div>';
+  const f = box.querySelector('[data-focus]');
+  if (f) { f.focus(); f.setSelectionRange(f.value.length, f.value.length); }
+}
+
+function loadDeptManage() {
+  const box = document.getElementById('deptList');
+  box.innerHTML = loadingHTML;
+  gasCall('getDepartments').then(res => {
+    if (!Array.isArray(res)) throw new Error((res && res.error) || 'โหลดข้อมูลไม่สำเร็จ');
+    applyDepartments(res);
+    renderDeptList();
+  }).catch(e => {
+    box.innerHTML = '<div class="tp-empty">' + tpEsc(e.message) + '</div>' +
+      '<button class="btn neutral" style="margin:0;" onclick="loadDeptManage()">ลองใหม่</button>';
+  });
+}
+
+function reloadDept() {
+  return gasCall('getDepartments').then(res => {
+    if (!Array.isArray(res)) throw new Error((res && res.error) || 'โหลดข้อมูลไม่สำเร็จ');
+    applyDepartments(res);
+    renderDeptList();
+  }).finally(() => { _dpBusy = false; });
+}
+
+function dpRun(action, payload, errKey, btn, after) {
+  _dpBusy = true;
+  setLoading(btn, true);
+  gasCall(action, payload).then(res => {
+    if (res && res.error) throw new Error(res.error);
+    dpReset();
+    if (after) after();
+    return reloadDept();
+  }).catch(e => {
+    _dpBusy = false;
+    setLoading(btn, false);
+    if (errKey) dpSetErr(errKey, e.message);
+    else alert('เกิดข้อผิดพลาด: ' + e.message);
+  });
+}
+
+function dpSave(a, gi, di, btn) {
+  const g = DEPT_LIST[gi];
+  if (a === 'sg') {
+    const v = document.getElementById('dpInE').value.trim(), k = 'eg' + gi;
+    if (!v) return dpSetErr(k, 'กรอกชื่อกลุ่มก่อน');
+    if (v === g.group) { dpReset(); return renderDeptList(); }
+    if (DEPT_LIST.some((x, i) => i !== gi && x.group === v)) return dpSetErr(k, 'มีกลุ่มนี้แล้ว');
+    dpRun('renameGroup', { oldName: g.group, newName: v }, k, btn, () => { if (_dpOpen.delete(g.group)) _dpOpen.add(v); });
+  } else if (a === 'sd') {
+    const v = document.getElementById('dpInE').value.trim(), k = 'ed' + gi + '-' + di, old = g.departments[di];
+    if (!v) return dpSetErr(k, 'กรอกชื่อหน่วยงานก่อน');
+    if (v === old) { dpReset(); return renderDeptList(); }
+    if (g.departments.some((n, i) => i !== di && n === v)) return dpSetErr(k, 'มีหน่วยงานนี้ในกลุ่มแล้ว');
+    dpRun('renameDepartment', { group: g.group, oldName: old, newName: v }, k, btn);
+  } else if (a === 'sa') {
+    const v = document.getElementById('dpInA').value.trim(), k = 'ad' + gi;
+    if (!v) return dpSetErr(k, 'กรอกชื่อหน่วยงานก่อน');
+    if (g.departments.includes(v)) return dpSetErr(k, 'มีหน่วยงานนี้ในกลุ่มแล้ว');
+    dpRun('addDepartment', { group: g.group, name: v }, k, btn, () => { _dpAdd = gi; });
+  } else if (a === 'dg') {
+    dpRun('deleteGroup', { name: g.group }, 'xg' + gi, btn, () => { _dpOpen.delete(g.group); });
+  } else if (a === 'dd') {
+    dpRun('deleteDepartment', { group: g.group, name: g.departments[di] }, 'xd' + gi + '-' + di, btn);
+  }
+}
+
+function onDeptClick(e) {
+  const b = e.target.closest('[data-a]');
+  if (!b || _dpBusy) return;
+  const a = b.dataset.a, gi = Number(b.dataset.g);
+  const di = (b.dataset.d === '' || b.dataset.d === undefined) ? null : Number(b.dataset.d);
+  if (a === 'tg') { const n = DEPT_LIST[gi].group; _dpOpen.has(n) ? _dpOpen.delete(n) : _dpOpen.add(n); dpReset(); }
+  else if (a === 'eg') { dpReset(); _dpE = { g: gi, d: null }; }
+  else if (a === 'xg') { dpReset(); _dpX = { g: gi, d: null }; }
+  else if (a === 'ed') { dpReset(); _dpE = { g: gi, d: di }; }
+  else if (a === 'xd') { dpReset(); _dpX = { g: gi, d: di }; }
+  else if (a === 'ad') { dpReset(); _dpAdd = gi; _dpOpen.add(DEPT_LIST[gi].group); }
+  else if (a === 'cx' || a === 'ca') { dpReset(); }
+  else { dpSave(a, gi, di, b); return; }
+  renderDeptList();
+}
+
+function onDeptSearch(v) { _dpQ = v; renderDeptList(); }
+
+function toggleGroupForm() {
+  const formBox = document.getElementById('groupFormBox');
+  const toggleBtn = document.getElementById('toggleGroupBtn');
+  if (formBox.style.display === 'none' || formBox.style.display === '') {
+    formBox.style.display = 'block';
+    toggleBtn.innerHTML = '<span class="material-symbols-rounded">close</span> ยกเลิกการเพิ่ม';
+    toggleBtn.classList.replace('primary', 'secondary');
+    document.getElementById('newGroupName').focus();
+  } else {
+    formBox.style.display = 'none';
+    toggleBtn.innerHTML = '<span class="material-symbols-rounded">add</span> เพิ่มกลุ่มภารกิจใหม่';
+    toggleBtn.classList.replace('secondary', 'primary');
+    document.getElementById('newGroupName').value = '';
+    setTypeMsg('groupAddMsg', '');
+  }
+}
+
+function addGroupFromForm() {
+  const name = document.getElementById('newGroupName').value.trim();
+  if (!name) return setTypeMsg('groupAddMsg', 'กรอกชื่อกลุ่มก่อน');
+  if (DEPT_LIST.some(x => x.group === name)) return setTypeMsg('groupAddMsg', 'มีกลุ่มนี้แล้ว');
+  const btn = document.getElementById('groupAddSaveBtn');
+  setLoading(btn, true);
+  gasCall('addGroup', { name }).then(res => {
+    setLoading(btn, false);
+    if (res && res.error) return setTypeMsg('groupAddMsg', res.error);
+    _dpOpen.add(name);
+    toggleGroupForm();
+    loadDeptManage();
+  }).catch(e => { setLoading(btn, false); setTypeMsg('groupAddMsg', e.message); });
+}
+
+document.getElementById('deptList').addEventListener('click', onDeptClick);
+
+// ── โหลดข้อมูลหลัก (กลุ่ม/หน่วยงาน/ประเภทงาน) จาก Google Sheets ──
+function applyDepartments(list) {
+  DEPT_LIST = list;
+  DEPT_MAP = {};
+  list.forEach(g => { DEPT_MAP[g.group] = g.departments; });
+  const sel = document.getElementById('groupInput');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— กลุ่มภารกิจ —</option>' +
+    list.map(g => '<option value="' + tpEsc(g.group) + '">' + tpEsc(g.group) + '</option>').join('');
+  if (cur && Object.prototype.hasOwnProperty.call(DEPT_MAP, cur)) sel.value = cur;
+  sel.disabled = false;
+  const dsel = document.getElementById('departmentInput');
+  const dcur = dsel.value;
+  updateDept();
+  if (dcur && (DEPT_MAP[sel.value] || []).includes(dcur)) dsel.value = dcur;
+}
+
+function loadMasterData() {
+  const err = document.getElementById('masterErr');
+  err.style.display = 'none';
+  if (!SERVICE_TYPES.length) document.getElementById('typeInput').innerHTML = '<option value="">กำลังโหลด…</option>';
+  if (!DEPT_LIST.length) document.getElementById('groupInput').innerHTML = '<option value="">กำลังโหลด…</option>';
+  const t = gasCall('getServiceTypes').then(res => {
+    if (!Array.isArray(res)) throw new Error((res && res.error) || 'โหลดประเภทงานไม่สำเร็จ');
+    SERVICE_TYPES = res;
+    fillTypeSelect();
+  });
+  const d = gasCall('getDepartments').then(res => {
+    if (!Array.isArray(res)) throw new Error((res && res.error) || 'โหลดกลุ่มภารกิจไม่สำเร็จ');
+    applyDepartments(res);
+  });
+  return Promise.allSettled([t, d]).then(rs => {
+    if (rs[0].status === 'rejected' && !SERVICE_TYPES.length) document.getElementById('typeInput').innerHTML = '<option value="">โหลดไม่สำเร็จ</option>';
+    if (rs[1].status === 'rejected' && !DEPT_LIST.length) document.getElementById('groupInput').innerHTML = '<option value="">โหลดไม่สำเร็จ</option>';
+    if (rs.some(r => r.status === 'rejected')) err.style.display = 'flex';
+  });
+}
+
+loadMasterData();
+
 function openViewResModal(jobId) {
   const job = ALL_JOBS.find(j => j.id === String(jobId));
   if (!job) return;
@@ -3229,6 +3632,7 @@ function openChangePw() {
   if(!CURRENT_USER) return;
   document.getElementById('pwCurrentUser').textContent = CURRENT_USER.user + ' (' + CURRENT_USER.name + ')';
   document.getElementById('pwNewUser').value = '';
+  document.getElementById('pwNewName').value = '';
   document.getElementById('pwOld').value = '';
   document.getElementById('pwNew').value = '';
   document.getElementById('pwConfirm').value = '';
@@ -3238,6 +3642,7 @@ function openChangePw() {
 function closeChangePw() {
   document.getElementById('changePwModal').style.display = 'none';
   document.getElementById('pwNewUser').value = '';
+  document.getElementById('pwNewName').value = '';
   document.getElementById('pwOld').value = '';
   document.getElementById('pwNew').value = '';
   document.getElementById('pwConfirm').value = '';
@@ -3245,6 +3650,7 @@ function closeChangePw() {
 }
 function saveChangePw() {
   const newUser = document.getElementById('pwNewUser').value.trim();
+  const newName = document.getElementById('pwNewName').value.trim();
   const oldPw   = document.getElementById('pwOld').value;
   const newPw   = document.getElementById('pwNew').value;
   const confirm = document.getElementById('pwConfirm').value;
@@ -3252,17 +3658,18 @@ function saveChangePw() {
 
   if(!oldPw) { msgEl.textContent = 'กรุณากรอกรหัสผ่านปัจจุบัน'; return; }
   if(newPw && newPw !== confirm) { msgEl.textContent = 'รหัสผ่านใหม่ไม่ตรงกัน'; return; }
-  if(!newPw && !newUser) { msgEl.textContent = 'ไม่มีข้อมูลที่จะเปลี่ยน'; return; }
+  if(!newPw && !newUser && !newName) { msgEl.textContent = 'ไม่มีข้อมูลที่จะเปลี่ยน'; return; }
 
   msgEl.textContent = '';
   const btn = document.querySelector('#changePwModal .btn.primary');
   setLoading(btn, true);
-  gasCall('changeUserProfile', { user: CURRENT_USER.user, oldPw, newPw: newPw||null, newUser: newUser||null })
+  gasCall('changeUserProfile', { user: CURRENT_USER.user, oldPw, newPw: newPw||null, newUser: newUser||null, newName: newName||null })
     .then(res => {
       setLoading(btn, false);
       if(res.success) {
         if(newUser) CURRENT_USER.user = newUser;
-        document.getElementById('pwCurrentUser').textContent = CURRENT_USER.user;
+        if(newName) CURRENT_USER.name = newName;
+        document.getElementById('pwCurrentUser').textContent = CURRENT_USER.user + ' (' + CURRENT_USER.name + ')';
         closeChangePw();
         alert('บันทึกสำเร็จ');
       } else {
